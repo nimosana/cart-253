@@ -53,6 +53,7 @@ function setup() {
     stroke('cyan');
     strokeWeight(pointThicc); 
     point(canvasWidth / 2, canvasHeight / 2);
+
 }
 
 
