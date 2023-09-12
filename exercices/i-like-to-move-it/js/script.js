@@ -67,6 +67,7 @@ function draw() {
     document.body.dispatchEvent(event);
     x1 = map(mouseX, 0, canvasWidth, 0, canvasWidth, true);
     y1 = map(mouseY,0,canvasWidth,0,canvasWidth,true);
+    fill(redValue,GreenValue,BlueValue);
     ellipse(x1, y1, canvasHeight/2 , canvasWidth/2);
 }
  
