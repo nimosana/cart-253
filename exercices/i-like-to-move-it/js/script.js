@@ -17,7 +17,8 @@ let GreenValue= 255;
 let BlueValue= 255;
 let maxCanvasSize = 600;
 let minCanvasSize = 500;
-
+let x1= 0;
+let y1= 0;
 let stateChange = true;
 /**
  * Description of preload
@@ -31,6 +32,7 @@ function preload() {
  * Description of setup
 */
 function setup() {
+    createCanvas(canvasHeight, canvasHeight);
 
 }
 
@@ -39,22 +41,32 @@ function setup() {
  * Description of draw()
 */
 function draw() {
-    createCanvas(canvasHeight, canvasHeight);
+    resizeCanvas(canvasWidth,canvasHeight);
     background(redValue, 0, 0, 125);
-    
     if (stateChange) {
         canvasHeight += 1;
         canvasWidth = canvasHeight;
     } else {
         canvasHeight -= 1;
         canvasWidth = canvasHeight;
-        if (canvasHeight <= minCanvasSize) {
+        if (canvasHeight <= minCanvasSize) 
             stateChange = false;
-        }
     }
     if (canvasHeight >= maxCanvasSize)
         stateChange = false;
     if (canvasHeight <= minCanvasSize)
         stateChange = true;
-
+    
+    const event = new MouseEvent("mousemoved", {
+        view:window,
+        bubbles: true,
+        cancelable:true,
+        clientX:winMouseX,
+        clientY:winMouseY
+    });
+    document.body.dispatchEvent(event);
+    x1 = map(mouseX, 0, canvasWidth, 0, canvasWidth, true);
+    y1 = map(mouseY,0,canvasWidth,0,canvasWidth,true);
+    ellipse(x1, y1, canvasHeight/2 , canvasWidth/2);
 }
+ 
