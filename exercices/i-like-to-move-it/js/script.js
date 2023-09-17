@@ -60,7 +60,7 @@ function preload() {
 */
 function setup() {
     createCanvas(canvasHeight, canvasHeight);
-
+    textSize(20);
 }
 
 
@@ -85,7 +85,11 @@ function draw() {
     fill(randomColorR1, randomColorG1, randomColorB1);
     //body
     ellipse(((canvasHeight / 2) + XOffset + x1), canvasWidth + YOffset + y1 + 180, (canvasHeight / 4) + offset3, canvasWidth + offset3);
+    //CLASSIFIED
+    fill("#000000"); //I did too much maths in cegep not to use Hex
+    text("BELIEVE", (canvasWidth/2)+ XOffset + x1-40, (canvasHeight/2)+YOffset + y1+375);
     //head bottom
+    fill(randomColorR1, randomColorG1, randomColorB1);
     triangle(canvasWidth / 4 + XOffset + x1, (canvasWidth * (5 / 8) + YOffset + y1), (canvasWidth * 0.75) + XOffset + x1, (canvasWidth * (5 / 8) + YOffset + y1), (canvasWidth / 2) + x1, canvasHeight + YOffset + y1);
     //mouth
     fill(randomColorR2, randomColorG2, randomColorB2);
