@@ -78,24 +78,24 @@ function draw() {
     noStroke();
     ellipse((canvasWidth / 2) + XOffset + x1, canvasHeight + YOffset + y1 + 180, (canvasWidth / 4) + offset3, canvasHeight + offset3);
     //CLASSIFIED
-    fill("#000000"); //I did too much maths in cegep not to use Hex
+    fill(randomColorR2, randomColorG2, randomColorB2);
     text("BELIEVE", (canvasWidth / 2) + XOffset + x1 - 40, (canvasHeight / 2) + YOffset + y1 + 375);
     //bottom of the head
     fill(randomColorR1, randomColorG1, randomColorB1);
     triangle(canvasWidth / 4 + XOffset + x1, canvasWidth * (5 / 8) + YOffset + y1, (canvasWidth * 0.75) + XOffset + x1, canvasWidth * (5 / 8) + YOffset + y1, (canvasWidth / 2) + x1, canvasHeight + YOffset + y1);
     //mouth
     fill(randomColorR2, randomColorG2, randomColorB2);
-    ellipse((canvasWidth / 2) + XOffset + x1, (canvasWidth * 3 / 4) + YOffset + y1, canvasHeight / 8, canvasHeight / 4);
+    ellipse((canvasWidth / 2) + XOffset + x1, (canvasHeight * 3 / 4) + YOffset + y1, canvasWidth / 8, canvasHeight / 4);
     fill(randomColorR1, randomColorG1, randomColorB1);
-    ellipse((canvasWidth / 2) + XOffset + x1, (canvasWidth * 3 / 4) - 10 + YOffset + y1, canvasHeight / 7, canvasHeight / 4);
+    ellipse((canvasWidth / 2) + XOffset + x1, (canvasHeight * 3 / 4) - 10 + YOffset + y1, canvasWidth / 7, canvasHeight / 4);
     //left eye
     fill(randomColorR3, randomColorG3, randomColorB3);
-    translate(canvasWidth * (6 / 16) - 8 + XOffset + x1, canvasWidth * (10.6 / 16) + YOffset + y1);
+    translate(canvasWidth * (6 / 16) - 8 + XOffset + x1, canvasHeight * (10.6 / 16) + YOffset + y1);
     rotate(PI / 7);
     ellipse(0, 0, 120, 40);
     resetMatrix();
     //right eye
-    translate(canvasWidth * (10 / 16) + 8 + XOffset + x1, canvasWidth * (10.6 / 16) + YOffset + y1);
+    translate(canvasWidth * (10 / 16) + 8 + XOffset + x1, canvasHeight * (10.6 / 16) + YOffset + y1);
     rotate(-(PI / 7));
     fill(randomColorR4, randomColorG4, randomColorB4);
     ellipse(0, 0, 120, 40);
@@ -114,7 +114,7 @@ function randomColors() {
     randomColorR1 = (Math.random() * 80);
     randomColorG1 = (Math.random() * 80);
     randomColorB1 = (Math.random() * 80);
-    //mouth
+    //mouth & text
     randomColorR2 = (Math.random() * 160);
     randomColorG2 = (Math.random() * 160);
     randomColorB2 = (Math.random() * 160);
