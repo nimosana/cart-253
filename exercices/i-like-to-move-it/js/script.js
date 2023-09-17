@@ -65,7 +65,7 @@ function draw() {
     //top of the head
     ellipse((canvasWidth / 2) + XOffset + x1, (canvasHeight / 2) + (canvasHeight / 8) + YOffset + y1, canvasWidth / 2, canvasHeight / 4);
     fill(0);
-    rect(0 + x1, canvasWidth * (5 / 8) + YOffset + y1, canvasWidth, canvasHeight);
+    rect(0 + x1, canvasHeight * (5 / 8) + YOffset + y1, canvasWidth, canvasHeight);
     //body
     fill(randomColorR1, randomColorG1, randomColorB1);
     stroke(randomColorR1, randomColorG1, randomColorB1);
@@ -82,7 +82,7 @@ function draw() {
     text("BELIEVE", (canvasWidth / 2) + XOffset + x1 - 40, (canvasHeight / 2) + YOffset + y1 + 375);
     //bottom of the head
     fill(randomColorR1, randomColorG1, randomColorB1);
-    triangle(canvasWidth / 4 + XOffset + x1, canvasWidth * (5 / 8) + YOffset + y1, (canvasWidth * 0.75) + XOffset + x1, canvasWidth * (5 / 8) + YOffset + y1, (canvasWidth / 2) + x1, canvasHeight + YOffset + y1);
+    triangle(canvasWidth / 4 + XOffset + x1, canvasHeight * (5 / 8) + YOffset + y1, (canvasWidth * 0.75) + XOffset + x1, canvasWidth * (5 / 8) + YOffset + y1, (canvasWidth / 2) + x1, canvasHeight + YOffset + y1);
     //mouth
     fill(randomColorR2, randomColorG2, randomColorB2);
     ellipse((canvasWidth / 2) + XOffset + x1, (canvasHeight * 3 / 4) + YOffset + y1, canvasWidth / 8, canvasHeight / 4);
