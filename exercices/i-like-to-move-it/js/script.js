@@ -51,8 +51,8 @@ function setup() {
 */
 function draw() {
     //x1 and y1 values determine a position that follows the mouse, but constrained to keep the alien in the canvas
-    x1 = constrain((map(mouseX, 0, canvasWidth, 0, canvasWidth, true)) - (canvasWidth / 2), -(canvasHeight * 0.25), (canvasHeight * 0.25));
-    y1 = constrain((map(mouseY, 0, canvasWidth, 0, canvasWidth, true)) - ((canvasWidth / 2) + 140), -(canvasHeight * 0.5), 0);
+    x1 = constrain(map(mouseX, 0, canvasWidth, 0, canvasWidth, true) - (canvasWidth / 2), -(canvasHeight * 0.25), (canvasHeight * 0.25));
+    y1 = constrain(map(mouseY, 0, canvasWidth, 0, canvasWidth, true) - ((canvasWidth / 2) + 140), -(canvasHeight * 0.5), 0);
     randomColors();
     boppingX(10);
     boppingY(30);
