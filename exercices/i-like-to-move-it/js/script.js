@@ -2,7 +2,8 @@
  * Exercise 1: I like to move it!
  * @author Nicolas Morales-Sanabria
  * 
- * Animates a dancing alien changes color and body width, it follows the user's cursor!
+ * Animates a dancing alien that changes color and body width, it follows the user's cursor 
+ * and moves its arms to the beat!
  * My submission for Excercise 1: I like to move it!
  */
 "use strict";
@@ -82,7 +83,8 @@ function draw() {
     text("BELIEVE", (canvasWidth / 2) + XOffset + x1 - 40, (canvasHeight / 2) + YOffset + y1 + 375);
     //bottom of the head
     fill(randomColorR1, randomColorG1, randomColorB1);
-    triangle(canvasWidth / 4 + XOffset + x1, canvasHeight * (5 / 8) + YOffset + y1, (canvasWidth * 0.75) + XOffset + x1, canvasWidth * (5 / 8) + YOffset + y1, (canvasWidth / 2) + x1, canvasHeight + YOffset + y1);
+    triangle(canvasWidth / 4 + XOffset + x1, canvasHeight * (5 / 8) + YOffset + y1, (canvasWidth * 0.75) + XOffset + x1, canvasWidth * (5 / 8) + YOffset + y1,
+        (canvasWidth / 2) + x1, canvasHeight + YOffset + y1);
     //mouth
     fill(randomColorR2, randomColorG2, randomColorB2);
     ellipse((canvasWidth / 2) + XOffset + x1, (canvasHeight * 3 / 4) + YOffset + y1, canvasWidth / 8, canvasHeight / 4);
