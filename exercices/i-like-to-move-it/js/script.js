@@ -5,7 +5,6 @@
  * Animates a dancing alien changes color and body width, it follows the user's cursor!
  * My submission for Excercise 1: I like to move it!
  */
-
 "use strict";
 var canvasWidth = 500;
 var canvasHeight = canvasWidth;
@@ -63,40 +62,40 @@ function draw() {
     noStroke();
     fill(randomColorR1, randomColorG1, randomColorB1);
     //top of the head
-    ellipse((canvasHeight / 2) + XOffset + x1, ((canvasWidth / 2) + canvasWidth / 8) + YOffset + y1, canvasHeight / 2, canvasHeight / 4);
+    ellipse((canvasHeight / 2) + XOffset + x1, (canvasWidth / 2) + (canvasWidth / 8) + YOffset + y1, canvasHeight / 2, canvasHeight / 4);
     fill(0);
     rect(0 + x1, canvasWidth * (5 / 8) + YOffset + y1, canvasWidth, canvasHeight);
     fill(randomColorR1, randomColorG1, randomColorB1);
     //body
-    ellipse(((canvasHeight / 2) + XOffset + x1), canvasWidth + YOffset + y1 + 180, (canvasHeight / 4) + offset3, canvasWidth + offset3);
+    ellipse((canvasHeight / 2) + XOffset + x1, canvasWidth + YOffset + y1 + 180, (canvasHeight / 4) + offset3, canvasWidth + offset3);
     //CLASSIFIED
     fill("#000000"); //I did too much maths in cegep not to use Hex
     text("BELIEVE", (canvasWidth / 2) + XOffset + x1 - 40, (canvasHeight / 2) + YOffset + y1 + 375);
     //bottom of the head
     fill(randomColorR1, randomColorG1, randomColorB1);
-    triangle(canvasWidth / 4 + XOffset + x1, (canvasWidth * (5 / 8) + YOffset + y1), (canvasWidth * 0.75) + XOffset + x1, (canvasWidth * (5 / 8) + YOffset + y1), (canvasWidth / 2) + x1, canvasHeight + YOffset + y1);
+    triangle(canvasWidth / 4 + XOffset + x1, canvasWidth * (5 / 8) + YOffset + y1, (canvasWidth * 0.75) + XOffset + x1, canvasWidth * (5 / 8) + YOffset + y1, (canvasWidth / 2) + x1, canvasHeight + YOffset + y1);
     //mouth
     fill(randomColorR2, randomColorG2, randomColorB2);
     ellipse((canvasWidth / 2) + XOffset + x1, (canvasWidth * 3 / 4) + YOffset + y1, canvasHeight / 8, canvasHeight / 4);
     fill(randomColorR1, randomColorG1, randomColorB1);
-    ellipse((canvasWidth / 2) + XOffset + x1, ((canvasWidth * 3 / 4) - 10) + YOffset + y1, canvasHeight / 7, canvasHeight / 4);
+    ellipse((canvasWidth / 2) + XOffset + x1, (canvasWidth * 3 / 4) - 10 + YOffset + y1, canvasHeight / 7, canvasHeight / 4);
     //left eye
     fill(randomColorR3, randomColorG3, randomColorB3);
-    translate((canvasWidth * (6 / 16) - 8) + XOffset + x1, (canvasWidth * (10.6 / 16)) + YOffset + y1);
+    translate(canvasWidth * (6 / 16) - 8 + XOffset + x1, canvasWidth * (10.6 / 16) + YOffset + y1);
     rotate(PI / 7);
     ellipse(0, 0, 120, 40);
     resetMatrix();
     //right eye
-    translate((canvasWidth * (10 / 16) + 8) + XOffset + x1, canvasWidth * ((10.6 / 16)) + YOffset + y1);
+    translate(canvasWidth * (10 / 16) + 8 + XOffset + x1, canvasWidth * (10.6 / 16) + YOffset + y1);
     rotate(-(PI / 7));
     fill(randomColorR4, randomColorG4, randomColorB4);
     ellipse(0, 0, 120, 40);
     resetMatrix();
     //nostrils
     fill(randomColorR5, randomColorG5, randomColorB5);
-    ellipse((canvasWidth * (8 / 16) - 10) + XOffset + x1, ((canvasHeight / 1.5) + 50 + YOffset) + y1, 5, 5);
+    ellipse(canvasWidth * (8 / 16) - 10 + XOffset + x1, (canvasHeight / 1.5) + 50 + YOffset + y1, 5, 5);
     fill(randomColorR6, randomColorG6, randomColorB6);
-    ellipse((canvasWidth * (8 / 16) + 10) + XOffset + x1, ((canvasHeight / 1.5) + 50 + YOffset) + y1, 5, 5);
+    ellipse(canvasWidth * (8 / 16) + 10 + XOffset + x1, (canvasHeight / 1.5) + 50 + YOffset + y1, 5, 5);
 }
 /**
  * Randomizes the RGB values for the different colors used
@@ -110,10 +109,11 @@ function randomColors() {
     randomColorR2 = (Math.random() * 160);
     randomColorG2 = (Math.random() * 160);
     randomColorB2 = (Math.random() * 160);
-    //eyes
+    //left eye
     randomColorR3 = (Math.random() * 255);
     randomColorG3 = (Math.random() * 255);
     randomColorB3 = (Math.random() * 255);
+    //right eye
     randomColorR4 = (Math.random() * 255);
     randomColorG4 = (Math.random() * 255);
     randomColorB4 = (Math.random() * 255);
@@ -137,7 +137,7 @@ function boppingX(maxOffset) {
     XOffset = offset;
 }
 /**
- * creates a up-down movement, modifying the YOffset.
+ * creates an up-down movement, modifying the YOffset.
  * @param maxOffset maximum value of the offset (absolute)
 */
 function boppingY(maxOffset) {
