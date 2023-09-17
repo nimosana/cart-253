@@ -63,7 +63,7 @@ function draw() {
     noStroke();
     fill(randomColorR1, randomColorG1, randomColorB1);
     //top of the head
-    ellipse((canvasHeight / 2) + XOffset + x1, (canvasHeight / 2) + (canvasHeight / 8) + YOffset + y1, canvasHeight / 2, canvasHeight / 4);
+    ellipse((canvasWidth / 2) + XOffset + x1, (canvasHeight / 2) + (canvasHeight / 8) + YOffset + y1, canvasWidth / 2, canvasHeight / 4);
     fill(0);
     rect(0 + x1, canvasWidth * (5 / 8) + YOffset + y1, canvasWidth, canvasHeight);
     //body
@@ -71,10 +71,10 @@ function draw() {
     stroke(randomColorR1, randomColorG1, randomColorB1);
     //left arm
     line(canvasWidth / 2 + XOffset + x1, canvasHeight + YOffset + y1, (canvasWidth / 8) + XOffset + x1, canvasHeight + (YOffset / 5) + y1 + 50);
-    line((canvasWidth / 8) + XOffset + x1, canvasHeight + (YOffset / 5) + y1 + 50, (canvasWidth * 0.2) + XOffset + x1, canvasHeight + YOffset * 5 + y1 + -20);
+    line((canvasWidth / 8) + XOffset + x1, canvasHeight + (YOffset / 5) + y1 + 50, (canvasWidth * 0.2) + XOffset + x1, canvasHeight + YOffset * 5 + y1 + -50);
     //right arm
     line(canvasWidth / 2 + XOffset + x1, canvasHeight + YOffset + y1, (canvasWidth * 0.875) + XOffset + x1, canvasHeight + (YOffset / 5) + y1 + 50);
-    line((canvasWidth * 0.875) + XOffset + x1, canvasHeight + (YOffset / 5) + y1 + 50, (canvasWidth * 0.8) + XOffset + x1, canvasHeight + YOffset * 5 + y1 + -20);
+    line((canvasWidth * 0.875) + XOffset + x1, canvasHeight + (YOffset / 5) + y1 + 50, (canvasWidth * 0.8) + XOffset + x1, canvasHeight + YOffset * 5 + y1 + -50);
     noStroke();
     ellipse((canvasWidth / 2) + XOffset + x1, canvasHeight + YOffset + y1 + 180, (canvasWidth / 4) + offset3, canvasHeight + offset3);
     //CLASSIFIED
