@@ -1,9 +1,9 @@
 /**
- * I like to move it
- * Nicolas Morales-Sanabria
+ * Exercise 1: I like to move it!
+ * @author Nicolas Morales-Sanabria
  * 
- * This is a template. You must fill in the title, author, 
- * and this description to match your project!
+ * Animates a dancing alien changes color and body width, it follows the user's cursor!
+ * My submission for Excercise 1: I like to move it!
  */
 
 "use strict";
@@ -47,27 +47,21 @@ let XOffset = 0;
 let YOffset = 0;
 let x1 = 0;
 let y1 = 0;
-/**
- * Description of preload
-*/
-function preload() {
-
-}
-
 
 /**
- * Description of setup
+ * Creates the canvas and sets the text size used in the animation.
 */
 function setup() {
     createCanvas(canvasHeight, canvasHeight);
     textSize(20);
 }
 
-
 /**
- * Description of draw()
+ * Draws an alien that bops its head around, Updates the random colors, the offsets and follows 
+ * the user's cursor while staying inside the canvas. The alien's body stretches and compresses.
 */
 function draw() {
+    //x1 and y1 values determine a position that follows the mouse, but constrained to keep the alien in the canvas
     x1 = constrain((map(mouseX, 0, canvasWidth, 0, canvasWidth, true)) - (canvasWidth / 2), -(canvasHeight * 0.25), (canvasHeight * 0.25));
     y1 = constrain((map(mouseY, 0, canvasWidth, 0, canvasWidth, true)) - ((canvasWidth / 2) + 140), -(canvasHeight * 0.5), 0);
     randomColors();
@@ -75,10 +69,10 @@ function draw() {
     boppingY(30);
     bodyWiggle(20);
     background(0, 0, 0);
-    //Alien
+    //The following code draws the alien
     noStroke();
     fill(randomColorR1, randomColorG1, randomColorB1);
-    //head top
+    //top of the head
     ellipse((canvasHeight / 2) + XOffset + x1, ((canvasWidth / 2) + canvasWidth / 8) + YOffset + y1, canvasHeight / 2, canvasHeight / 4);
     fill(0);
     rect(0 + x1, canvasWidth * (5 / 8) + YOffset + y1, canvasWidth, canvasHeight);
@@ -88,7 +82,7 @@ function draw() {
     //CLASSIFIED
     fill("#000000"); //I did too much maths in cegep not to use Hex
     text("BELIEVE", (canvasWidth / 2) + XOffset + x1 - 40, (canvasHeight / 2) + YOffset + y1 + 375);
-    //head bottom
+    //bottom of the head
     fill(randomColorR1, randomColorG1, randomColorB1);
     triangle(canvasWidth / 4 + XOffset + x1, (canvasWidth * (5 / 8) + YOffset + y1), (canvasWidth * 0.75) + XOffset + x1, (canvasWidth * (5 / 8) + YOffset + y1), (canvasWidth / 2) + x1, canvasHeight + YOffset + y1);
     //mouth
