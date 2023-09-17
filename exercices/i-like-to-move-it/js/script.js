@@ -43,6 +43,7 @@ let y1 = 0;
 function setup() {
     createCanvas(canvasHeight, canvasHeight);
     textSize(20);
+    strokeWeight(20)
 }
 
 /**
@@ -52,7 +53,7 @@ function setup() {
 function draw() {
     //x1 and y1 values determine a position that follows the mouse, but constrained to keep the alien in the canvas
     x1 = constrain(map(mouseX, 0, canvasWidth, 0, canvasWidth, true) - (canvasWidth / 2), -(canvasHeight * 0.25), (canvasHeight * 0.25));
-    y1 = constrain(map(mouseY, 0, canvasWidth, 0, canvasWidth, true) - ((canvasWidth / 2) + 140), -(canvasHeight * 0.5), 0);
+    y1 = constrain(map(mouseY, 0, canvasHeight, 0, canvasHeight, true) - ((canvasHeight / 2) + 140), -(canvasHeight * 0.5), 0);
     randomColors();
     boppingX(10);
     boppingY(30);
@@ -62,12 +63,20 @@ function draw() {
     noStroke();
     fill(randomColorR1, randomColorG1, randomColorB1);
     //top of the head
-    ellipse((canvasHeight / 2) + XOffset + x1, (canvasWidth / 2) + (canvasWidth / 8) + YOffset + y1, canvasHeight / 2, canvasHeight / 4);
+    ellipse((canvasHeight / 2) + XOffset + x1, (canvasHeight / 2) + (canvasHeight / 8) + YOffset + y1, canvasHeight / 2, canvasHeight / 4);
     fill(0);
     rect(0 + x1, canvasWidth * (5 / 8) + YOffset + y1, canvasWidth, canvasHeight);
-    fill(randomColorR1, randomColorG1, randomColorB1);
     //body
-    ellipse((canvasHeight / 2) + XOffset + x1, canvasWidth + YOffset + y1 + 180, (canvasHeight / 4) + offset3, canvasWidth + offset3);
+    fill(randomColorR1, randomColorG1, randomColorB1);
+    stroke(randomColorR1, randomColorG1, randomColorB1);
+    //left arm
+    line(canvasWidth / 2 + XOffset + x1, canvasHeight + YOffset + y1, (canvasWidth / 8) + XOffset + x1, canvasHeight + (YOffset / 5) + y1 + 50);
+    line((canvasWidth / 8) + XOffset + x1, canvasHeight + (YOffset / 5) + y1 + 50, (canvasWidth * 0.2) + XOffset + x1, canvasHeight + YOffset * 5 + y1 + -20);
+    //right arm
+    line(canvasWidth / 2 + XOffset + x1, canvasHeight + YOffset + y1, (canvasWidth * 0.875) + XOffset + x1, canvasHeight + (YOffset / 5) + y1 + 50);
+    line((canvasWidth * 0.875) + XOffset + x1, canvasHeight + (YOffset / 5) + y1 + 50, (canvasWidth * 0.8) + XOffset + x1, canvasHeight + YOffset * 5 + y1 + -20);
+    noStroke();
+    ellipse((canvasWidth / 2) + XOffset + x1, canvasHeight + YOffset + y1 + 180, (canvasWidth / 4) + offset3, canvasHeight + offset3);
     //CLASSIFIED
     fill("#000000"); //I did too much maths in cegep not to use Hex
     text("BELIEVE", (canvasWidth / 2) + XOffset + x1 - 40, (canvasHeight / 2) + YOffset + y1 + 375);
