@@ -1,3 +1,3 @@
-# Template p5 project
+# Exercise 1: I like to move it!
 
-This is the README file for the entire project. For more official projects you should write information here about the nature of the project, your name, any special explanations of how the project works, etc.
+Animates a dancing alien that follows the client's cursor around, staying in the canvas. The animation has a few shapes that change size.
