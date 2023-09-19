@@ -55,9 +55,14 @@ function setup() {
 */
 function draw() {
     background(0, 0, 0);
-    //x1 and y1 values determine a position that follows the mouse, but constrained to keep the alien in the canvas
-    x1 = constrain(map(mouseX, 0, canvasWidth, 0, canvasWidth, true) - (canvasWidth / 2), -(canvasHeight * 0.25), (canvasHeight * 0.25));
-    y1 = constrain(map(mouseY, 0, canvasHeight, 0, canvasHeight, true) - ((canvasHeight / 2) + 140), -(canvasHeight * 0.5), 0);
+    //x1 and y1 values determine a position that follows the mouse,
+    //the constrain on "map" to keeps the alien's whole head in the canvas
+    x1 = constrain(map(mouseX, 0, canvasWidth, 0, canvasWidth) - (canvasWidth / 2), -(canvasHeight * 0.25), (canvasHeight * 0.25));
+    y1 = constrain(map(mouseY, 0, canvasHeight, 0, canvasHeight) - ((canvasHeight / 2) + 140), -(canvasHeight * 0.5), 0);
+    //the code without constrain would let the alien follow the cursor up to the corner of the canvas (with map's withinBounds =true)
+    //x1 = map(mouseX, 0, canvasWidth, 0, canvasWidth, true) - (canvasWidth / 2), -(canvasHeight * 0.25), (canvasHeight * 0.25);
+    //y1 = map(mouseY, 0, canvasHeight, 0, canvasHeight, true) - ((canvasHeight / 2) + 140), -(canvasHeight * 0.5), 0;
+
     //randomize colors and determine next movement
     randomColors();
     boppingX(10);
@@ -73,7 +78,7 @@ function draw() {
     fill(0);
     rect(0 + x1, canvasHeight * (5 / 8) + verticalMovement, canvasWidth, canvasHeight);
     //body
-    fill(randomColorR1, randomColorG1, randomColorB1); ``
+    fill(randomColorR1, randomColorG1, randomColorB1);
     stroke(randomColorR1, randomColorG1, randomColorB1);
     //left arm
     line(canvasWidth / 2 + horizontalMovement, canvasHeight + verticalMovement, (canvasWidth / 8) + horizontalMovement, canvasHeight - (yOffset / 5) + y1 + 50);
@@ -99,13 +104,13 @@ function draw() {
     fill(randomColorR3, randomColorG3, randomColorB3);
     translate(canvasWidth * (6 / 16) - 8 + horizontalMovement, canvasHeight * (10.6 / 16) + verticalMovement);
     rotate(PI / 7);
-    ellipse(0, 0, 120, 40);
+    ellipse(0, 0, 120, 20 + offset3);
     resetMatrix();
     //right eye
     translate(canvasWidth * (10 / 16) + 8 + horizontalMovement, canvasHeight * (10.6 / 16) + verticalMovement);
     rotate(-(PI / 7));
     fill(randomColorR4, randomColorG4, randomColorB4);
-    ellipse(0, 0, 120, 40);
+    ellipse(0, 0, 120, 20 + offset3);
     resetMatrix();
     //nostrils
     fill(randomColorR5, randomColorG5, randomColorB5);
