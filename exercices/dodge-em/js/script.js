@@ -49,7 +49,9 @@ let syringe = {
 }
 let staticAmount = 100;
 let textSizeNumber = 60;
-
+let playerDieded = false;
+let firstEndFrame = true;
+let finalSyringesDisplayed = 0;
 /** load virus and user textures*/
 function preload() {
     virus.texture = loadImage('assets/images/virusTexture.png');
@@ -73,41 +75,74 @@ function setup() {
 
 /** Description of draw() */
 function draw() {
-    background(0);
     // display vaccinations/syringes caught
     noStroke();
     text("Vaccinations: " + user.vaccinations, 20, textSizeNumber);
-    // display static
-    for (let i = 0; i < staticAmount; i++) {
-        let x = random(0, width);
-        let y = random(0, height);
-        stroke(random(0, 255), random(0, 255), random(0, 255), random(0, 255));
-        strokeWeight(random(1, 10));
-        point(x, y);
-    }
-    // draw the syringe with a random strokeweight from the static to have a trippy effect
-    drawSyringe(syringe.x, syringe.yDraw, syringe.size);
-    // update mousePos X & Y
-    updateMousePositions(mousePos);
-    // make the user chase the mousePos
-    chaseTarget(user, mousePos);
-    // make the virus chase the user
-    chaseTarget(virus, user);
-    // display virus & user
-    displayImage(virus, 0);
-    displayImage(user, 0);
-    // if the user touches the syringe, teleport it
-    if (ellipseSuperpositionDetection(user, syringe)) {
-        syringe.x = random(syringe.size, windowWidth - syringe.size);
-        syringe.yDraw = random(syringe.size, windowHeight - syringe.size);
-        syringe.y = syringe.yDraw + syringe.size / 2;
-        user.vaccinations++;
-    }
-    // Check user & virus superposition (game end)
-    if (ellipseSuperpositionDetection(virus, user)) {
-        noLoop();
+    // end animation
+    if (playerDieded) {
+        if (firstEndFrame) {
+            //clean the background if the player just died
+            background(0);
+            firstEndFrame = false;
+        }
+        //display a syringe for every syringe the player had when he died, every 30 frames
+        if ((frameCount % 30 == 0) && (finalSyringesDisplayed < user.vaccinations)) {
+            drawSyringe(random(syringe.size, windowWidth - syringe.size), syringe.yDraw = random(syringe.size, windowHeight - syringe.size), syringe.size);
+            finalSyringesDisplayed++;
+        }
+        //when all the final syringes are displayed,taunt the user with the shots he had when he died
+        if ((finalSyringesDisplayed == user.vaccinations) || user.vaccinations == 0) {
+            for (let i = 0; i < user.vaccinations; i++) {
+                image(user.texture, random(0, width - user.size), random(0, height - user.size), user.size, user.size);
+            }
+            fill("red");
+            if (user.vaccinations < 1) {
+                text("YOU DIED OF COVID UNVACCINATED", windowWidth / 5, windowHeight / 2);
+            } else if (user.vaccinations == 1) {
+                text("YOU HAD YOUR SHOT AND STILL DIED", windowWidth / 5, windowHeight / 2);
+            } else if (user.vaccinations >= 1) {
+                text("YOU HAD " + user.vaccinations + " SHOTS AND STILL DIED", windowWidth / 5, windowHeight / 2);
+            }
+            noLoop();
+        }
+    } else { // normal animation
+        background(0);
+        // display vaccinations/syringes caught
+        fill("cyan");
+        text("Vaccinations: " + user.vaccinations, 20, textSizeNumber);
+        // display static background dots
+        for (let i = 0; i < staticAmount; i++) {
+            let x = random(0, width);
+            let y = random(0, height);
+            stroke(random(0, 255), random(0, 255), random(0, 255), random(0, 255));
+            strokeWeight(random(1, 10));
+            point(x, y);
+        }
+        // draw the syringe with a random strokeweight from the static to have a trippy effect
+        drawSyringe(syringe.x, syringe.yDraw, syringe.size);
+        // update mousePos X & Y
+        updateMousePositions(mousePos);
+        // make the user chase the mousePos
+        chaseTarget(user, mousePos);
+        // make the virus chase the user
+        chaseTarget(virus, user);
+        // display virus & user
+        displayImage(virus, 0);
+        displayImage(user, 0);
+        // if the user touches the syringe, teleport it
+        if (ellipseSuperpositionDetection(user, syringe)) {
+            syringe.x = random(syringe.size, windowWidth - syringe.size);
+            syringe.yDraw = random(syringe.size, windowHeight - syringe.size);
+            syringe.y = syringe.yDraw + syringe.size / 2;
+            user.vaccinations++;
+        }
+        // Check user & virus superposition (game end)
+        if (ellipseSuperpositionDetection(virus, user)) {
+            playerDieded = true;
+        }
     }
 }
+
 /** easily display images instead of shapes*/
 function displayImage(obj, type) {
     switch (type) {
@@ -117,8 +152,8 @@ function displayImage(obj, type) {
         case 1: //square
             image(obj.texture, obj.x, obj.y, obj.size, obj.size);
             break;
-        default:
-            console.log("DisplayImage Wrong type bud: " + type)
+        default: //invalid type
+            console.log("DisplayImage Wrong type bud: " + type);
     }
     //Im preparing functions for later >:D
 }
@@ -175,7 +210,7 @@ function chaseTarget(chaser, target) {
             chaser.vy = chaser.maxSpeed;
         chaser.y += chaser.vy;
     }
-    // console.log("Cov speed X: " + chaser.vx+ "Cov speed Y: " + chaser.vy); //test acceleration
+    // console.log("chaser speed X: " + chaser.vx+ "chaser speed Y: " + chaser.vy); //test acceleration
 }
 
 /**  returns a boolean indicating if two ellipses are overlapping
