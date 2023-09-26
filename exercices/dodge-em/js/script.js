@@ -87,8 +87,7 @@ function draw() {
     chaseTarget(virus, user);
 
     // Check for catching virus
-    let d = dist(user.x, user.y, virus.x, virus.y);
-    if (d < virus.size / 2 + user.size / 2) {
+    if (ellipseSuperpositionDetection(virus, user)) {
         noLoop();
     }
 
@@ -162,3 +161,17 @@ function chaseTarget(chaser, target) {
         //console.log("Cov speed X: " + virus.vx+ "Cov speed Y: " + virus.vy);
     }
 }
+/** 
+    returns a boolean indicating if two ellipses are overlapping
+
+    @param a the first ellipse
+    @param b the second ellipse
+    @return true if they are overlapping, false if they aren't
+    */
+    function ellipseSuperpositionDetection(a, b) {
+        let distance = dist(a.x, a.y, b.x, b.y);
+        if (distance < a.size / 2 + b.size / 2) {
+            return true;
+        } else
+            return false;
+    }
