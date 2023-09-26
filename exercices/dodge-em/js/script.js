@@ -92,13 +92,14 @@ function draw() {
             for (let i = 0; i < user.vaccinations; i++) { //clown the user for every vaccination he had
                 image(user.texture, random(0, width - user.size), random(0, height - user.size), user.size, user.size);
             }
+            textAlign(CENTER);
             fill("red");
             if (user.vaccinations < 1) { //write the correct message depending on the amount of syringes caught
-                text("YOU DIED OF COVID UNVACCINATED", windowWidth / 5, windowHeight / 2);
+                text("YOU DIED OF COVID UNVACCINATED", windowWidth / 2, windowHeight / 2);
             } else if (user.vaccinations === 1) {
-                text("YOU HAD YOUR SHOT AND STILL DIED", windowWidth / 5, windowHeight / 2);
+                text("YOU HAD YOUR SHOT AND STILL DIED", windowWidth / 2, windowHeight / 2);
             } else if (user.vaccinations >= 1) {
-                text("YOU HAD " + user.vaccinations + " SHOTS AND STILL DIED", windowWidth / 5, windowHeight / 2);
+                text("YOU HAD " + user.vaccinations + " SHOTS AND STILL DIED", windowWidth / 2, windowHeight / 2);
             }
             noLoop();
         }
@@ -170,55 +171,25 @@ function updateMousePositions(mouseObject) {
  * @param  target the object being chased */
 function chaseTarget(chaser, target) {
     //horizontal movement
-    let directionX;
-    if (chaser.x > target.x) {
-        //detect direction change & affect speed
-        directionX = -1;
-        if (chaser.directionX !== directionX)
-            chaser.accelX *= -1;
-        chaser.directionX = -1;
-        chaser.vx += chaser.accelX;
-        //limit speed to max speed then move object
-        if (abs(chaser.vx) > abs(chaser.maxSpeed))
-            chaser.vx = -chaser.maxSpeed;
-        chaser.x += chaser.vx;
-    } else {
-        //detect direction change & affect speed
-        directionX = 1;
-        if (chaser.directionX !== directionX)
-            chaser.accelX *= -1;
-        chaser.directionX = 1;
-        chaser.vx += chaser.accelX;
-        //limit speed to max speed then move object
-        if (abs(chaser.vx) > abs(chaser.maxSpeed))
-            chaser.vx = chaser.maxSpeed;
-        chaser.x += chaser.vx;
+    //detect direction change & affect speed
+    let directionX = Math.sign(target.x - chaser.x);
+    let accelX = directionX * chaser.accelX;
+    chaser.vx += accelX;
+    //limit speed to max speed then move object
+    if (abs(chaser.vx) > abs(chaser.maxSpeed)) {
+        chaser.vx = chaser.maxSpeed * directionX;
     }
+    chaser.x += chaser.vx;
     //vertical movement
-    let directionY;
-    if (chaser.y > target.y) {
-        //detect direction change & affect speed
-        directionY = -1;
-        if (chaser.directionY !== directionY)
-            chaser.accelY *= -1;
-        chaser.directionY = -1;
-        chaser.vy += chaser.accelY;
-        //limit speed to max speed then move object
-        if (abs(chaser.vy) > abs(chaser.maxSpeed))
-            chaser.vy = -chaser.maxSpeed;
-        chaser.y += chaser.vy;
-    } else {
-        //detect direction change & affect speed
-        directionY = 1;
-        if (chaser.directionY !== directionY)
-            chaser.accelY *= -1;
-        chaser.directionY = 1;
-        chaser.vy += chaser.accelY;
-        //limit speed to max speed then move object
-        if (abs(chaser.vy) > abs(chaser.maxSpeed))
-            chaser.vy = chaser.maxSpeed;
-        chaser.y += chaser.vy;
+    //detect direction change & affect speed
+    let directionY = Math.sign(target.y - chaser.y);
+    let accelY = directionY * chaser.accelY;
+    chaser.vy += accelY;
+    //limit speed to max speed then move object
+    if (abs(chaser.vy) > abs(chaser.maxSpeed)) {
+        chaser.vy = chaser.maxSpeed * directionY;
     }
+    chaser.y += chaser.vy;
     console.log("chaser speed X: " + chaser.vx + "chaser speed Y: " + chaser.vy); //test acceleration
 }
 
