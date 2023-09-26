@@ -14,26 +14,23 @@ let covid19 = {
     vx: 0,
     vy: 0,
     speed: 5,
-    fill: {
-        r: 255,
-        g: 0,
-        b: 0
-    }
+    texture: null
 };
 
 let user = {
     x: 250,
     y: 250,
     size: 100,
-    fill: 255
+    texture: null
 };
 
 let numStatic = 5000;
 /**
- * Description of preload
+ * load virus and user textures
 */
 function preload() {
-
+    covid19.texture = loadImage('assets/images/virusTexture.png');
+    user.texture = loadImage('assets/images/clown.png');
 }
 
 
@@ -83,11 +80,7 @@ function draw() {
         noLoop();
     }
 
-    // Display covid 19
-    fill(covid19.fill.r, covid19.fill.g, covid19.fill.b);
-    ellipse(covid19.x, covid19.y, covid19.size);
-
-    // Display user
-    fill(user.fill);
-    ellipse(user.x, user.y, user.size);
+    // Display virus & user
+    image(covid19.texture, covid19.x - covid19.size / 2, covid19.y - covid19.size / 2, covid19.size, covid19.size);
+    image(user.texture, user.x - user.size / 2, user.y - user.size / 2, user.size, user.size);
 }
