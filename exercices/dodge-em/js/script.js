@@ -32,6 +32,7 @@ let user = {
     directionY: 1,
     accelX: 0.4,
     accelY: 0.4,
+    vaccinations: 0,
     texture: null
 };
 //mouse position as an object
@@ -48,6 +49,7 @@ let syringe = {
 }
 //number of static background dots
 let numStatic = 100;
+let textSizeNumber = 60;
 
 /** load virus and user textures*/
 function preload() {
@@ -58,6 +60,7 @@ function preload() {
 /** Description of setup*/
 function setup() {
     createCanvas(windowWidth, windowHeight);
+    textSize(textSizeNumber);
     virus.y = random(0, height);
     virus.x = width / 2;
     virus.y = 0;
@@ -72,7 +75,6 @@ function setup() {
 /** Description of draw() */
 function draw() {
     background(0);
-
     // Display static
     for (let i = 0; i < numStatic; i++) {
         let x = random(0, width);
@@ -89,8 +91,7 @@ function draw() {
     chaseTarget(user, mousePos);
     // make the virus chase the user
     chaseTarget(virus, user);
-
-    // Check for catching virus
+    // Check user & virus superposition (game end)
     if (ellipseSuperpositionDetection(virus, user)) {
         noLoop();
     }
@@ -99,7 +100,12 @@ function draw() {
         syringe.x = random(syringe.size, windowWidth - syringe.size);
         syringe.yDraw = random(syringe.size, windowHeight - syringe.size);
         syringe.y = syringe.yDraw + syringe.size / 2;
+        user.vaccinations++;
     }
+
+    noStroke();
+    text("Vaccinations: " + user.vaccinations, 20, textSizeNumber)
+
     // Display virus & user
     image(virus.texture, virus.x - virus.size / 2, virus.y - virus.size / 2, virus.size, virus.size);
     image(user.texture, user.x - user.size / 2, user.y - user.size / 2, user.size, user.size);
