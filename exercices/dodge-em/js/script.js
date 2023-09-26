@@ -1,8 +1,8 @@
 /**Exercise 2: Dodge em!
  * @author Nicolas Morales-Sanabria
  * 
- * This is a template. You must fill in the title, author, 
- * and this description to match your project! */
+ * You are a clown! Get as many vaccinations as possible before catching covid, 
+ * the game will end if you are touched by the virus and a special animation will appear.*/
 "use strict";
 //represents the virus
 let virus = {
@@ -120,9 +120,8 @@ function draw() {
         drawSyringe(syringe.x, syringe.yDraw, syringe.size);
         //update mousePos X & Y
         updateMousePositions(mousePos);
-        //make the user chase the mousePos
+        //make the user chase the mousePos and virus chase the user
         chaseTarget(user, mousePos);
-        //make the virus chase the user
         chaseTarget(virus, user);
         //display virus & user
         displayImage(virus, 0);
