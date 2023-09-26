@@ -83,19 +83,19 @@ function draw() {
             firstEndFrame = false;
         }
         //display a syringe for every syringe the player had when he died, every 30 frames
-        if ((frameCount % 30 == 0) && (finalSyringesDisplayed < user.vaccinations)) {
+        if ((frameCount % 30 === 0) && (finalSyringesDisplayed < user.vaccinations)) {
             drawSyringe(random(syringe.size, windowWidth - syringe.size), syringe.yDraw = random(syringe.size, windowHeight - syringe.size), syringe.size);
             finalSyringesDisplayed++;
         }
         //when all the final syringes are displayed,taunt the user with the shots he had when he died
-        if ((finalSyringesDisplayed == user.vaccinations) || user.vaccinations == 0) {
+        if ((finalSyringesDisplayed === user.vaccinations) || user.vaccinations === 0) {
             for (let i = 0; i < user.vaccinations; i++) { //clown the user for every vaccination he had
                 image(user.texture, random(0, width - user.size), random(0, height - user.size), user.size, user.size);
             }
             fill("red");
             if (user.vaccinations < 1) { //write the correct message depending on the amount of syringes caught
                 text("YOU DIED OF COVID UNVACCINATED", windowWidth / 5, windowHeight / 2);
-            } else if (user.vaccinations == 1) {
+            } else if (user.vaccinations === 1) {
                 text("YOU HAD YOUR SHOT AND STILL DIED", windowWidth / 5, windowHeight / 2);
             } else if (user.vaccinations >= 1) {
                 text("YOU HAD " + user.vaccinations + " SHOTS AND STILL DIED", windowWidth / 5, windowHeight / 2);
@@ -126,11 +126,15 @@ function draw() {
         //display virus & user
         displayImage(virus, 0);
         displayImage(user, 0);
+        fill("red");
         //if the user touches the syringe, teleport it
         if (ellipseSuperpositionDetection(user, syringe)) {
-            syringe.x = random(syringe.size, windowWidth - syringe.size);
-            syringe.yDraw = random(syringe.size, windowHeight - syringe.size);
-            syringe.y = syringe.yDraw + syringe.size / 2;
+            //make sure the new syringe is not overlapping the user
+            while (ellipseSuperpositionDetection(user, syringe)) {
+                syringe.x = random(syringe.size, windowWidth - syringe.size);
+                syringe.yDraw = random(syringe.size, windowHeight - syringe.size);
+                syringe.y = syringe.yDraw + syringe.size / 2;
+            }
             user.vaccinations++;
         }
         //Check user & virus superposition (game end)
@@ -168,44 +172,52 @@ function chaseTarget(chaser, target) {
     //horizontal movement
     let directionX;
     if (chaser.x > target.x) {
+        //detect direction change & affect speed
         directionX = -1;
-        if (chaser.directionX !== directionX) //if going right
-            chaser.accelX *= -1; //detect direction change
-        chaser.directionX = -1; //set latest X direction
-        chaser.vx += chaser.accelX; //add accel to speed
+        if (chaser.directionX !== directionX)
+            chaser.accelX *= -1;
+        chaser.directionX = -1;
+        chaser.vx += chaser.accelX;
+        //limit speed to max speed then move object
         if (abs(chaser.vx) > abs(chaser.maxSpeed))
-            chaser.vx = -chaser.maxSpeed; //limit speed (right)
-        chaser.x += chaser.vx; //move in X
+            chaser.vx = -chaser.maxSpeed;
+        chaser.x += chaser.vx;
     } else {
+        //detect direction change & affect speed
         directionX = 1;
-        if (chaser.directionX !== directionX) //if going left
-            chaser.accelX *= -1; //detect direction change
-        chaser.directionX = 1; //set latest X direction
-        chaser.vx += chaser.accelX; //add accel to speed
+        if (chaser.directionX !== directionX)
+            chaser.accelX *= -1;
+        chaser.directionX = 1;
+        chaser.vx += chaser.accelX;
+        //limit speed to max speed then move object
         if (abs(chaser.vx) > abs(chaser.maxSpeed))
-            chaser.vx = chaser.maxSpeed; //limit speed (left)
-        chaser.x += chaser.vx; //move in X
+            chaser.vx = chaser.maxSpeed;
+        chaser.x += chaser.vx;
     }
     //vertical movement
     let directionY;
-    if (chaser.y > target.y) { //if going up
+    if (chaser.y > target.y) {
+        //detect direction change & affect speed
         directionY = -1;
         if (chaser.directionY !== directionY)
-            chaser.accelY *= -1; //detect direction change
-        chaser.directionY = -1; //set latest Y direction
-        chaser.vy += chaser.accelY; //add accel to speed
+            chaser.accelY *= -1;
+        chaser.directionY = -1;
+        chaser.vy += chaser.accelY;
+        //limit speed to max speed then move object
         if (abs(chaser.vy) > abs(chaser.maxSpeed))
-            chaser.vy = -chaser.maxSpeed; //limit speed (up)
-        chaser.y += chaser.vy; //move in Y
+            chaser.vy = -chaser.maxSpeed;
+        chaser.y += chaser.vy;
     } else {
+        //detect direction change & affect speed
         directionY = 1;
-        if (chaser.directionY !== directionY) //if going down
-            chaser.accelY *= -1; //detect direction change
-        chaser.directionY = 1; //set latest Y direction
-        chaser.vy += chaser.accelY; //add accel to speed
+        if (chaser.directionY !== directionY)
+            chaser.accelY *= -1;
+        chaser.directionY = 1;
+        chaser.vy += chaser.accelY;
+        //limit speed to max speed then move object
         if (abs(chaser.vy) > abs(chaser.maxSpeed))
-            chaser.vy = chaser.maxSpeed; //limit speed (down)
-        chaser.y += chaser.vy; //move in Y
+            chaser.vy = chaser.maxSpeed;
+        chaser.y += chaser.vy;
     }
     console.log("chaser speed X: " + chaser.vx + "chaser speed Y: " + chaser.vy); //test acceleration
 }
