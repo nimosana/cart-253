@@ -74,7 +74,10 @@ function setup() {
 /** Description of draw() */
 function draw() {
     background(0);
-    // Display static
+    // display vaccinations/syringes caught
+    noStroke();
+    text("Vaccinations: " + user.vaccinations, 20, textSizeNumber);
+    // display static
     for (let i = 0; i < staticAmount; i++) {
         let x = random(0, width);
         let y = random(0, height);
@@ -90,10 +93,9 @@ function draw() {
     chaseTarget(user, mousePos);
     // make the virus chase the user
     chaseTarget(virus, user);
-    // Check user & virus superposition (game end)
-    if (ellipseSuperpositionDetection(virus, user)) {
-        noLoop();
-    }
+    // display virus & user
+    displayImage(virus, 0);
+    displayImage(user, 0);
     // if the user touches the syringe, teleport it
     if (ellipseSuperpositionDetection(user, syringe)) {
         syringe.x = random(syringe.size, windowWidth - syringe.size);
@@ -101,12 +103,24 @@ function draw() {
         syringe.y = syringe.yDraw + syringe.size / 2;
         user.vaccinations++;
     }
-    //display vaccinations/syringes caught
-    noStroke();
-    text("Vaccinations: " + user.vaccinations, 20, textSizeNumber)
-    // Display virus & user
-    image(virus.texture, virus.x - virus.size / 2, virus.y - virus.size / 2, virus.size, virus.size);
-    image(user.texture, user.x - user.size / 2, user.y - user.size / 2, user.size, user.size);
+    // Check user & virus superposition (game end)
+    if (ellipseSuperpositionDetection(virus, user)) {
+        noLoop();
+    }
+}
+/** easily display images instead of shapes*/
+function displayImage(obj, type) {
+    switch (type) {
+        case 0: //ellipse
+            image(obj.texture, obj.x - obj.size / 2, obj.y - obj.size / 2, obj.size, obj.size);
+            break;
+        case 1: //square
+            image(obj.texture, obj.x, obj.y, obj.size, obj.size);
+            break;
+        default:
+            console.log("DisplayImage Wrong type bud: " + type)
+    }
+    //Im preparing functions for later >:D
 }
 
 /** updates the  X & Y positions of a mouse object */
@@ -123,50 +137,42 @@ function chaseTarget(chaser, target) {
     let directionX;
     if (chaser.x > target.x) {
         directionX = -1;
-        if (chaser.directionX !== directionX) {
+        if (chaser.directionX !== directionX)
             chaser.accelX *= -1;
-        }
         chaser.directionX = -1;
         chaser.vx += chaser.accelX;
-        if (abs(chaser.vx) > abs(chaser.maxSpeed)) {
+        if (abs(chaser.vx) > abs(chaser.maxSpeed))
             chaser.vx = -chaser.maxSpeed;
-        }
         chaser.x += chaser.vx;
     } else {
         directionX = 1;
-        if (chaser.directionX !== directionX) {
+        if (chaser.directionX !== directionX)
             chaser.accelX *= -1;
-        }
         chaser.directionX = 1;
         chaser.vx += chaser.accelX;
-        if (abs(chaser.vx) > abs(chaser.maxSpeed)) {
+        if (abs(chaser.vx) > abs(chaser.maxSpeed))
             chaser.vx = chaser.maxSpeed;
-        }
         chaser.x += chaser.vx;
     }
     //vertical movement
     let directionY;
     if (chaser.y > target.y) {
         directionY = -1;
-        if (chaser.directionY !== directionY) {
+        if (chaser.directionY !== directionY)
             chaser.accelY *= -1;
-        }
         chaser.directionY = -1;
         chaser.vy += chaser.accelY;
-        if (abs(chaser.vy) > abs(chaser.maxSpeed)) {
+        if (abs(chaser.vy) > abs(chaser.maxSpeed))
             chaser.vy = -chaser.maxSpeed;
-        }
         chaser.y += chaser.vy;
     } else {
         directionY = 1;
-        if (chaser.directionY !== directionY) {
+        if (chaser.directionY !== directionY)
             chaser.accelY *= -1;
-        }
         chaser.directionY = 1;
         chaser.vy += chaser.accelY;
-        if (abs(chaser.vy) > abs(chaser.maxSpeed)) {
+        if (abs(chaser.vy) > abs(chaser.maxSpeed))
             chaser.vy = chaser.maxSpeed;
-        }
         chaser.y += chaser.vy;
     }
     // console.log("Cov speed X: " + chaser.vx+ "Cov speed Y: " + chaser.vy); //test acceleration
@@ -178,18 +184,18 @@ function chaseTarget(chaser, target) {
  @return true if they are overlapping, false if they aren't */
 function ellipseSuperpositionDetection(a, b) {
     let distance = dist(a.x, a.y, b.x, b.y);
-    if (distance < a.size / 2 + b.size / 2) {
+    if (distance < a.size / 2 + b.size / 2)
         return true;
-    } else
+    else
         return false;
 }
 
 /** draws a syringe */
 function drawSyringe(x, yDraw, size) {
     fill(0, 255, 255);
-    rect(x - size / 6, yDraw + size / 12, size / 3, size / 12)
-    rect(x - size / 12, yDraw + size / 12, size / 6, size / 4)
-    rect(x - size / 4, yDraw + size / 3, size / 2, size / 12)
+    rect(x - size / 6, yDraw + size / 12, size / 3, size / 12);
+    rect(x - size / 12, yDraw + size / 12, size / 6, size / 4);
+    rect(x - size / 4, yDraw + size / 3, size / 2, size / 12);
     rect(x - size / 8, yDraw + size / 2.4, size / 4, size / 2);
     strokeWeight(1);
     triangle(x - size / 24, yDraw + (size / 1.09), x + size / 24, yDraw + (size / 1.09), x, yDraw + (size * 1.2));
