@@ -75,14 +75,11 @@ function setup() {
 
 /** Description of draw() */
 function draw() {
-    // display vaccinations/syringes caught
-    noStroke();
+    noStroke(); //display vaccinations/syringes caught
     text("Vaccinations: " + user.vaccinations, 20, textSizeNumber);
-    // end animation
-    if (playerDieded) {
+    if (playerDieded) { //end animation
         if (firstEndFrame) {
-            //clean the background if the player just died
-            background(0);
+            background(0); //clean the background if the player just died
             firstEndFrame = false;
         }
         //display a syringe for every syringe the player had when he died, every 30 frames
@@ -92,11 +89,11 @@ function draw() {
         }
         //when all the final syringes are displayed,taunt the user with the shots he had when he died
         if ((finalSyringesDisplayed == user.vaccinations) || user.vaccinations == 0) {
-            for (let i = 0; i < user.vaccinations; i++) {
+            for (let i = 0; i < user.vaccinations; i++) { //clown the user for every vaccination he had
                 image(user.texture, random(0, width - user.size), random(0, height - user.size), user.size, user.size);
             }
             fill("red");
-            if (user.vaccinations < 1) {
+            if (user.vaccinations < 1) { //write the correct message depending on the amount of syringes caught
                 text("YOU DIED OF COVID UNVACCINATED", windowWidth / 5, windowHeight / 2);
             } else if (user.vaccinations == 1) {
                 text("YOU HAD YOUR SHOT AND STILL DIED", windowWidth / 5, windowHeight / 2);
@@ -105,12 +102,12 @@ function draw() {
             }
             noLoop();
         }
-    } else { // normal animation
+    } else { //normal animation
         background(0);
-        // display vaccinations/syringes caught
+        //display vaccinations/syringes caught
         fill("cyan");
         text("Vaccinations: " + user.vaccinations, 20, textSizeNumber);
-        // display static background dots
+        //display static background dots
         for (let i = 0; i < staticAmount; i++) {
             let x = random(0, width);
             let y = random(0, height);
@@ -118,25 +115,25 @@ function draw() {
             strokeWeight(random(1, 10));
             point(x, y);
         }
-        // draw the syringe with a random strokeweight from the static to have a trippy effect
+        //draw the syringe with a random strokeweight from the static to have a trippy effect
         drawSyringe(syringe.x, syringe.yDraw, syringe.size);
-        // update mousePos X & Y
+        //update mousePos X & Y
         updateMousePositions(mousePos);
-        // make the user chase the mousePos
+        //make the user chase the mousePos
         chaseTarget(user, mousePos);
-        // make the virus chase the user
+        //make the virus chase the user
         chaseTarget(virus, user);
-        // display virus & user
+        //display virus & user
         displayImage(virus, 0);
         displayImage(user, 0);
-        // if the user touches the syringe, teleport it
+        //if the user touches the syringe, teleport it
         if (ellipseSuperpositionDetection(user, syringe)) {
             syringe.x = random(syringe.size, windowWidth - syringe.size);
             syringe.yDraw = random(syringe.size, windowHeight - syringe.size);
             syringe.y = syringe.yDraw + syringe.size / 2;
             user.vaccinations++;
         }
-        // Check user & virus superposition (game end)
+        //Check user & virus superposition (game end)
         if (ellipseSuperpositionDetection(virus, user)) {
             playerDieded = true;
         }
@@ -146,10 +143,10 @@ function draw() {
 /** easily display images instead of shapes*/
 function displayImage(obj, type) {
     switch (type) {
-        case 0: //ellipse
+        case 0: //adjust to draw instead of an ellispe (centered)
             image(obj.texture, obj.x - obj.size / 2, obj.y - obj.size / 2, obj.size, obj.size);
             break;
-        case 1: //square
+        case 1: //adjust to draw instead of a square (corner)
             image(obj.texture, obj.x, obj.y, obj.size, obj.size);
             break;
         default: //invalid type
@@ -172,45 +169,45 @@ function chaseTarget(chaser, target) {
     let directionX;
     if (chaser.x > target.x) {
         directionX = -1;
-        if (chaser.directionX !== directionX)
-            chaser.accelX *= -1;
-        chaser.directionX = -1;
-        chaser.vx += chaser.accelX;
+        if (chaser.directionX !== directionX) //if going right
+            chaser.accelX *= -1; //detect direction change
+        chaser.directionX = -1; //set latest X direction
+        chaser.vx += chaser.accelX; //add accel to speed
         if (abs(chaser.vx) > abs(chaser.maxSpeed))
-            chaser.vx = -chaser.maxSpeed;
-        chaser.x += chaser.vx;
+            chaser.vx = -chaser.maxSpeed; //limit speed (right)
+        chaser.x += chaser.vx; //move in X
     } else {
         directionX = 1;
-        if (chaser.directionX !== directionX)
-            chaser.accelX *= -1;
-        chaser.directionX = 1;
-        chaser.vx += chaser.accelX;
+        if (chaser.directionX !== directionX) //if going left
+            chaser.accelX *= -1; //detect direction change
+        chaser.directionX = 1; //set latest X direction
+        chaser.vx += chaser.accelX; //add accel to speed
         if (abs(chaser.vx) > abs(chaser.maxSpeed))
-            chaser.vx = chaser.maxSpeed;
-        chaser.x += chaser.vx;
+            chaser.vx = chaser.maxSpeed; //limit speed (left)
+        chaser.x += chaser.vx; //move in X
     }
     //vertical movement
     let directionY;
-    if (chaser.y > target.y) {
+    if (chaser.y > target.y) { //if going up
         directionY = -1;
         if (chaser.directionY !== directionY)
-            chaser.accelY *= -1;
-        chaser.directionY = -1;
-        chaser.vy += chaser.accelY;
+            chaser.accelY *= -1; //detect direction change
+        chaser.directionY = -1; //set latest Y direction
+        chaser.vy += chaser.accelY; //add accel to speed
         if (abs(chaser.vy) > abs(chaser.maxSpeed))
-            chaser.vy = -chaser.maxSpeed;
-        chaser.y += chaser.vy;
+            chaser.vy = -chaser.maxSpeed; //limit speed (up)
+        chaser.y += chaser.vy; //move in Y
     } else {
         directionY = 1;
-        if (chaser.directionY !== directionY)
-            chaser.accelY *= -1;
-        chaser.directionY = 1;
-        chaser.vy += chaser.accelY;
+        if (chaser.directionY !== directionY) //if going down
+            chaser.accelY *= -1; //detect direction change
+        chaser.directionY = 1; //set latest Y direction
+        chaser.vy += chaser.accelY; //add accel to speed
         if (abs(chaser.vy) > abs(chaser.maxSpeed))
-            chaser.vy = chaser.maxSpeed;
-        chaser.y += chaser.vy;
+            chaser.vy = chaser.maxSpeed; //limit speed (down)
+        chaser.y += chaser.vy; //move in Y
     }
-    // console.log("chaser speed X: " + chaser.vx+ "chaser speed Y: " + chaser.vy); //test acceleration
+    console.log("chaser speed X: " + chaser.vx + "chaser speed Y: " + chaser.vy); //test acceleration
 }
 
 /**  returns a boolean indicating if two ellipses are overlapping
@@ -234,5 +231,5 @@ function drawSyringe(x, yDraw, size) {
     rect(x - size / 8, yDraw + size / 2.4, size / 4, size / 2);
     strokeWeight(1);
     triangle(x - size / 24, yDraw + (size / 1.09), x + size / 24, yDraw + (size / 1.09), x, yDraw + (size * 1.2));
-    // ellipse(x, yDraw + size / 2, size); //check hitbox
+    //ellipse(x, yDraw + size / 2, size); //check hitbox
 }
