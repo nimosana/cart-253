@@ -47,8 +47,7 @@ let syringe = {
     size: 60,
     yDraw: 0
 }
-//number of static background dots
-let numStatic = 100;
+let staticAmount = 100;
 let textSizeNumber = 60;
 
 /** load virus and user textures*/
@@ -76,7 +75,7 @@ function setup() {
 function draw() {
     background(0);
     // Display static
-    for (let i = 0; i < numStatic; i++) {
+    for (let i = 0; i < staticAmount; i++) {
         let x = random(0, width);
         let y = random(0, height);
         stroke(random(0, 255), random(0, 255), random(0, 255), random(0, 255));
@@ -102,10 +101,9 @@ function draw() {
         syringe.y = syringe.yDraw + syringe.size / 2;
         user.vaccinations++;
     }
-
+    //display vaccinations/syringes caught
     noStroke();
     text("Vaccinations: " + user.vaccinations, 20, textSizeNumber)
-
     // Display virus & user
     image(virus.texture, virus.x - virus.size / 2, virus.y - virus.size / 2, virus.size, virus.size);
     image(user.texture, user.x - user.size / 2, user.y - user.size / 2, user.size, user.size);
@@ -116,7 +114,6 @@ function updateMousePositions(mouseObject) {
     mouseObject.x = mouseX;
     mouseObject.y = mouseY;
 }
-
 
 /**compares X & Y of two objects & affects the chaser's accel/speed to go towards the target
  * @param  chaser the object chasing the other
@@ -131,7 +128,7 @@ function chaseTarget(chaser, target) {
         }
         chaser.directionX = -1;
         chaser.vx += chaser.accelX;
-        if (Math.abs(chaser.vx) > Math.abs(chaser.maxSpeed)) {
+        if (abs(chaser.vx) > abs(chaser.maxSpeed)) {
             chaser.vx = -chaser.maxSpeed;
         }
         chaser.x += chaser.vx;
@@ -142,7 +139,7 @@ function chaseTarget(chaser, target) {
         }
         chaser.directionX = 1;
         chaser.vx += chaser.accelX;
-        if (Math.abs(chaser.vx) > Math.abs(chaser.maxSpeed)) {
+        if (abs(chaser.vx) > abs(chaser.maxSpeed)) {
             chaser.vx = chaser.maxSpeed;
         }
         chaser.x += chaser.vx;
@@ -156,7 +153,7 @@ function chaseTarget(chaser, target) {
         }
         chaser.directionY = -1;
         chaser.vy += chaser.accelY;
-        if (Math.abs(chaser.vy) > Math.abs(chaser.maxSpeed)) {
+        if (abs(chaser.vy) > abs(chaser.maxSpeed)) {
             chaser.vy = -chaser.maxSpeed;
         }
         chaser.y += chaser.vy;
@@ -167,7 +164,7 @@ function chaseTarget(chaser, target) {
         }
         chaser.directionY = 1;
         chaser.vy += chaser.accelY;
-        if (Math.abs(chaser.vy) > Math.abs(chaser.maxSpeed)) {
+        if (abs(chaser.vy) > abs(chaser.maxSpeed)) {
             chaser.vy = chaser.maxSpeed;
         }
         chaser.y += chaser.vy;
