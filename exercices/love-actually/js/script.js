@@ -77,7 +77,7 @@ function title() {
 }
 
 function simulation() {
-    // move();
+    moveUser();
     fishCuriosity();
     // checkOffscreen();
     checkOverlap();
@@ -102,15 +102,11 @@ function sadness() {
     pop();
 }
 
-function move() {
+function moveUser() {
     // Move the user
+    UserKeyMovement();
     user.x = user.x + user.vx;
     user.y = user.y + user.vy;
-    // Move the fishes
-    for (let fish of fishInTheSea) {
-        fish.x = fish.x + fish.vx;
-        fish.y = fish.y + fish.vy;
-    }
 }
 
 function checkOffscreen() {
@@ -221,4 +217,24 @@ function chaseFleeTarget(mover, target, usage) {
     }
     mover.y += mover.vy;
     console.log("mover speed X: " + mover.vx + "mover speed Y: " + mover.vy); //test acceleration
+}
+function UserKeyMovement() {
+    if (keyIsDown(39) && !keyIsDown(37)) {
+        user.vx = 1;
+    }
+    else if (keyIsDown(37) && !keyIsDown(39)) {
+        user.vx = -1;
+    }
+    else if ((!keyIsDown(37) && !keyIsDown(39)) || (keyIsDown(37) && keyIsDown(39))) {
+        user.vx = 0;
+    }
+    if (keyIsDown(38) && !keyIsDown(40)) {
+        user.vy = -1;
+    }
+    else if (keyIsDown(40) && !keyIsDown(38)) {
+        user.vy = 1;
+    }
+    else if ((!keyIsDown(40) && !keyIsDown(38)) || (keyIsDown(40) && keyIsDown(38))) {
+        user.vy = 0;
+    }
 }
