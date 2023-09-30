@@ -78,6 +78,7 @@ function title() {
 
 function simulation() {
     keyMovement(user);
+    lockInWindow(user);
     fishCuriosity();
     // checkOffscreen();
     checkOverlap();
@@ -209,7 +210,7 @@ function chaseFleeTarget(mover, target, usage) {
         mover.vy = mover.maxSpeed * directionY;
     }
     mover.y += mover.vy;
-    console.log("mover speed X: " + mover.vx + "mover speed Y: " + mover.vy); //test acceleration
+    // console.log("mover speed X: " + mover.vx + "mover speed Y: " + mover.vy); //test acceleration
 }
 
 function keyMovement(moving) {
@@ -248,4 +249,24 @@ function keyMovement(moving) {
     } //move object
     moving.x += moving.vx;
     moving.y += moving.vy;
+}
+
+function lockInWindow(moving) {
+    if ((moving.x < moving.size/2)) {
+        moving.x = moving.size/2;
+        moving.vx *= -1;
+    }
+    else if ((moving.x > windowWidth-moving.size/2)) {
+        moving.x = windowWidth-moving.size/2;
+        moving.vx *= -1;
+    }
+    if ((moving.y < moving.size/2)) {
+        moving.y = moving.size/2;
+        moving.vy *= -1;
+    }
+    else if ((moving.y > windowHeight-moving.size/2)) {
+        moving.y = windowHeight-moving.size/2;
+        moving.vy *= -1;
+    }
+    console.log(`X: ${moving.x} Y:${moving.y}`);
 }
