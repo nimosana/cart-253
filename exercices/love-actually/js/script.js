@@ -15,11 +15,11 @@ let user = {
     vx: 0,
     vy: 0,
     speed: 3,
-    maxSpeed: 10,
+    maxSpeed: 3,
     directionX: 1,
     directionY: 1,
-    accelX: 0.4,
-    accelY: 0.4,
+    accelX: 0.1,
+    accelY: 0.1,
     texture: null
 
 };
@@ -77,7 +77,7 @@ function title() {
 }
 
 function simulation() {
-    moveUser();
+    keyMovement(user);
     fishCuriosity();
     // checkOffscreen();
     checkOverlap();
@@ -100,13 +100,6 @@ function sadness() {
     textAlign(CENTER, CENTER);
     text(`:(`, width / 2, height / 2);
     pop();
-}
-
-function moveUser() {
-    // Move the user
-    UserKeyMovement();
-    user.x = user.x + user.vx;
-    user.y = user.y + user.vy;
 }
 
 function checkOffscreen() {
@@ -169,7 +162,7 @@ function makeFishList() {
             y: height / 2,
             vx: random(-fishSpeed, fishSpeed),
             vy: random(-fishSpeed, fishSpeed),
-            maxSpeed: 10,
+            maxSpeed: 7,
             directionX: 1,
             directionY: 1,
             accelX: 0.25,
@@ -218,23 +211,41 @@ function chaseFleeTarget(mover, target, usage) {
     mover.y += mover.vy;
     console.log("mover speed X: " + mover.vx + "mover speed Y: " + mover.vy); //test acceleration
 }
-function UserKeyMovement() {
+
+function keyMovement(moving) {
+    //horizontal movement
+    let directionX = 0;
     if (keyIsDown(39) && !keyIsDown(37)) {
-        user.vx = 1;
+        moving.vx = moving.vx + moving.accelX;
+        directionX = 1;
     }
     else if (keyIsDown(37) && !keyIsDown(39)) {
-        user.vx = -1;
+        moving.vx = moving.vx - moving.accelX;
+        directionX = -1;
     }
     else if ((!keyIsDown(37) && !keyIsDown(39)) || (keyIsDown(37) && keyIsDown(39))) {
-        user.vx = 0;
+        moving.vx /= 1.03;
     }
+    //vertical movement
+    let directionY = 0;
     if (keyIsDown(38) && !keyIsDown(40)) {
-        user.vy = -1;
+        moving.vy = moving.vy - moving.accelY;
+        directionY = -1;
     }
     else if (keyIsDown(40) && !keyIsDown(38)) {
-        user.vy = 1;
+        moving.vy = moving.vy + moving.accelY;
+        directionY = 1;
     }
     else if ((!keyIsDown(40) && !keyIsDown(38)) || (keyIsDown(40) && keyIsDown(38))) {
-        user.vy = 0;
+        moving.vy /= 1.03;
     }
+    //limit to max speed
+    if (abs(moving.vx) > abs(moving.maxSpeed)) {
+        moving.vx = moving.maxSpeed * directionX;
+    }
+    if (abs(moving.vy) > abs(moving.maxSpeed)) {
+        moving.vy = moving.maxSpeed * directionY;
+    } //move object
+    moving.x += moving.vx;
+    moving.y += moving.vy;
 }
