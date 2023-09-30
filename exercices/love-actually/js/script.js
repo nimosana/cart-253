@@ -195,30 +195,30 @@ function fishCuriosity() {
     }
 }
 
-/**compares X & Y of two objects & affects the chaser's accel/speed to go towards the target
- * @param  chaser the object chasing the other
+/**compares X & Y of two objects & affects the mover's accel/speed to go towards the target
+ * @param  mover the object being moved
  * @param  target the object being chased
  * @param  usage 1 for  chase, -1 for flee */
-function chaseFleeTarget(chaser, target, usage) {
+function chaseFleeTarget(mover, target, usage) {
     //horizontal movement
     //detect direction change & affect speed
-    let directionX = usage * Math.sign(target.x - chaser.x);
-    let accelX = directionX * chaser.accelX;
-    chaser.vx += accelX;
+    let directionX = usage * Math.sign(target.x - mover.x);
+    let accelX = directionX * mover.accelX;
+    mover.vx += accelX;
     //limit speed to max speed then move object
-    if (abs(chaser.vx) > abs(chaser.maxSpeed)) {
-        chaser.vx = chaser.maxSpeed * directionX;
+    if (abs(mover.vx) > abs(mover.maxSpeed)) {
+        mover.vx = mover.maxSpeed * directionX;
     }
-    chaser.x += chaser.vx;
+    mover.x += mover.vx;
     //vertical movement
     //detect direction change & affect speed
-    let directionY = usage * Math.sign(target.y - chaser.y);
-    let accelY = directionY * chaser.accelY;
-    chaser.vy += accelY;
+    let directionY = usage * Math.sign(target.y - mover.y);
+    let accelY = directionY * mover.accelY;
+    mover.vy += accelY;
     //limit speed to max speed then move object
-    if (abs(chaser.vy) > abs(chaser.maxSpeed)) {
-        chaser.vy = chaser.maxSpeed * directionY;
+    if (abs(mover.vy) > abs(mover.maxSpeed)) {
+        mover.vy = mover.maxSpeed * directionY;
     }
-    chaser.y += chaser.vy;
-    console.log("chaser speed X: " + chaser.vx + "chaser speed Y: " + chaser.vy); //test acceleration
+    mover.y += mover.vy;
+    console.log("mover speed X: " + mover.vx + "mover speed Y: " + mover.vy); //test acceleration
 }
