@@ -7,6 +7,7 @@
  */
 
 "use strict";
+//represents the user
 let user = {
     x: undefined,
     y: 250,
@@ -15,17 +16,12 @@ let user = {
     vy: 0,
     speed: 3
 };
+//array for all my fish
 let fishInTheSea = [];
+//number of fish to create
 let fishNumber = 10;
-let fish = {
-    x: undefined,
-    y: 250,
-    size: 100,
-    vx: 0,
-    vy: 0,
-    speed: 3
-};
-
+//speed of the fishies
+let fishSpeed = 3;
 let state = `title`; // Can be: title, simulation, love, sadness
 
 /**
@@ -35,15 +31,14 @@ function preload() {
 
 }
 
-
 /**
  * Description of setup
 */
 function setup() {
     createCanvas(windowWidth, windowHeight);
-    setupCircles();
+    makeFishList();
+    user.x = windowWidth / 3;
 }
-
 
 /**
  * Description of draw()
@@ -63,17 +58,6 @@ function draw() {
     else if (state === `sadness`) {
         sadness();
     }
-}
-
-function setupCircles() {
-    // Position circles separated from one another
-    user.x = width / 3;
-    fish.x = 2 * width / 3;
-    // Start circles moving in a random direction
-    user.vx = random(-user.speed, user.speed);
-    user.vy = random(-user.speed, user.speed);
-    fish.vx = random(-fish.speed, fish.speed);
-    fish.vy = random(-fish.speed, fish.speed);
 }
 
 function title() {
@@ -111,18 +95,26 @@ function sadness() {
 }
 
 function move() {
-    // Move the circles
+    // Move the user
     user.x = user.x + user.vx;
     user.y = user.y + user.vy;
-
-    fish.x = fish.x + fish.vx;
-    fish.y = fish.y + fish.vy;
+    // Move the fishes
+    for (let fish of fishInTheSea) {
+        fish.x = fish.x + fish.vx;
+        fish.y = fish.y + fish.vy;
+    }
 }
 
 function checkOffscreen() {
     // Check if the circles have gone offscreen
-    if (isOffscreen(user) || isOffscreen(fish)) {
+    if (isOffscreen(user)) {
         state = `sadness`;
+    }
+    for (let fish of fishInTheSea) {
+        if (isOffscreen(fish)) {
+            state = `sadness`;
+            return;
+        }
     }
 }
 
@@ -136,21 +128,46 @@ function isOffscreen(circle) {
 }
 
 function checkOverlap() {
-    // Check if the circles overlap
-    let d = dist(user.x, user.y, fish.x, fish.y);
-    if (d < user.size / 2 + fish.size / 2) {
-        state = `love`;
+    // Check if a fish & the user overlap
+    for (let fish of fishInTheSea) {
+        let d = dist(user.x, user.y, fish.x, fish.y);
+        if (d < user.size / 2 + fish.size / 2) {
+            state = `love`;
+        }
     }
 }
 
 function display() {
-    // Display the circles
+    // Display the user
+    fill(255);
     ellipse(user.x, user.y, user.size);
-    ellipse(fish.x, fish.y, fish.size);
+    // Display the fishes
+    fill("blue");
+    for (let fish of fishInTheSea) {
+        ellipse(fish.x, fish.y, fish.size);
+    }
 }
 
 function mousePressed() {
     if (state === `title`) {
         state = `simulation`;
+    }
+}
+
+function makeFishList() {
+    for (let i = 0; i < fishNumber; i++) {
+        let fish = {
+            x: undefined,
+            y: 250,
+            size: 100,
+            vx: 0,
+            vy: 0,
+            speed: 3,
+            x: width / 2,
+            y: height / 2,
+            vx: random(-fishSpeed, fishSpeed),
+            vy: random(-fishSpeed, fishSpeed),
+        };
+        fishInTheSea.push(fish);
     }
 }
