@@ -187,21 +187,22 @@ function fishCuriosity() {
     for (let fish of fishInTheSea) {
         let d = dist(user.x, user.y, fish.x, fish.y);
         if (d > (user.size + fish.size) * 1.5) {
-            chaseTarget(fish, user);
+            chaseFleeTarget(fish, user, 1);
         }
         else {
-            fleeTarget(fish, user);
+            chaseFleeTarget(fish, user, -1);
         }
     }
 }
 
 /**compares X & Y of two objects & affects the chaser's accel/speed to go towards the target
  * @param  chaser the object chasing the other
- * @param  target the object being chased */
-function chaseTarget(chaser, target) {
+ * @param  target the object being chased
+ * @param  usage 1 for  chase, -1 for flee */
+function chaseFleeTarget(chaser, target, usage) {
     //horizontal movement
     //detect direction change & affect speed
-    let directionX = Math.sign(target.x - chaser.x);
+    let directionX = usage * Math.sign(target.x - chaser.x);
     let accelX = directionX * chaser.accelX;
     chaser.vx += accelX;
     //limit speed to max speed then move object
@@ -211,7 +212,7 @@ function chaseTarget(chaser, target) {
     chaser.x += chaser.vx;
     //vertical movement
     //detect direction change & affect speed
-    let directionY = Math.sign(target.y - chaser.y);
+    let directionY = usage * Math.sign(target.y - chaser.y);
     let accelY = directionY * chaser.accelY;
     chaser.vy += accelY;
     //limit speed to max speed then move object
@@ -220,31 +221,4 @@ function chaseTarget(chaser, target) {
     }
     chaser.y += chaser.vy;
     console.log("chaser speed X: " + chaser.vx + "chaser speed Y: " + chaser.vy); //test acceleration
-}
-
-/**compares X & Y of two objects & affects the runner's accel/speed to flee the target
- * @param  runner the object running from the other
- * @param  target the object being fleed */
-function fleeTarget(runner, target) {
-    //horizontal movement
-    //detect direction change & affect speed
-    let directionX = -1 * Math.sign(target.x - runner.x);
-    let accelX = directionX * runner.accelX;
-    runner.vx += accelX;
-    //limit speed to max speed then move object
-    if (abs(runner.vx) > abs(runner.maxSpeed)) {
-        runner.vx = runner.maxSpeed * directionX;
-    }
-    runner.x += runner.vx;
-    //vertical movement
-    //detect direction change & affect speed
-    let directionY = -1 * Math.sign(target.y - runner.y);
-    let accelY = directionY * runner.accelY;
-    runner.vy += accelY;
-    //limit speed to max speed then move object
-    if (abs(runner.vy) > abs(runner.maxSpeed)) {
-        runner.vy = runner.maxSpeed * directionY;
-    }
-    runner.y += runner.vy;
-    console.log("runner speed X: " + runner.vx + "runner speed Y: " + runner.vy); //test acceleration
 }
