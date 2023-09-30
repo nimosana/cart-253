@@ -14,7 +14,14 @@ let user = {
     size: 100,
     vx: 0,
     vy: 0,
-    speed: 3
+    speed: 3,
+    maxSpeed: 10,
+    directionX: 1,
+    directionY: 1,
+    accelX: 0.4,
+    accelY: 0.4,
+    texture: null
+
 };
 //array for all my fish
 let fishInTheSea = [];
@@ -70,8 +77,9 @@ function title() {
 }
 
 function simulation() {
-    move();
-    checkOffscreen();
+    // move();
+    fishCuriosity();
+    // checkOffscreen();
     checkOverlap();
     display();
 }
@@ -160,14 +168,83 @@ function makeFishList() {
             x: undefined,
             y: 250,
             size: 100,
-            vx: 0,
-            vy: 0,
             speed: 3,
             x: width / 2,
             y: height / 2,
             vx: random(-fishSpeed, fishSpeed),
             vy: random(-fishSpeed, fishSpeed),
+            maxSpeed: 10,
+            directionX: 1,
+            directionY: 1,
+            accelX: 0.25,
+            accelY: 0.25,
         };
         fishInTheSea.push(fish);
     }
+}
+
+function fishCuriosity() {
+    for (let fish of fishInTheSea) {
+        let d = dist(user.x, user.y, fish.x, fish.y);
+        if (d > (user.size + fish.size) * 1.5) {
+            chaseTarget(fish, user);
+        }
+        else {
+            fleeTarget(fish, user);
+        }
+    }
+}
+
+/**compares X & Y of two objects & affects the chaser's accel/speed to go towards the target
+ * @param  chaser the object chasing the other
+ * @param  target the object being chased */
+function chaseTarget(chaser, target) {
+    //horizontal movement
+    //detect direction change & affect speed
+    let directionX = Math.sign(target.x - chaser.x);
+    let accelX = directionX * chaser.accelX;
+    chaser.vx += accelX;
+    //limit speed to max speed then move object
+    if (abs(chaser.vx) > abs(chaser.maxSpeed)) {
+        chaser.vx = chaser.maxSpeed * directionX;
+    }
+    chaser.x += chaser.vx;
+    //vertical movement
+    //detect direction change & affect speed
+    let directionY = Math.sign(target.y - chaser.y);
+    let accelY = directionY * chaser.accelY;
+    chaser.vy += accelY;
+    //limit speed to max speed then move object
+    if (abs(chaser.vy) > abs(chaser.maxSpeed)) {
+        chaser.vy = chaser.maxSpeed * directionY;
+    }
+    chaser.y += chaser.vy;
+    console.log("chaser speed X: " + chaser.vx + "chaser speed Y: " + chaser.vy); //test acceleration
+}
+
+/**compares X & Y of two objects & affects the runner's accel/speed to flee the target
+ * @param  runner the object running from the other
+ * @param  target the object being fleed */
+function fleeTarget(runner, target) {
+    //horizontal movement
+    //detect direction change & affect speed
+    let directionX = -1 * Math.sign(target.x - runner.x);
+    let accelX = directionX * runner.accelX;
+    runner.vx += accelX;
+    //limit speed to max speed then move object
+    if (abs(runner.vx) > abs(runner.maxSpeed)) {
+        runner.vx = runner.maxSpeed * directionX;
+    }
+    runner.x += runner.vx;
+    //vertical movement
+    //detect direction change & affect speed
+    let directionY = -1 * Math.sign(target.y - runner.y);
+    let accelY = directionY * runner.accelY;
+    runner.vy += accelY;
+    //limit speed to max speed then move object
+    if (abs(runner.vy) > abs(runner.maxSpeed)) {
+        runner.vy = runner.maxSpeed * directionY;
+    }
+    runner.y += runner.vy;
+    console.log("runner speed X: " + runner.vx + "runner speed Y: " + runner.vy); //test acceleration
 }
