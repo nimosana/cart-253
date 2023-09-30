@@ -26,7 +26,7 @@ let user = {
 //array for all my fish
 let fishInTheSea = [];
 //number of fish to create
-let fishNumber = 10;
+let fishNumber = 100;
 //speed of the fishies
 let fishSpeed = 3;
 let state = `title`; // Can be: title, simulation, love, sadness
@@ -168,6 +168,7 @@ function makeFishList() {
             directionY: 1,
             accelX: 0.25,
             accelY: 0.25,
+            curiosity: random(1.5*user.size,7.5*user.size)
         };
         fishInTheSea.push(fish);
     }
@@ -176,7 +177,7 @@ function makeFishList() {
 function fishCuriosity() {
     for (let fish of fishInTheSea) {
         let d = dist(user.x, user.y, fish.x, fish.y);
-        if (d > (user.size + fish.size) * 1.5) {
+        if (d > (user.size + fish.curiosity)) {
             chaseFleeTarget(fish, user, 1);
         }
         else {
