@@ -7,7 +7,7 @@
  */
 
 "use strict";
-let circle1 = {
+let user = {
     x: undefined,
     y: 250,
     size: 100,
@@ -15,8 +15,9 @@ let circle1 = {
     vy: 0,
     speed: 3
 };
-
-let circle2 = {
+let fishInTheSea = [];
+let fishNumber = 10;
+let fish = {
     x: undefined,
     y: 250,
     size: 100,
@@ -39,7 +40,7 @@ function preload() {
  * Description of setup
 */
 function setup() {
-    createCanvas(500, 500);
+    createCanvas(windowWidth, windowHeight);
     setupCircles();
 }
 
@@ -66,13 +67,13 @@ function draw() {
 
 function setupCircles() {
     // Position circles separated from one another
-    circle1.x = width / 3;
-    circle2.x = 2 * width / 3;
+    user.x = width / 3;
+    fish.x = 2 * width / 3;
     // Start circles moving in a random direction
-    circle1.vx = random(-circle1.speed, circle1.speed);
-    circle1.vy = random(-circle1.speed, circle1.speed);
-    circle2.vx = random(-circle2.speed, circle2.speed);
-    circle2.vy = random(-circle2.speed, circle2.speed);
+    user.vx = random(-user.speed, user.speed);
+    user.vy = random(-user.speed, user.speed);
+    fish.vx = random(-fish.speed, fish.speed);
+    fish.vy = random(-fish.speed, fish.speed);
 }
 
 function title() {
@@ -111,16 +112,16 @@ function sadness() {
 
 function move() {
     // Move the circles
-    circle1.x = circle1.x + circle1.vx;
-    circle1.y = circle1.y + circle1.vy;
+    user.x = user.x + user.vx;
+    user.y = user.y + user.vy;
 
-    circle2.x = circle2.x + circle2.vx;
-    circle2.y = circle2.y + circle2.vy;
+    fish.x = fish.x + fish.vx;
+    fish.y = fish.y + fish.vy;
 }
 
 function checkOffscreen() {
     // Check if the circles have gone offscreen
-    if (isOffscreen(circle1) || isOffscreen(circle2)) {
+    if (isOffscreen(user) || isOffscreen(fish)) {
         state = `sadness`;
     }
 }
@@ -136,16 +137,16 @@ function isOffscreen(circle) {
 
 function checkOverlap() {
     // Check if the circles overlap
-    let d = dist(circle1.x, circle1.y, circle2.x, circle2.y);
-    if (d < circle1.size / 2 + circle2.size / 2) {
+    let d = dist(user.x, user.y, fish.x, fish.y);
+    if (d < user.size / 2 + fish.size / 2) {
         state = `love`;
     }
 }
 
 function display() {
     // Display the circles
-    ellipse(circle1.x, circle1.y, circle1.size);
-    ellipse(circle2.x, circle2.y, circle2.size);
+    ellipse(user.x, user.y, user.size);
+    ellipse(fish.x, fish.y, fish.size);
 }
 
 function mousePressed() {
