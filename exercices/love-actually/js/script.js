@@ -10,7 +10,7 @@
 //represents the user
 let user = {
     x: undefined,
-    y: 250,
+    y: undefined,
     size: 100,
     vx: 0,
     vy: 0,
@@ -26,7 +26,7 @@ let user = {
 //array for all my fish
 let fishInTheSea = [];
 //number of fish to create
-let fishNumber = 100;
+let fishNumber = 1000;
 //speed of the fishies
 let fishSpeed = 3;
 let state = `title`; // Can be: title, simulation, love, sadness
@@ -43,8 +43,9 @@ function preload() {
 */
 function setup() {
     createCanvas(windowWidth, windowHeight);
+    user.x = windowWidth / 2;
+    user.y = windowHeight / 2;
     makeFishList();
-    user.x = windowWidth / 3;
 }
 
 /**
@@ -154,21 +155,27 @@ function mousePressed() {
 
 function makeFishList() {
     for (let i = 0; i < fishNumber; i++) {
+        let tempPos = {
+            x: random(0, windowWidth),
+            y: random(0, windowHeight)
+        }
+        while (dist(user.x, user.y, tempPos.x, tempPos.y) < user.size) {
+            tempPos.x = random(0, windowWidth);
+            tempPos.y = random(0, windowHeight);
+        }
         let fish = {
-            x: undefined,
-            y: 250,
-            size: 100,
+            x: tempPos.x,
+            y: tempPos.y,
+            size: user.size,
             speed: 3,
-            x: width / 2,
-            y: height / 2,
-            vx: random(-fishSpeed, fishSpeed),
-            vy: random(-fishSpeed, fishSpeed),
+            vx: 0,
+            vy: 0,
             maxSpeed: 7,
             directionX: 1,
             directionY: 1,
             accelX: 0.25,
             accelY: 0.25,
-            curiosity: random(1.5*user.size,7.5*user.size)
+            curiosity: random(1.5 * user.size, 20 * user.size)
         };
         fishInTheSea.push(fish);
     }
@@ -253,20 +260,20 @@ function keyMovement(moving) {
 }
 
 function lockInWindow(moving) {
-    if ((moving.x < moving.size/2)) {
-        moving.x = moving.size/2;
+    if ((moving.x < moving.size / 2)) {
+        moving.x = moving.size / 2;
         moving.vx *= -1;
     }
-    else if ((moving.x > windowWidth-moving.size/2)) {
-        moving.x = windowWidth-moving.size/2;
+    else if ((moving.x > windowWidth - moving.size / 2)) {
+        moving.x = windowWidth - moving.size / 2;
         moving.vx *= -1;
     }
-    if ((moving.y < moving.size/2)) {
-        moving.y = moving.size/2;
+    if ((moving.y < moving.size / 2)) {
+        moving.y = moving.size / 2;
         moving.vy *= -1;
     }
-    else if ((moving.y > windowHeight-moving.size/2)) {
-        moving.y = windowHeight-moving.size/2;
+    else if ((moving.y > windowHeight - moving.size / 2)) {
+        moving.y = windowHeight - moving.size / 2;
         moving.vy *= -1;
     }
     console.log(`X: ${moving.x} Y:${moving.y}`);
