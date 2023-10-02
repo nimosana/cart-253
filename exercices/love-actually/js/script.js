@@ -159,7 +159,7 @@ function makeFishList() {
             x: random(0, windowWidth),
             y: random(0, windowHeight)
         }
-        while (dist(user.x, user.y, tempPos.x, tempPos.y) < user.size*2) {
+        while (dist(user.x, user.y, tempPos.x, tempPos.y) < user.size * 2) {
             tempPos.x = random(0, windowWidth);
             tempPos.y = random(0, windowHeight);
         }
@@ -175,7 +175,7 @@ function makeFishList() {
             directionY: 1,
             accelX: 0.25,
             accelY: 0.25,
-            curiosity: random(2 * user.size, 15 * user.size)
+            curiosity: random(2 * user.size, 25 * user.size)
         };
         fishInTheSea.push(fish);
     }
@@ -190,7 +190,7 @@ function fishCuriosity() {
         else {
             chaseFleeTarget(fish, user, -1);
         }
-        randomSpasm(fish);
+        randomSpasm(fish, 0.01);
     }
 }
 
@@ -280,10 +280,10 @@ function lockInWindow(moving) {
     console.log(`X: ${moving.x} Y:${moving.y}`);
 }
 
-function randomSpasm(spasmer) {
+function randomSpasm(spasmer, odds) {
     let chance = random(0, 1);
-    if (chance < 0.01) {
-        spasmer.vx = random(-spasmer.maxSpeed, spasmer.maxSpeed );
-        spasmer.vy = random(-spasmer.maxSpeed , spasmer.maxSpeed );
+    if (chance <= odds) {
+        spasmer.vx = random(-spasmer.maxSpeed, spasmer.maxSpeed);
+        spasmer.vy = random(-spasmer.maxSpeed, spasmer.maxSpeed);
     }
 }
