@@ -29,13 +29,15 @@ let fishInTheSea = [];
 let fishNumber = 1000;
 //speed of the fishies
 let fishSpeed = 3;
+let fishTexture = undefined;
 let state = `title`; // Can be: title, simulation, love, sadness
 
 /**
  * Description of preload
 */
 function preload() {
-
+    user.texture = loadImage('assets/images/clown.png');
+    fishTexture = loadImage('assets/images/clownette.png');
 }
 
 /**
@@ -138,12 +140,11 @@ function checkOverlap() {
 
 function display() {
     // Display the user
-    fill(255);
-    ellipse(user.x, user.y, user.size);
+    displayImage(user, 0);
     // Display the fishes
     fill("blue");
     for (let fish of fishInTheSea) {
-        ellipse(fish.x, fish.y, fish.size);
+        displayImage(fish, 2, fishTexture);
     }
 }
 
@@ -285,5 +286,21 @@ function randomSpasm(spasmer, odds) {
     if (chance <= odds) {
         spasmer.vx = random(-spasmer.maxSpeed, spasmer.maxSpeed);
         spasmer.vy = random(-spasmer.maxSpeed, spasmer.maxSpeed);
+    }
+}
+
+/** easily display images instead of shapes*/
+function displayImage(obj, type, specialTexture) {
+    switch (type) {
+        case 0: //adjust to draw instead of an ellispe (centered)
+            image(obj.texture, obj.x - obj.size / 2, obj.y - obj.size / 2, obj.size, obj.size);
+            break;
+        case 1: //adjust to draw instead of a square (corner)
+            image(obj.texture, obj.x, obj.y, obj.size, obj.size);
+            break;
+        case 2: //adjust to draw instead of an ellispe but using a predefined texture
+            image(specialTexture, obj.x - obj.size / 2, obj.y - obj.size / 2, obj.size, obj.size);
+        default: //invalid type
+            console.log("DisplayImage Wrong type bud: " + type);
     }
 }
