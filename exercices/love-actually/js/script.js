@@ -29,7 +29,15 @@ let fishInTheSea = [];
 let fishNumber = 1000;
 //speed of the fishies
 let fishSpeed = 3;
+//texture used for the fish
 let fishTexture = undefined;
+//represents the money wads
+let money = {
+    x: 250,
+    y: 250,
+    size: 100,
+    texture: undefined
+}
 let state = `title`; // Can be: title, simulation, love, sadness
 
 /**
@@ -38,6 +46,7 @@ let state = `title`; // Can be: title, simulation, love, sadness
 function preload() {
     user.texture = loadImage('assets/images/clown.png');
     fishTexture = loadImage('assets/images/clownette2.png');
+    money.texture = loadImage('assets/images/money2.png');
 }
 
 /**
@@ -48,6 +57,7 @@ function setup() {
     user.x = windowWidth / 2;
     user.y = windowHeight / 2;
     makeFishList();
+    spawnMoney();
 }
 
 /**
@@ -119,8 +129,8 @@ function checkOffscreen() {
     }
 }
 
-function isOffscreen(circle) {
-    if (circle.x < 0 || circle.x > width || circle.y < 0 || circle.y > height) {
+function isOffscreen(obj) {
+    if (obj.x < 0 || obj.x > width || obj.y < 0 || obj.y > height) {
         return true;
     }
     else {
@@ -130,8 +140,14 @@ function isOffscreen(circle) {
 
 function checkOverlap() {
     // Check if a fish & the user overlap
+    if (ellipseSuperpositionDetection(user, money)) {
+        repositionEllipseOutsideOther(money, user);
+        for (let fish of fishInTheSea) {
+            fish.curiosity -= user.size * 0.2;
+        }
+    }
     for (let fish of fishInTheSea) {
-        if (ellipseSuperpositionDetection(user,fish)) {
+        if (ellipseSuperpositionDetection(user, fish)) {
             state = `love`;
         }
     }
@@ -145,6 +161,9 @@ function display() {
     for (let fish of fishInTheSea) {
         displayImage(fish, 2, fishTexture);
     }
+    fill("green");
+    ellipse(money.x, money.y, money.size);
+    displayImage(money, 0);
 }
 
 function mousePressed() {
@@ -298,6 +317,32 @@ function ellipseSuperpositionDetection(a, b) {
         return false;
 }
 
+function repositionEllipseOutsideOther(moving, other, distMultiplier) {
+    let tempPos = {
+        x: random(0, windowWidth),
+        y: random(0, windowHeight)
+    }
+    while (dist(moving.x, moving.y, other.x, other.y) < (moving.size + other.size) * distMultiplier) {
+        tempPos.x = random(0 + moving.size, windowWidth - moving.size);
+        tempPos.y = random(0 + moving.size, windowHeight - moving.size);
+    }
+    moving.x = tempPos.x;
+    moving.y = tempPos.y;
+}
+
+function spawnMoney() {
+    let tempPos = {
+        x: random(0 + money.size, windowWidth - money.size),
+        y: random(0 + money.size, windowHeight - money.size)
+    }
+    while (dist(tempPos.x, tempPos.y, user.x, user.y) < (money.size + user.size)) {
+        tempPos.x = random(0 + money.size, windowWidth - money.size);
+        tempPos.y = random(0 + money.size, windowHeight - money.size);
+    }
+    money.x = tempPos.x;
+    money.y = tempPos.y;
+}
+
 /** easily display images instead of shapes*/
 function displayImage(obj, type, specialTexture) {
     switch (type) {
@@ -309,7 +354,9 @@ function displayImage(obj, type, specialTexture) {
             break;
         case 2: //adjust to draw instead of an ellispe but using a predefined texture
             image(specialTexture, obj.x - obj.size / 2, obj.y - obj.size / 2, obj.size, obj.size);
+            break;
         default: //invalid type
             console.log("DisplayImage Wrong type bud: " + type);
+            break;
     }
 }
