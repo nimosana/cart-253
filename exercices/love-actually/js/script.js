@@ -106,28 +106,6 @@ function sadness() {
     text(`:(`, width / 2, height / 2);
 }
 
-function checkOffscreen() {
-    // Check if the circles have gone offscreen
-    if (isOffscreen(user)) {
-        state = `sadness`;
-    }
-    for (let fish of fishInTheSea) {
-        if (isOffscreen(fish)) {
-            state = `sadness`;
-            return;
-        }
-    }
-}
-
-function isOffscreen(obj) {
-    if (obj.x < 0 || obj.x > width || obj.y < 0 || obj.y > height) {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
 function checkOverlap() {
     // Check if a fish & the user overlap
     if (ellipseSuperpositionDetection(user, money)) {
@@ -159,15 +137,19 @@ function display() {
     textAlign(screenX, CENTER);
     text(`Money: ${user.money}`, 150, 40);
     pop();
-    user.money += 100;
+    // user.money += 100; //testing
 }
 
+/** starts the simulation if the mouse is pressed */
 function mousePressed() {
     if (state === `title`) {
         state = `simulation`;
     }
 }
 
+/** generates a certain amount of fishies outside the user's personal space.
+ * the fishes will each have a random position, and a random "curiosity" which
+ * will affect how close they get to the user */
 function makeFishList() {
     for (let i = 0; i < fishNumber; i++) {
         let tempPos = {
@@ -196,6 +178,9 @@ function makeFishList() {
     }
 }
 
+/** generates a movement behavior for the fishies, makes them 
+ * constantly chase the user and then flee when they are too close 
+ * (depending on their curiosity). Also makes them have random spasms. */
 function fishCuriosity() {
     for (let fish of fishInTheSea) {
         if (dist(user.x, user.y, fish.x, fish.y) > (user.size + fish.curiosity)) {
