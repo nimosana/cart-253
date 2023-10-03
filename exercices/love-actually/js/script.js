@@ -1,10 +1,10 @@
-/**
- * Exercise 3: Love, Actually
+/**Exercise 3: Love, Actually
  * @author Nicolas Morales-Sanabria
  * 
- * This is a template. You must fill in the title, author, 
- * and this description to match your project!
- */
+ * In this simulation, the user controls a clown emoji that moves around trying to collect money,
+ *  there are also "fish" (clowns with lipstick) following him around but keeping a set distance,
+ *  as the user collects more money the fish get closer to the user. The game ends if the user makes
+ *  contact with a fish or if the user collects a set amount of money. */
 
 "use strict";
 //represents the user
@@ -38,20 +38,17 @@ let money = {
     size: 100,
     texture: undefined
 }
-let state = `title`; // Can be: title, simulation, love, sadness
 
-/**
- * Description of preload
-*/
+let state = `title`; // Can be: title, simulation, love
+
+/** loads the textures used for the user,fishes and money */
 function preload() {
     user.texture = loadImage('assets/images/clown.png');
     fishTexture = loadImage('assets/images/clownette2.png');
     money.texture = loadImage('assets/images/money2.png');
 }
 
-/**
- * Description of setup
-*/
+/** Sets the user's initial position, creates the fish array, places the money and sets the text style*/
 function setup() {
     createCanvas(windowWidth, windowHeight);
     user.x = windowWidth / 2;
@@ -62,9 +59,7 @@ function setup() {
     textAlign(CENTER, CENTER);
 }
 
-/**
- * Description of draw()
-*/
+/** Draws the correct animation depending on the state of the game */
 function draw() {
     background(0);
 
@@ -77,35 +72,54 @@ function draw() {
     else if (state === `love`) {
         love();
     }
+    else if (state === `rich`) {
+        rich();
+    }
 }
 
+/** Displays the title screen */
 function title() {
     fill(200, 100, 100);
     text(`Modern love simulator`, width / 2, height / 2);
 }
 
+/** executes the functions necessary for the animation. Control the user, money and display the moving fish */
 function simulation() {
     keyMovement(user);
     lockInWindow(user);
     fishCuriosity();
     checkOverlap();
+    checkMoney();
     display();
 }
 
+/** Displays the animation when the user makes contact with a fish */
 function love() {
     push();
-    for (let i = 0; i < user.money; i++) { //thats alot of money!
-        image(money.texture, random(0, windowWidth), random(0, windowHeight),money.size,money.size);
+    for (let i = 0; i < 3000; i++) { //thats alot of money!
+        image(money.texture, random(0, windowWidth), random(0, windowHeight), money.size, money.size);
     }
     rectMode(CENTER);
-    fill(0,0,0,120)
-    rect(width/2,height/2,600,100);
+    fill(0, 0, 0, 120)
+    rect(width / 2, height / 2, 600, 100);
     fill(255, 50, 50);
     text(`You found "love"`, width / 2, height / 2);
     pop();
 }
 
-/** detect if the user has had contact with the money or the fishies*/
+/** Display an alternative end animation if the user has earned enough money */
+function rich() {
+    for (let i = 0; i < 3000; i++) { //thats alot of money!
+        image(money.texture, random(0, windowWidth), random(0, windowHeight), money.size, money.size);
+    }
+    rectMode(CENTER);
+    fill(0, 0, 0, 120)
+    rect(width / 2, height / 2, 1000, 200);
+    fill(255, 50, 50);
+    text(`You're way too rich for these fish\n go get a Bugatti or something"`, width / 2, height / 2);
+}
+
+/** detect if the user has had contact with the money or the fishies */
 function checkOverlap() {
     // check if the user has grabbed money and if he does, move it & make him richer
     if (ellipseSuperpositionDetection(user, money)) {
@@ -135,14 +149,13 @@ function display() {
     //display the money
     displayImage(money, 0);
     push();
-    textAlign(screenX, CENTER);
+    textAlign(LEFT, CENTER);
     rectMode(CENTER);
-    fill(0,0,0,150);
-    rect(150,40,600, 80);
+    fill(0, 0, 0, 150);
+    rect(150, 40, 700, 80);
     fill('lime');
-    text(`Money: ${user.money}`, 150, 40);
+    text(`Money: ${user.money}`, 10, 40);
     pop();
-    // user.money += 100; //testing
 }
 
 /** starts the simulation if the mouse is pressed */
@@ -223,6 +236,7 @@ function chaseFleeTarget(mover, target, usage) {
     mover.y += mover.vy;
     // console.log("mover speed X: " + mover.vx + "mover speed Y: " + mover.vy); //test acceleration
 }
+
 /** Allows the user to control an object's speed with accelerations, using the arrow keys
  * @param obj object to be controlled using the arrow keys */
 function keyMovement(obj) {
@@ -320,6 +334,7 @@ function repositionEllipseOutsideOther(obj, other, distMultiplier) {
     obj.x = tempPos.x;
     obj.y = tempPos.y;
 }
+
 /** spawn the money ensuring it is outside the ellipse of the user*/
 function spawnMoney() {
     let tempPos = {
@@ -332,6 +347,13 @@ function spawnMoney() {
     }
     money.x = tempPos.x;
     money.y = tempPos.y;
+}
+
+/** If the user has enough money, change to the special ending game state */
+function checkMoney() {
+    if (user.money >= 1310720) {
+        state = 'rich';
+    }
 }
 
 /** easily display images instead of shapes
