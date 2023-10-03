@@ -77,44 +77,45 @@ function draw() {
     else if (state === `love`) {
         love();
     }
-    else if (state === `sadness`) {
-        sadness();
-    }
 }
 
 function title() {
     fill(200, 100, 100);
-    text(`LOVE?`, width / 2, height / 2);
+    text(`Modern love simulator`, width / 2, height / 2);
 }
 
 function simulation() {
     keyMovement(user);
     lockInWindow(user);
     fishCuriosity();
-    // checkOffscreen();
     checkOverlap();
     display();
 }
 
 function love() {
-    fill(255, 150, 150);
+    push();
+    for (let i = 0; i < user.money; i++) { //thats alot of money!
+        image(money.texture, random(0, windowWidth), random(0, windowHeight),money.size,money.size);
+    }
+    rectMode(CENTER);
+    fill(0,0,0,120)
+    rect(width/2,height/2,600,100);
+    fill(255, 50, 50);
     text(`You found "love"`, width / 2, height / 2);
+    pop();
 }
 
-function sadness() {
-    fill(150, 150, 255);
-    text(`:(`, width / 2, height / 2);
-}
-
+/** detect if the user has had contact with the money or the fishies*/
 function checkOverlap() {
-    // Check if a fish & the user overlap
+    // check if the user has grabbed money and if he does, move it & make him richer
     if (ellipseSuperpositionDetection(user, money)) {
         repositionEllipseOutsideOther(money, user);
         user.money *= 2;
-        for (let fish of fishInTheSea) {
+        for (let fish of fishInTheSea) { // draw every "fish" closer ;)
             fish.curiosity -= user.size * 0.2;
         }
     }
+    // change the game state if the user and a fish touch
     for (let fish of fishInTheSea) {
         if (ellipseSuperpositionDetection(user, fish)) {
             state = `love`;
@@ -122,6 +123,7 @@ function checkOverlap() {
     }
 }
 
+/** displays the user, the fishies, the money wad & the money the user has */
 function display() {
     // Display the user
     displayImage(user, 0);
@@ -132,9 +134,12 @@ function display() {
     }
     //display the money
     displayImage(money, 0);
-    fill('lime');
     push();
     textAlign(screenX, CENTER);
+    rectMode(CENTER);
+    fill(0,0,0,150);
+    rect(150,40,600, 80);
+    fill('lime');
     text(`Money: ${user.money}`, 150, 40);
     pop();
     // user.money += 100; //testing
