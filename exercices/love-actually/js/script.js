@@ -37,7 +37,7 @@ let state = `title`; // Can be: title, simulation, love, sadness
 */
 function preload() {
     user.texture = loadImage('assets/images/clown.png');
-    fishTexture = loadImage('assets/images/clownette.png');
+    fishTexture = loadImage('assets/images/clownette2.png');
 }
 
 /**
@@ -176,7 +176,7 @@ function makeFishList() {
             directionY: 1,
             accelX: 0.25,
             accelY: 0.25,
-            curiosity: random(2 * user.size, 25 * user.size)
+            curiosity: random(4 * user.size, 25 * user.size)
         };
         fishInTheSea.push(fish);
     }
@@ -191,7 +191,7 @@ function fishCuriosity() {
         else {
             chaseFleeTarget(fish, user, -1);
         }
-        randomSpasm(fish, 0.01);
+        randomSpasm(fish, 0.01, 0.5);
     }
 }
 
@@ -223,69 +223,69 @@ function chaseFleeTarget(mover, target, usage) {
     // console.log("mover speed X: " + mover.vx + "mover speed Y: " + mover.vy); //test acceleration
 }
 
-function keyMovement(moving) {
+function keyMovement(obj) {
     //horizontal movement
     let directionX = 0;
     if (keyIsDown(39) && !keyIsDown(37)) {
-        moving.vx = moving.vx + moving.accelX;
+        obj.vx = obj.vx + obj.accelX;
         directionX = 1;
     }
     else if (keyIsDown(37) && !keyIsDown(39)) {
-        moving.vx = moving.vx - moving.accelX;
+        obj.vx = obj.vx - obj.accelX;
         directionX = -1;
     }
     else if ((!keyIsDown(37) && !keyIsDown(39)) || (keyIsDown(37) && keyIsDown(39))) {
-        moving.vx /= 1.03;
+        obj.vx /= 1.03;
     }
     //vertical movement
     let directionY = 0;
     if (keyIsDown(38) && !keyIsDown(40)) {
-        moving.vy = moving.vy - moving.accelY;
+        obj.vy = obj.vy - obj.accelY;
         directionY = -1;
     }
     else if (keyIsDown(40) && !keyIsDown(38)) {
-        moving.vy = moving.vy + moving.accelY;
+        obj.vy = obj.vy + obj.accelY;
         directionY = 1;
     }
     else if ((!keyIsDown(40) && !keyIsDown(38)) || (keyIsDown(40) && keyIsDown(38))) {
-        moving.vy /= 1.03;
+        obj.vy /= 1.03;
     }
     //limit to max speed
-    if (abs(moving.vx) > abs(moving.maxSpeed)) {
-        moving.vx = moving.maxSpeed * directionX;
+    if (abs(obj.vx) > abs(obj.maxSpeed)) {
+        obj.vx = obj.maxSpeed * directionX;
     }
-    if (abs(moving.vy) > abs(moving.maxSpeed)) {
-        moving.vy = moving.maxSpeed * directionY;
-    } //move object
-    moving.x += moving.vx;
-    moving.y += moving.vy;
+    if (abs(obj.vy) > abs(obj.maxSpeed)) {
+        obj.vy = obj.maxSpeed * directionY;
+    } //move obj
+    obj.x += obj.vx;
+    obj.y += obj.vy;
 }
 
-function lockInWindow(moving) {
-    if ((moving.x < moving.size / 2)) {
-        moving.x = moving.size / 2;
-        moving.vx *= -1;
+function lockInWindow(obj) {
+    if ((obj.x < obj.size / 2)) {
+        obj.x = obj.size / 2;
+        obj.vx *= -1;
     }
-    else if ((moving.x > windowWidth - moving.size / 2)) {
-        moving.x = windowWidth - moving.size / 2;
-        moving.vx *= -1;
+    else if ((obj.x > windowWidth - obj.size / 2)) {
+        obj.x = windowWidth - obj.size / 2;
+        obj.vx *= -1;
     }
-    if ((moving.y < moving.size / 2)) {
-        moving.y = moving.size / 2;
-        moving.vy *= -1;
+    if ((obj.y < obj.size / 2)) {
+        obj.y = obj.size / 2;
+        obj.vy *= -1;
     }
-    else if ((moving.y > windowHeight - moving.size / 2)) {
-        moving.y = windowHeight - moving.size / 2;
-        moving.vy *= -1;
+    else if ((obj.y > windowHeight - obj.size / 2)) {
+        obj.y = windowHeight - obj.size / 2;
+        obj.vy *= -1;
     }
-    console.log(`X: ${moving.x} Y:${moving.y}`);
+    console.log(`X: ${obj.x} Y:${obj.y}`);
 }
 
-function randomSpasm(spasmer, odds) {
+function randomSpasm(spasmer, odds, intensity) {
     let chance = random(0, 1);
     if (chance <= odds) {
-        spasmer.vx = random(-spasmer.maxSpeed, spasmer.maxSpeed);
-        spasmer.vy = random(-spasmer.maxSpeed, spasmer.maxSpeed);
+        spasmer.vx = random(-spasmer.maxSpeed * intensity, spasmer.maxSpeed * intensity);
+        spasmer.vy = random(-spasmer.maxSpeed * intensity, spasmer.maxSpeed * intensity);
     }
 }
 
