@@ -208,10 +208,10 @@ function fishCuriosity() {
     }
 }
 
-/**compares X & Y of two objects & affects the mover's accel/speed to go towards the target
+/**compares X & Y of two objects & affects the mover's accel/speed to go towards or flee the target
  * @param  mover the object being moved
  * @param  target the object being chased
- * @param  usage 1 for  chase, -1 for flee */
+ * @param  usage 1 to  chase, -1 to flee */
 function chaseFleeTarget(mover, target, usage) {
     //horizontal movement - detect direction change & affect speed
     let directionX = usage * Math.sign(target.x - mover.x);
@@ -233,7 +233,8 @@ function chaseFleeTarget(mover, target, usage) {
     mover.y += mover.vy;
     // console.log("mover speed X: " + mover.vx + "mover speed Y: " + mover.vy); //test acceleration
 }
-
+/** Allows the user to control an object's speed with accelerations, using the arrow keys
+ * @param obj object to be controlled using the arrow keys */
 function keyMovement(obj) {
     //horizontal movement
     if (keyIsDown(39) && !keyIsDown(37)) {
@@ -265,8 +266,10 @@ function keyMovement(obj) {
     obj.x += obj.vx;
     obj.y += obj.vy;
 }
-
+/** Prevents an object from leaving the viewable window area, sets it back inside and inverts its speed.
+ * @param obj object to be locked inside the window  */
 function lockInWindow(obj) {
+    //horizontally
     if ((obj.x < obj.size / 2)) {
         obj.x = obj.size / 2;
         obj.vx *= -1;
@@ -275,6 +278,7 @@ function lockInWindow(obj) {
         obj.x = windowWidth - obj.size / 2;
         obj.vx *= -1;
     }
+    //vertically
     if ((obj.y < obj.size / 2)) {
         obj.y = obj.size / 2;
         obj.vy *= -1;
@@ -286,6 +290,10 @@ function lockInWindow(obj) {
     console.log(`X: ${obj.x} Y:${obj.y}`);
 }
 
+/** allows for moving objects to have random spasms with set percentages and intensity
+ * @param spasmer  object to introduce random speed changes to
+ * @param odds % probability of a spasm to occur (between 0-1)
+ * @param intensity an intensity multiplier relative to the max speed of the object */
 function randomSpasm(spasmer, odds, intensity) {
     if (random(0, 1) <= odds) {
         spasmer.vx = random(-spasmer.maxSpeed * intensity, spasmer.maxSpeed * intensity);
@@ -305,11 +313,11 @@ function ellipseSuperpositionDetection(a, b) {
         return false;
 }
 
-/** Repositions an object while making sure it is outside another, a buffer distance multiplier can be added
+/** Repositions an object while making sure it is outside another
+ * a buffer distance multiplier can be added
  * @param obj the object to be randomly repositioned 
  * @param other the object to stay outside of
- * @param distMultiplier a distance multiplier buffer for extra space between the objects
- */
+ * @param distMultiplier a distance multiplier buffer for extra space between the objects (>=1) */
 function repositionEllipseOutsideOther(obj, other, distMultiplier) {
     let tempPos = {
         x: random(0, windowWidth),
