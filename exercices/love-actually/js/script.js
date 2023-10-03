@@ -20,8 +20,8 @@ let user = {
     directionY: 1,
     accelX: 0.1,
     accelY: 0.1,
-    texture: null
-
+    texture: null,
+    money: 5
 };
 //array for all my fish
 let fishInTheSea = [];
@@ -58,6 +58,8 @@ function setup() {
     user.y = windowHeight / 2;
     makeFishList();
     spawnMoney();
+    textSize(64);
+    textAlign(CENTER, CENTER);
 }
 
 /**
@@ -81,12 +83,8 @@ function draw() {
 }
 
 function title() {
-    push();
-    textSize(64);
     fill(200, 100, 100);
-    textAlign(CENTER, CENTER);
     text(`LOVE?`, width / 2, height / 2);
-    pop();
 }
 
 function simulation() {
@@ -99,21 +97,13 @@ function simulation() {
 }
 
 function love() {
-    push();
-    textSize(64);
     fill(255, 150, 150);
-    textAlign(CENTER, CENTER);
-    text(`LOVE!`, width / 2, height / 2);
-    pop();
+    text(`You found "love"`, width / 2, height / 2);
 }
 
 function sadness() {
-    push();
-    textSize(64);
     fill(150, 150, 255);
-    textAlign(CENTER, CENTER);
     text(`:(`, width / 2, height / 2);
-    pop();
 }
 
 function checkOffscreen() {
@@ -142,6 +132,7 @@ function checkOverlap() {
     // Check if a fish & the user overlap
     if (ellipseSuperpositionDetection(user, money)) {
         repositionEllipseOutsideOther(money, user);
+        user.money *= 2;
         for (let fish of fishInTheSea) {
             fish.curiosity -= user.size * 0.2;
         }
@@ -161,9 +152,14 @@ function display() {
     for (let fish of fishInTheSea) {
         displayImage(fish, 2, fishTexture);
     }
-    fill("green");
-    ellipse(money.x, money.y, money.size);
+    //display the money
     displayImage(money, 0);
+    fill('lime');
+    push();
+    textAlign(screenX, CENTER);
+    text(`Money: ${user.money}`, 150, 40);
+    pop();
+    user.money += 100;
 }
 
 function mousePressed() {
@@ -217,8 +213,7 @@ function fishCuriosity() {
  * @param  target the object being chased
  * @param  usage 1 for  chase, -1 for flee */
 function chaseFleeTarget(mover, target, usage) {
-    //horizontal movement
-    //detect direction change & affect speed
+    //horizontal movement - detect direction change & affect speed
     let directionX = usage * Math.sign(target.x - mover.x);
     let accelX = directionX * mover.accelX;
     mover.vx += accelX;
@@ -227,8 +222,7 @@ function chaseFleeTarget(mover, target, usage) {
         mover.vx = mover.maxSpeed * directionX;
     }
     mover.x += mover.vx;
-    //vertical movement
-    //detect direction change & affect speed
+    //vertical movement - detect direction change & affect speed
     let directionY = usage * Math.sign(target.y - mover.y);
     let accelY = directionY * mover.accelY;
     mover.vy += accelY;
@@ -242,37 +236,31 @@ function chaseFleeTarget(mover, target, usage) {
 
 function keyMovement(obj) {
     //horizontal movement
-    let directionX = 0;
     if (keyIsDown(39) && !keyIsDown(37)) {
         obj.vx = obj.vx + obj.accelX;
-        directionX = 1;
     }
     else if (keyIsDown(37) && !keyIsDown(39)) {
         obj.vx = obj.vx - obj.accelX;
-        directionX = -1;
     }
     else if ((!keyIsDown(37) && !keyIsDown(39)) || (keyIsDown(37) && keyIsDown(39))) {
         obj.vx /= 1.03;
     }
     //vertical movement
-    let directionY = 0;
     if (keyIsDown(38) && !keyIsDown(40)) {
         obj.vy = obj.vy - obj.accelY;
-        directionY = -1;
     }
     else if (keyIsDown(40) && !keyIsDown(38)) {
         obj.vy = obj.vy + obj.accelY;
-        directionY = 1;
     }
     else if ((!keyIsDown(40) && !keyIsDown(38)) || (keyIsDown(40) && keyIsDown(38))) {
         obj.vy /= 1.03;
     }
     //limit to max speed
     if (abs(obj.vx) > abs(obj.maxSpeed)) {
-        obj.vx = obj.maxSpeed * directionX;
+        obj.vx = obj.maxSpeed * Math.sign(obj.vx);
     }
     if (abs(obj.vy) > abs(obj.maxSpeed)) {
-        obj.vy = obj.maxSpeed * directionY;
+        obj.vy = obj.maxSpeed * Math.sign(obj.vy);
     } //move obj
     obj.x += obj.vx;
     obj.y += obj.vy;
@@ -317,19 +305,24 @@ function ellipseSuperpositionDetection(a, b) {
         return false;
 }
 
-function repositionEllipseOutsideOther(moving, other, distMultiplier) {
+/** Repositions an object while making sure it is outside another, a buffer distance multiplier can be added
+ * @param obj the object to be randomly repositioned 
+ * @param other the object to stay outside of
+ * @param distMultiplier a distance multiplier buffer for extra space between the objects
+ */
+function repositionEllipseOutsideOther(obj, other, distMultiplier) {
     let tempPos = {
         x: random(0, windowWidth),
         y: random(0, windowHeight)
     }
-    while (dist(moving.x, moving.y, other.x, other.y) < (moving.size + other.size) * distMultiplier) {
-        tempPos.x = random(0 + moving.size, windowWidth - moving.size);
-        tempPos.y = random(0 + moving.size, windowHeight - moving.size);
+    while (dist(obj.x, obj.y, other.x, other.y) < (obj.size + other.size) * distMultiplier) {
+        tempPos.x = random(0 + obj.size, windowWidth - obj.size);
+        tempPos.y = random(0 + obj.size, windowHeight - obj.size);
     }
-    moving.x = tempPos.x;
-    moving.y = tempPos.y;
+    obj.x = tempPos.x;
+    obj.y = tempPos.y;
 }
-
+/** spawn the money ensuring it is outside the ellipse of the user*/
 function spawnMoney() {
     let tempPos = {
         x: random(0 + money.size, windowWidth - money.size),
@@ -343,7 +336,10 @@ function spawnMoney() {
     money.y = tempPos.y;
 }
 
-/** easily display images instead of shapes*/
+/** easily display images instead of shapes
+ * @param obj object to be drawn
+ * @param type type or case of object to be drawn
+ * @param specialTexture a specific texture to be used (for type 2)*/
 function displayImage(obj, type, specialTexture) {
     switch (type) {
         case 0: //adjust to draw instead of an ellispe (centered)
