@@ -131,8 +131,7 @@ function isOffscreen(circle) {
 function checkOverlap() {
     // Check if a fish & the user overlap
     for (let fish of fishInTheSea) {
-        let d = dist(user.x, user.y, fish.x, fish.y);
-        if (d < user.size / 2 + fish.size / 2) {
+        if (ellipseSuperpositionDetection(user,fish)) {
             state = `love`;
         }
     }
@@ -184,8 +183,7 @@ function makeFishList() {
 
 function fishCuriosity() {
     for (let fish of fishInTheSea) {
-        let d = dist(user.x, user.y, fish.x, fish.y);
-        if (d > (user.size + fish.curiosity)) {
+        if (dist(user.x, user.y, fish.x, fish.y) > (user.size + fish.curiosity)) {
             chaseFleeTarget(fish, user, 1);
         }
         else {
@@ -282,11 +280,22 @@ function lockInWindow(obj) {
 }
 
 function randomSpasm(spasmer, odds, intensity) {
-    let chance = random(0, 1);
-    if (chance <= odds) {
+    if (random(0, 1) <= odds) {
         spasmer.vx = random(-spasmer.maxSpeed * intensity, spasmer.maxSpeed * intensity);
         spasmer.vy = random(-spasmer.maxSpeed * intensity, spasmer.maxSpeed * intensity);
     }
+}
+
+/**  returns a boolean indicating if two ellipses are overlapping
+ @param a the first ellipse
+ @param b the second ellipse
+ @return true if they are overlapping, false if they aren't */
+function ellipseSuperpositionDetection(a, b) {
+    let distance = dist(a.x, a.y, b.x, b.y);
+    if (distance < a.size / 2 + b.size / 2)
+        return true;
+    else
+        return false;
 }
 
 /** easily display images instead of shapes*/
