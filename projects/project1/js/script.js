@@ -10,12 +10,17 @@
 let user = {
     x: 0,
     vx: 0,
-    accelX: 0.1,
+    defaultAccelX: 1,
+    accelX: 1,
     y: 0,
     vy: 0,
-    accelY: 0.1,
-    maxSpeed: 40,
-    size: 75,
+    defaultJumpForce: 15,
+    jumpForce: 15,
+    defaultMaxSpeedX: 10,
+    maxSpeedX: 10,
+    maxSpeedY: 40,
+    defaultSize: 100,
+    size: 100,
     touchingFloor: true
 }
 
@@ -25,6 +30,16 @@ let floor = {
     w: 100,
     h: 500
 }
+let test = {
+    x: 0,
+    defaultX: 0,
+    y: 0,
+    defaultW: 100,
+    w: 100,
+    defaultH: 200,
+    h: 200
+}
+let zoom = 1;
 let cameraYoffset = 0;
 let state = 'simulation';
 /**
@@ -46,6 +61,9 @@ function setup() {
     floor.x = user.x - (windowWidth / 2);
     floor.y = user.y + (windowHeight / 2) - floor.h / 2;
     floor.w = windowWidth;
+    test.x = windowWidth * 3 / 4;
+    test.defaultX = test.x;
+    test.y = floor.y - test.h;
 }
 
 /**
@@ -82,32 +100,41 @@ function keyMovement(obj) {
     }
     //vertical movement
     if ((keyIsDown(38) && !keyIsDown(40)) && user.touchingFloor) {
-        obj.vy = -17;
+        obj.vy = (-user.defaultJumpForce * (user.size / user.defaultSize));
     }
     else if (!user.touchingFloor) {
-        obj.vy += 1;
+        obj.vy += 1 * (user.size / user.defaultSize);
     }
     //limit to max speed
-    if (abs(obj.vx) > abs(obj.maxSpeed)) {
-        obj.vx = obj.maxSpeed * Math.sign(obj.vx);
+    if (abs(obj.vx) > abs(obj.maxSpeedX)) {
+        obj.vx = obj.maxSpeedX * Math.sign(obj.vx);
     }
-    if (abs(obj.vy) > abs(obj.maxSpeed)) {
-        obj.vy = obj.maxSpeed * Math.sign(obj.vy);
-    } //move obj
+    // if (abs(obj.vy) > abs(obj.maxSpeed)) {
+    //     obj.vy = obj.maxSpeedY * Math.sign(obj.vy);
+    // } //move obj
     // console.log(obj.vy)
-    // obj.x += obj.vx;
-    // obj.y += obj.vy;
 }
 function movements() {
     floor.y = floor.y - user.vy;
+    test.x = test.x - user.vx;
+    test.y = floor.y - user.vy;
 }
 function display() {
+    // if (!user.touchingFloor) {
     fill('red')
+    // } else {
+    //     fill('blue')
+    // }
     rect(windowWidth / 2 - user.size / 2, user.y + cameraYoffset, user.size);
     fill('gray')
     rect(floor.x, floor.y + cameraYoffset, floor.w, floor.h);
-    console.log(`user pos: X: ${user.x}\nY: ${user.y}`);
-    console.log(`floor pos: X: ${floor.x} Y: ${floor.y}`);
+    fill('cyan')
+    rect(test.x - test.w / 2, test.y + cameraYoffset - test.h, test.w, test.h);
+    // console.log(`user pos: X: ${user.x}\nY: ${user.y}`);
+    // console.log(`floor pos: X: ${floor.x} Y: ${floor.y}`);
+    // console.log(`maxSpeedX: ${user.maxSpeedX} Accel: ${user.accelX}`);
+    console.log(`user y: ${user.y + user.size} Accel: ${user.vy} floor : ${floor.y}`);
+    // console.log(`testX: ${test.x} Accel: ${user.accelX}`);
 }
 
 function floorCollisions() {
@@ -120,6 +147,7 @@ function floorCollisions() {
                 user.vy = -user.vy / 2;
             } else {
                 user.vy = 0;
+                floor.y = user.y + user.size;
             }
         }
         else if (user.x > floor.x + floor.w / 2) {
@@ -130,15 +158,29 @@ function floorCollisions() {
         user.touchingFloor = false;
     }
 }
+
 function mouseWheel(event) {
-    if (user.size >= 25 && user.size <= 150) {
-        user.size += Math.sign(event.delta) * -5;
+    let previousZoom = user.size / user.defaultSize;
+    user.size += Math.sign(event.delta) * -5;
+    if (user.size + Math.sign(event.delta) * -5 > 100) {
+        user.size = 100;
+    } else if (user.size + Math.sign(event.delta) * -5 < 50) {
+        user.size = 50;
     }
-    if (user.size > 150) {
-        user.size = 150;
+    zoom = (user.size / user.defaultSize);
+    user.accelX = user.defaultAccelX * zoom;
+    user.maxSpeedX = user.defaultMaxSpeedX * zoom;
+    let deltaPosition
+    if (test.x > windowWidth / 2) {
+        deltaPosition = (test.x + test.w / 2 - user.x) * (zoom - previousZoom);
+    } else {
+        deltaPosition = (test.x - test.w / 2 - user.x) * (zoom - previousZoom);
+        console.log("BBBBBB");
     }
-    if (user.size < 25) {
-        user.size = 25;
-    }
-    console.log(`size ${user.size}`)
+    test.x += deltaPosition;
+    test.w = test.defaultW * zoom;
+    test.h = test.defaultH * zoom;
+    console.log("AAAAAAAAAAAAAAA");
+
+    console.log(`size ${user.size} delta ${deltaPosition}`)
 }
