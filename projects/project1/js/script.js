@@ -123,17 +123,17 @@ function movements() {
     test.y = floor.y - user.vy - test.h;
 }
 function display() {
-    if (!user.touchingFloor) {
-        fill('red')
-    } else {
-        fill('blue')
-    }
+    // if (!user.touchingFloor) {
+    fill('red')
+    // } else {
+    // fill('blue')
+    // }
     rect(windowWidth / 2 - user.size / 2, user.y + cameraYoffset, user.size);
     fill('gray')
     rect(floor.x, floor.y + cameraYoffset, floor.w, floor.h);
     fill('cyan')
     rect(test.x, test.y + cameraYoffset, test.w, test.h);
-    console.log(`user pos: X: ${user.x}\ntest pos X: ${test.x}\n${windowWidth/2}`);
+    console.log(`user pos: X: ${user.x}\ntest pos X: ${test.x}\n${windowWidth / 2}`);
     // console.log(`floor pos: X: ${floor.x} Y: ${floor.y}`);
     // console.log(`maxSpeedX: ${user.maxSpeedX} Accel: ${user.accelX}`);
     // console.log(`user y: ${user.y + user.size} Accel: ${user.vy} floor : ${floor.y}`);
@@ -177,12 +177,11 @@ function mouseWheel(event) {
         let deltaPosition;
         if (test.x > windowWidth / 2) {
             deltaPosition = (test.x - user.x + user.size / 2) * (zoom - previousZoom);
-            test.x += deltaPosition;
+            test.x += (deltaPosition);
         } else {
-          //  deltaPosition = (user.x - user.size/2 - (test.x + test.w) ) * (zoom - previousZoom);
-
-            deltaPosition = (((user.x - user.size/2)-(test.x + test.w))* (zoom ) );
-            test.x += deltaPosition;
+            deltaPosition = ((user.x - user.size / 2 - test.x + test.w / 2) * (zoom - previousZoom));
+            // deltaPosition = (user.x + user.size/2 - test.x + test.w) * (zoom - previousZoom);
+            test.x -= deltaPosition;
             console.log("BBBBBB");
         }
         console.log(`size ${user.size} delta ${deltaPosition} zoom: ${(zoom)}`)
@@ -190,8 +189,6 @@ function mouseWheel(event) {
         test.w = test.defaultW * zoom;
         test.h = test.defaultH * zoom;
         console.log("AAAAAAAAAAAAAAA");
-
-
     }
 }
 
