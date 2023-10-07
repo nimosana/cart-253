@@ -128,12 +128,12 @@ function display() {
     // } else {
     // fill('blue')
     // }
-    rect(windowWidth / 2 - user.size / 2, user.y + cameraYoffset, user.size);
+    rect(user.x - user.size / 2, user.y + cameraYoffset, user.size);
     fill('gray')
     rect(floor.x, floor.y + cameraYoffset, floor.w, floor.h);
     fill('cyan')
     rect(test.x, test.y + cameraYoffset, test.w, test.h);
-    console.log(`user pos: X: ${user.x}\ntest pos X: ${test.x}\n${windowWidth / 2}`);
+    console.log(`user pos: X: ${user.x}\ntest pos X: ${test.x} Pos Y: ${user.y}\n${windowWidth / 2}`);
     // console.log(`floor pos: X: ${floor.x} Y: ${floor.y}`);
     // console.log(`maxSpeedX: ${user.maxSpeedX} Accel: ${user.accelX}`);
     // console.log(`user y: ${user.y + user.size} Accel: ${user.vy} floor : ${floor.y}`);
@@ -141,20 +141,23 @@ function display() {
 }
 
 function floorCollisions() {
-    if (collideRectRect(floor.x, floor.y, floor.w, floor.h, windowWidth / 2, windowHeight / 2, user.size, user.size)) {
+    collisionControlUserFloor(user, floor);
+}
+function collisionControlUserFloor(user, rectangle) {
+    if (collideRectRect(rectangle.x, rectangle.y, rectangle.w, rectangle.h, user.x - user.size / 2, user.y, user.size, user.size)) {
         user.touchingFloor = true;
         // fill('blue')
-        if ((floor.y < user.x + user.size)) {
-            floor.y = user.y + user.size;
+        if ((rectangle.y < user.x + user.size)) {
+            // rectangle.y = user.y + user.size;
             if (abs(user.vy) > 2) {
                 user.vy = -user.vy / 3;
             } else {
                 user.vy = 0;
-                floor.y = user.y + user.size;
+                rectangle.y = user.y + user.size;
             }
         }
-        else if (user.x > floor.x + floor.w / 2) {
-            floor.x = user.x - floor.w - user.size / 2;
+        else if (user.x > rectangle.x + rectangle.w / 2) {
+            rectangle.x = user.x - rectangle.w - user.size / 2;
             user.vx = -user.vx;
         }
     } else {
@@ -162,35 +165,35 @@ function floorCollisions() {
     }
 }
 
-function mouseWheel(event) {
-    if (state === 'simulation') {
-        let previousZoom = user.size / user.defaultSize;
-        user.size += Math.sign(event.delta) * -5;
-        if (user.size + Math.sign(event.delta) * -5 > 100) {
-            user.size = 100;
-        } else if (user.size + Math.sign(event.delta) * -5 < 50) {
-            user.size = 50;
-        }
-        zoom = (user.size / user.defaultSize);
-        user.accelX = user.defaultAccelX * zoom;
-        user.maxSpeedX = user.defaultMaxSpeedX * zoom;
-        let deltaPosition;
-        if (test.x > windowWidth / 2) {
-            deltaPosition = (test.x - user.x + user.size / 2) * (zoom - previousZoom);
-            test.x += (deltaPosition);
-        } else {
-            deltaPosition = ((user.x - user.size / 2 - test.x + test.w / 2) * (zoom - previousZoom));
-            // deltaPosition = (user.x + user.size/2 - test.x + test.w) * (zoom - previousZoom);
-            test.x -= deltaPosition;
-            console.log("BBBBBB");
-        }
-        console.log(`size ${user.size} delta ${deltaPosition} zoom: ${(zoom)}`)
-        // test.x += deltaPosition;
-        test.w = test.defaultW * zoom;
-        test.h = test.defaultH * zoom;
-        console.log("AAAAAAAAAAAAAAA");
-    }
-}
+// function mouseWheel(event) {
+//     if (state === 'simulation') {
+//         let previousZoom = user.size / user.defaultSize;
+//         user.size += Math.sign(event.delta) * -5;
+//         if (user.size + Math.sign(event.delta) * -5 > 100) {
+//             user.size = 100;
+//         } else if (user.size + Math.sign(event.delta) * -5 < 50) {
+//             user.size = 50;
+//         }
+//         zoom = (user.size / user.defaultSize);
+//         user.accelX = user.defaultAccelX * zoom;
+//         user.maxSpeedX = user.defaultMaxSpeedX * zoom;
+//         let deltaPosition;
+//         if (test.x > windowWidth / 2) {
+//             deltaPosition = (test.x - user.x + user.size / 2) * (zoom - previousZoom);
+//             test.x += (deltaPosition);
+//         } else {
+//             deltaPosition = -1*((user.x - test.x - user.size) * (zoom - previousZoom));
+//             // deltaPosition = (user.x + user.size/2 - test.x + test.w) * (zoom - previousZoom);
+//             test.x += deltaPosition;
+//             console.log("BBBBBB");
+//         }
+//         console.log(`size ${user.size} delta ${deltaPosition} zoom: ${(zoom)}`)
+//         // test.x += deltaPosition;
+//         test.w = test.defaultW * zoom;
+//         test.h = test.defaultH * zoom;
+//         console.log("AAAAAAAAAAAAAAA");
+//     }
+// }
 
 function mousePressed() {
     if (state === 'title') {
