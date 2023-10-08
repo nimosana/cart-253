@@ -1,5 +1,5 @@
 /**Exercise 3: Love, Actually
- * @author Nicolas Morales-Sanabria
+ * @author Nicolas Morales-Sanabriaspeed
  * 
  * In this simulation, the user controls a clown emoji that moves around trying to collect money,
  *  there are also "fish" (clowns with lipstick) following him around but keeping a set distance,
@@ -11,15 +11,15 @@
 let user = {
     x: undefined,
     y: undefined,
-    size: 100,
+    size: undefined,
     vx: 0,
     vy: 0,
     speed: 3,
-    maxSpeed: 3,
+    maxSpeed: undefined,
     directionX: 1,
     directionY: 1,
-    accelX: 0.1,
-    accelY: 0.1,
+    accelX: undefined,
+    accelY: undefined,
     texture: null,
     money: 5
 };
@@ -35,7 +35,7 @@ let fishTexture = undefined;
 let money = {
     x: 250,
     y: 250,
-    size: 100,
+    size: undefined,
     texture: undefined
 }
 
@@ -51,11 +51,16 @@ function preload() {
 /** Sets the user's initial position, creates the fish array, places the money and sets the text style*/
 function setup() {
     createCanvas(windowWidth, windowHeight);
+    user.size = windowWidth * 0.04;
+    user.maxSpeed = windowWidth * 0.001718;
+    user.accelX = windowWidth * 3.9025E-5;
+    user.accelY = user.accelX;
+    money.size = user.size;
     user.x = windowWidth / 2;
     user.y = windowHeight / 2;
     makeFishList();
     spawnMoney();
-    textSize(64);
+    textSize(windowWidth*0.025);
     textAlign(CENTER, CENTER);
 }
 
@@ -152,7 +157,7 @@ function display() {
     textAlign(LEFT, CENTER);
     rectMode(CENTER);
     fill(0, 0, 0, 150);
-    rect(150, 40, 700, 80);
+    rect(150, 40, windowWidth*0.273, 80);
     fill('lime');
     text(`Money: ${user.money}`, 10, 40);
     pop();
@@ -185,11 +190,11 @@ function makeFishList() {
             speed: 3,
             vx: 0,
             vy: 0,
-            maxSpeed: 7,
+            maxSpeed: windowWidth*2.734E-3,
             directionX: 1,
             directionY: 1,
-            accelX: 0.25,
-            accelY: 0.25,
+            accelX: windowWidth * 9.7656E-5,
+            accelY: windowWidth * 9.7656E-5,
             curiosity: random(4 * user.size, 25 * user.size)
         };
         fishInTheSea.push(fish);
