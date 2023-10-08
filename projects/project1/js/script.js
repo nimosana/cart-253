@@ -61,7 +61,11 @@ function keyMovement(obj) {
         obj.vx = obj.vx - obj.accelX;
     }
     else if ((!keyIsDown(37) && !keyIsDown(39)) || (keyIsDown(37) && keyIsDown(39)) || (keyIsDown(65) && keyIsDown(68))) {
-        obj.vx /= 1.03;
+        if (abs(obj.vx) > 0.05) {
+            obj.vx /= 1.03;
+        } else {
+            obj.vx = 0;
+        }
     }
     //vertical movement
     if ((keyIsDown(38) && !keyIsDown(40)) || (keyIsDown(87) && !keyIsDown(83))) {
@@ -71,7 +75,11 @@ function keyMovement(obj) {
         obj.vy = obj.vy + obj.accelY;
     }
     else if ((!keyIsDown(40) && !keyIsDown(38)) || (keyIsDown(40) && keyIsDown(38)) || (keyIsDown(83) && keyIsDown(87))) {
-        obj.vy /= 1.03;
+        if (abs(obj.vy) > 0.05) {
+            obj.vy /= 1.03;
+        } else {
+            obj.vy = 0;
+        }
     }
     //limit to max speed
     let speed = sqrt(pow(obj.vx, 2) + pow(obj.vy, 2));
@@ -82,5 +90,5 @@ function keyMovement(obj) {
     //move obj
     obj.x += obj.vx;
     obj.y += obj.vy;
-    console.log(`spd X: ${obj.vx} spd Y: ${obj.vy}`)
+    console.log(`spd X: ${obj.vx} spd Y: ${obj.vy}`);
 }
