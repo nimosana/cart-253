@@ -19,7 +19,7 @@ let user = {
     accelY: undefined,
     texture: null
 }
-let walls = [];
+let walls = [], touchingWalls = false;
 
 /** Description of preload*/
 function preload() {
@@ -35,6 +35,7 @@ function setup() {
     user.size = windowWidth * 0.039;
     user.accelX = user.accelY = windowWidth * 7.8125E-5;
     user.maxSpeed = windowWidth * 1.953125E-3;
+    noStroke();
 }
 
 function createWalls() {
@@ -74,6 +75,7 @@ function draw() {
 function animation() {
     background(0);
     keyMovement(user);
+    wallCollisions();
     displayObjects();
 }
 
@@ -82,8 +84,42 @@ function displayObjects() {
         fill(wall.fill);
         rect(wall.x, wall.y, wall.w, wall.h);
     }
-    fill('white');
+    if (!touchingWalls) {
+        fill('white');
+    } else {
+        fill('red');
+    }
     ellipse(user.x, user.y, user.size);
+    touchingWalls = false;
+}
+
+function wallCollisions() {
+    for (let wall of walls) {
+        if (collideRectCircle(wall.x, wall.y, wall.w, wall.h, user.x, user.y, user.size)) {
+            // top walls
+            if ((user.x > wall.x && user.x < wall.x + wall.w) && (user.y > wall.y + wall.h)) {
+                user.y = wall.y + wall.h + user.size / 2;
+                user.vy *= -1;
+            }
+            //bottom walls
+            if ((user.x > wall.x && user.x < wall.x + wall.w) && (user.y < wall.y)) {
+                user.y = wall.y - user.size / 2;
+                user.vy *= -1;
+            }
+
+            //left wall
+            if ((user.y > wall.y && user.y < wall.y + wall.h) && (user.x > wall.x + wall.w)) {
+                user.x = wall.x + wall.w + user.size / 2;
+                user.vx *= -1;
+            }
+            //right wall
+            if ((user.y > wall.y && user.y < wall.y + wall.h) && (user.x < wall.x)) {
+                user.x = wall.x - user.size / 2;
+                user.vx *= -1;
+            }
+            touchingWalls = true;
+        }
+    }
 }
 
 /** Allows the user to control an object's speed with accelerations, using the arrow keys
