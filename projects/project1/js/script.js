@@ -12,13 +12,14 @@ let user = {
     vx: 0,
     vy: 0,
     size: undefined,
-    maxSpeed: 5,
+    maxSpeed: 15,
     directionX: 1,
     directionY: 1,
     accelX: undefined,
     accelY: undefined,
     texture: null
 }
+let cameraOffsetX = undefined, cameraOffsetY = undefined;
 let walls = [], touchingWalls = false;
 
 /** Description of preload*/
@@ -34,34 +35,34 @@ function setup() {
     user.y = windowHeight / 2;
     user.size = windowWidth * 0.039;
     user.accelX = user.accelY = windowWidth * 7.8125E-5;
-    user.maxSpeed = windowWidth * 1.953125E-3;
+    user.maxSpeed = windowWidth * (1.953125E-3) * 3; // windowWidth * (1.953125E-3) = maxSpeed of 5 in a 2560x1440 screen
     noStroke();
 }
 
 function createWalls() {
     let topWall = {
-        x: 0,
-        y: 0,
-        w: windowWidth,
-        h: windowHeight / 20,
+        x: -windowWidth,
+        y: -windowHeight - windowWidth / 20,
+        w: windowWidth * 3,
+        h: windowWidth / 20,
         fill: 'red'
     }, bottomWall = {
-        x: 0,
-        y: windowHeight - windowHeight / 20,
-        w: windowWidth,
-        h: windowHeight / 20,
+        x: -windowWidth,
+        y: windowHeight * 2,
+        w: windowWidth * 3,
+        h: windowWidth / 20,
         fill: 'blue'
     }, leftWall = {
-        x: 0,
-        y: 0,
-        w: windowHeight / 20,
-        h: windowHeight,
+        x: -windowWidth - windowWidth / 20,
+        y: -windowHeight - (windowWidth / 20),
+        w: windowWidth / 20,
+        h: windowHeight * 3 + windowWidth / 20,
         fill: 'green'
     }, rightWall = {
-        x: (windowWidth - (windowHeight / 20)),
-        y: 0,
+        x: windowWidth * 2,
+        y: -windowHeight - (windowWidth / 20),
         w: windowWidth / 20,
-        h: windowHeight,
+        h: windowHeight * 3 + windowWidth / 20,
         fill: 'yellow'
     }
     walls.push(topWall, bottomWall, leftWall, rightWall);
@@ -80,42 +81,43 @@ function animation() {
 }
 
 function displayObjects() {
+    cameraOffsetX = windowWidth / 2 - user.x;
+    cameraOffsetY = windowHeight / 2 - user.y;
     for (let wall of walls) {
         fill(wall.fill);
-        rect(wall.x, wall.y, wall.w, wall.h);
+        rect(wall.x + cameraOffsetX + (user.vx * 4), wall.y + cameraOffsetY + (user.vy * 4), wall.w, wall.h);
     }
     if (!touchingWalls) {
         fill('white');
     } else {
         fill('red');
     }
-    ellipse(user.x, user.y, user.size);
+    ellipse(user.x + cameraOffsetX + (user.vx * 4), user.y + cameraOffsetY + (user.vy * 4), user.size);
     touchingWalls = false;
 }
 
 function wallCollisions() {
     for (let wall of walls) {
         if (collideRectCircle(wall.x, wall.y, wall.w, wall.h, user.x, user.y, user.size)) {
-            // top walls
+            // top wall
             if ((user.x > wall.x && user.x < wall.x + wall.w) && (user.y > wall.y + wall.h)) {
                 user.y = wall.y + wall.h + user.size / 2;
-                user.vy *= -1;
+                user.vy *= -0.9;
             }
-            //bottom walls
+            //bottom wall
             if ((user.x > wall.x && user.x < wall.x + wall.w) && (user.y < wall.y)) {
                 user.y = wall.y - user.size / 2;
-                user.vy *= -1;
+                user.vy *= -0.9;
             }
-
             //left wall
             if ((user.y > wall.y && user.y < wall.y + wall.h) && (user.x > wall.x + wall.w)) {
                 user.x = wall.x + wall.w + user.size / 2;
-                user.vx *= -1;
+                user.vx *= -0.9;
             }
             //right wall
             if ((user.y > wall.y && user.y < wall.y + wall.h) && (user.x < wall.x)) {
                 user.x = wall.x - user.size / 2;
-                user.vx *= -1;
+                user.vx *= -0.9;
             }
             touchingWalls = true;
         }
