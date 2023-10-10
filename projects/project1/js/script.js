@@ -10,6 +10,7 @@ let user, userTexture, userAngle;
 let cameraOffsetX = undefined, cameraOffsetY = undefined;
 let walls = [], wallWidth, touchingWalls = false;
 let projectiles = [];
+let topAliens = [];
 
 /** Description of preload*/
 function preload() {
@@ -26,6 +27,9 @@ function setup() {
     console.log(`Window width: ${windowWidth}, Window height: ${windowHeight}`);
     noStroke();
     angleMode(DEGREES);
+    textAlign(CENTER, CENTER);
+    createAliens();
+    // alien = new Alien(0, 0);
 }
 
 function createWalls() {
@@ -65,10 +69,31 @@ function draw() {
 
 function animation() {
     background(0);
+    alienAnimation();
     user.keyMovement();
     wallCollisions();
     displayObjects();
     shootProjectiles();
+}
+function alienAnimation() {
+    Alien.randomColors();
+    Alien.boppingX(Alien.size * 0.02);
+    Alien.boppingY(Alien.size * 0.06);
+    Alien.bodyWiggle(Alien.size * 0.04);
+    Alien.eyesClosing();
+    for (let i = 0; i < topAliens.length; i++) {
+        topAliens[i].x1 = -35 - windowWidth + Alien.size * i + cameraOffsetX;
+        topAliens[i].y1 = -windowHeight - Alien.size * 1.8 + cameraOffsetY;
+        topAliens[i].drawAlien();
+    }
+}
+
+function createAliens() {
+    for (let i = 0; i < 31; i++) {
+        let alien = new Alien(0, 0)
+        topAliens.push(alien);
+        console.log(`alien created`)
+    }
 }
 
 function displayObjects() {
