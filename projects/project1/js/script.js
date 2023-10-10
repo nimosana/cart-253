@@ -8,7 +8,7 @@
 "use strict";
 let user, userTexture, userAngle;
 let cameraOffsetX = undefined, cameraOffsetY = undefined;
-let walls = [], touchingWalls = false;
+let walls = [], wallWidth, touchingWalls = false;
 let projectiles = [];
 
 /** Description of preload*/
@@ -20,6 +20,7 @@ function preload() {
 function setup() {
     user = new Player(windowWidth / 2, windowHeight / 2, windowWidth * 0.039, windowWidth * 7.8125E-5, (windowWidth * 1.953125E-3) * 3);
     user.texture = userTexture;
+    wallWidth = windowWidth / 20;
     createCanvas(windowWidth, windowHeight);
     createWalls();
     console.log(`Window width: ${windowWidth}, Window height: ${windowHeight}`);
@@ -30,27 +31,27 @@ function setup() {
 function createWalls() {
     let topWall = {
         x: -windowWidth,
-        y: -windowHeight - windowWidth / 20,
+        y: -windowHeight - wallWidth,
         w: windowWidth * 3,
-        h: windowWidth / 20,
+        h: wallWidth,
         fill: 'red'
     }, bottomWall = {
         x: -windowWidth,
         y: windowHeight * 2,
         w: windowWidth * 3,
-        h: windowWidth / 20,
+        h: wallWidth,
         fill: 'blue'
     }, leftWall = {
-        x: -windowWidth - windowWidth / 20,
-        y: -windowHeight - (windowWidth / 20),
-        w: windowWidth / 20,
-        h: windowHeight * 3 + (windowWidth / 20) * 2,
+        x: -windowWidth - wallWidth,
+        y: -windowHeight - wallWidth,
+        w: wallWidth,
+        h: windowHeight * 3 + (wallWidth * 2),
         fill: 'green'
     }, rightWall = {
         x: windowWidth * 2,
-        y: -windowHeight - (windowWidth / 20),
-        w: windowWidth / 20,
-        h: windowHeight * 3 + (windowWidth / 20) * 2,
+        y: -windowHeight - wallWidth,
+        w: wallWidth,
+        h: windowHeight * 3 + (wallWidth * 2),
         fill: 'yellow'
     }
     walls.push(topWall, bottomWall, leftWall, rightWall);
@@ -71,18 +72,18 @@ function animation() {
 }
 
 function displayObjects() {
-    cameraOffsetX = windowWidth / 2 - user.x;
-    cameraOffsetY = windowHeight / 2 - user.y;
+    cameraOffsetX = windowWidth / 2 - user.x + user.vx * 4;
+    cameraOffsetY = windowHeight / 2 - user.y + user.vy * 4;
+    displayRotatingPlayer();
     for (let wall of walls) {
         fill(wall.fill);
-        rect(wall.x + cameraOffsetX + (user.vx * 4), wall.y + cameraOffsetY + (user.vy * 4), wall.w, wall.h);
+        rect(wall.x + cameraOffsetX, wall.y + cameraOffsetY, wall.w, wall.h);
     }
     if (!touchingWalls) {
         fill('white');
     } else {
         fill('red');
     }
-    displayRotatingPlayer();
     touchingWalls = false;
 }
 
@@ -95,9 +96,9 @@ function shootProjectiles() {
     for (let projectile of projectiles) {
         projectile.x += (cos(projectile.angle) * projectile.speed) + user.vx;
         projectile.y += (sin(projectile.angle) * projectile.speed) + user.vy;
-        console.log(`Proj angle: ${projectile.angle} speed: ${projectile.speed}`)
+        // console.log(`Proj angle: ${projectile.angle} speed: ${projectile.speed}`)
         // console.log(`projectile Coords, X: ${projectile.x}, Y: ${projectile.y}\n speedX: ${cos(projectile.speed)}, speedY: ${sin(projectile.speed)}`)
-        ellipse(projectile.x + cameraOffsetX + (user.vx * 4), projectile.y + cameraOffsetY + (user.vy * 4), projectile.size, projectile.size);
+        ellipse(projectile.x + cameraOffsetX, projectile.y + cameraOffsetY, projectile.size, projectile.size);
     }
     for (let i = projectiles.length - 1; i >= 0; i--) {
         for (let wall of walls) {
@@ -111,12 +112,12 @@ function shootProjectiles() {
 
 function displayRotatingPlayer() {
     push();
-    userAngle = atan2(mouseY - height / 2 - user.vy * 4, mouseX - width / 2 - user.vx * 4);
-    translate(user.x + cameraOffsetX + (user.vx * 4), user.y + cameraOffsetY + (user.vy * 4));
+    userAngle = atan2(mouseY - height / 2 - (user.vy * 4), mouseX - width / 2 - (user.vx * 4));
+    translate(user.x + cameraOffsetX, user.y + cameraOffsetY);
     rotate(userAngle - 90);
     user.displayImageForRotation();
-    console.log(`User angle: ${userAngle}`)
     pop();
+    // console.log(`User angle: ${userAngle}`)
 }
 
 function wallCollisions() {
