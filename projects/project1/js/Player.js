@@ -49,6 +49,10 @@ class Player {
         //move obj
         this.x += this.vx;
         this.y += this.vy;
-        console.log(`spd X: ${this.vx} spd Y: ${this.vy}`);
+        // console.log(`spd X: ${this.vx} spd Y: ${this.vy}`);
+    }
+
+    displayImageForRotation() {
+        image(this.texture, -this.size / 2, -this.size / 2, this.size, this.size);
     }
 }

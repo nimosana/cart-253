@@ -6,21 +6,24 @@
  * and this description to match your project!
  */
 "use strict";
-let user;
+let user, userTexture, userAngle;
 let cameraOffsetX = undefined, cameraOffsetY = undefined;
 let walls = [], touchingWalls = false;
 
 /** Description of preload*/
 function preload() {
+    userTexture = loadImage('assets/images/clown.png');
 }
 
 /** Description of setup*/
 function setup() {
+    user = new Player(windowWidth / 2, windowHeight / 2, windowWidth * 0.039, windowWidth * 7.8125E-5, (windowWidth * 1.953125E-3) * 3);
+    user.texture = userTexture;
     createCanvas(windowWidth, windowHeight);
     createWalls();
     console.log(`Window width: ${windowWidth}, Window height: ${windowHeight}`);
-    user = new Player(windowWidth / 2, windowHeight / 2, windowWidth * 0.039, windowWidth * 7.8125E-5, (windowWidth * 1.953125E-3)*3);
     noStroke();
+    angleMode(DEGREES);
 }
 
 function createWalls() {
@@ -55,7 +58,7 @@ function createWalls() {
 /** Description of draw() */
 function draw() {
     animation();
-    console.log(`user MaxSpd: ${user.maxSpeed}`)
+    // console.log(`user MaxSpd: ${user.maxSpeed}`)
 }
 
 function animation() {
@@ -77,8 +80,18 @@ function displayObjects() {
     } else {
         fill('red');
     }
-    ellipse(user.x + cameraOffsetX + (user.vx * 4), user.y + cameraOffsetY + (user.vy * 4), user.size);
+    displayRotatingPlayer();
     touchingWalls = false;
+}
+
+function displayRotatingPlayer() {
+    push();
+    userAngle = atan2(mouseY - height / 2, mouseX - width / 2);
+    translate(user.x + cameraOffsetX + (user.vx * 4), user.y + cameraOffsetY + (user.vy * 4));
+    rotate(userAngle - 90);
+    user.displayImageForRotation();
+    console.log(`User angle: ${userAngle}`)
+    pop();
 }
 
 function wallCollisions() {
