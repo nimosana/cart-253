@@ -44,13 +44,13 @@ function createWalls() {
         x: -windowWidth - windowWidth / 20,
         y: -windowHeight - (windowWidth / 20),
         w: windowWidth / 20,
-        h: windowHeight * 3 + windowWidth / 20,
+        h: windowHeight * 3 + (windowWidth / 20) * 2,
         fill: 'green'
     }, rightWall = {
         x: windowWidth * 2,
         y: -windowHeight - (windowWidth / 20),
         w: windowWidth / 20,
-        h: windowHeight * 3 + windowWidth / 20,
+        h: windowHeight * 3 + (windowWidth / 20) * 2,
         fill: 'yellow'
     }
     walls.push(topWall, bottomWall, leftWall, rightWall);
@@ -99,11 +99,19 @@ function shootProjectiles() {
         // console.log(`projectile Coords, X: ${projectile.x}, Y: ${projectile.y}\n speedX: ${cos(projectile.speed)}, speedY: ${sin(projectile.speed)}`)
         ellipse(projectile.x + cameraOffsetX + (user.vx * 4), projectile.y + cameraOffsetY + (user.vy * 4), projectile.size, projectile.size);
     }
+    for (let i = projectiles.length - 1; i >= 0; i--) {
+        for (let wall of walls) {
+            if (collideRectCircle(wall.x, wall.y, wall.w, wall.h, projectiles[i].x, projectiles[i].y, projectiles[i].size)) {
+                projectiles.splice(i, 1);
+                break;
+            }
+        }
+    }
 }
 
 function displayRotatingPlayer() {
     push();
-    userAngle = atan2(mouseY - height / 2, mouseX - width / 2);
+    userAngle = atan2(mouseY - height / 2 - user.vy * 4, mouseX - width / 2 - user.vx * 4);
     translate(user.x + cameraOffsetX + (user.vx * 4), user.y + cameraOffsetY + (user.vy * 4));
     rotate(userAngle - 90);
     user.displayImageForRotation();
