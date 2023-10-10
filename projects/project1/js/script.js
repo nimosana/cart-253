@@ -9,6 +9,7 @@
 let user, userTexture, userAngle;
 let cameraOffsetX = undefined, cameraOffsetY = undefined;
 let walls = [], touchingWalls = false;
+let projectiles = [];
 
 /** Description of preload*/
 function preload() {
@@ -66,6 +67,7 @@ function animation() {
     user.keyMovement();
     wallCollisions();
     displayObjects();
+    shootProjectiles();
 }
 
 function displayObjects() {
@@ -82,6 +84,21 @@ function displayObjects() {
     }
     displayRotatingPlayer();
     touchingWalls = false;
+}
+
+function shootProjectiles() {
+    if ((keyIsDown(32) || (mouseIsPressed && mouseButton === LEFT)) && frameCount % 30 === 0) {
+        let projectile = new Projectile(user.x, user.y, 10, 20, userAngle);
+        projectiles.push(projectile);
+    }
+
+    for (let projectile of projectiles) {
+        projectile.x += (cos(projectile.angle) * projectile.speed) + user.vx;
+        projectile.y += (sin(projectile.angle) * projectile.speed) + user.vy;
+        console.log(`Proj angle: ${projectile.angle} speed: ${projectile.speed}`)
+        // console.log(`projectile Coords, X: ${projectile.x}, Y: ${projectile.y}\n speedX: ${cos(projectile.speed)}, speedY: ${sin(projectile.speed)}`)
+        ellipse(projectile.x + cameraOffsetX + (user.vx * 4), projectile.y + cameraOffsetY + (user.vy * 4), projectile.size, projectile.size);
+    }
 }
 
 function displayRotatingPlayer() {
