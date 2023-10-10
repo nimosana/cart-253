@@ -10,7 +10,7 @@ let user, userTexture, userAngle;
 let cameraOffsetX = undefined, cameraOffsetY = undefined;
 let walls = [], wallWidth, touchingWalls = false;
 let projectiles = [];
-let topAliens = [];
+let alien, topAliens = [], bottomAliens = [];
 
 /** Description of preload*/
 function preload() {
@@ -28,8 +28,9 @@ function setup() {
     noStroke();
     angleMode(DEGREES);
     textAlign(CENTER, CENTER);
+    Alien.size = 0.09765625 * windowWidth;
     createAliens();
-    // alien = new Alien(0, 0);
+    alien = new Alien(windowWidth / 2 - Alien.size / 2, windowHeight / 2 - Alien.size);
 }
 
 function createWalls() {
@@ -69,30 +70,37 @@ function draw() {
 
 function animation() {
     background(0);
-    alienAnimation();
+    Alien.alienAnimation();
+    drawWallAliens();
+    alien.drawAlien();
     user.keyMovement();
     wallCollisions();
     displayObjects();
     shootProjectiles();
 }
-function alienAnimation() {
-    Alien.randomColors();
-    Alien.boppingX(Alien.size * 0.02);
-    Alien.boppingY(Alien.size * 0.06);
-    Alien.bodyWiggle(Alien.size * 0.04);
-    Alien.eyesClosing();
+function drawWallAliens() {
     for (let i = 0; i < topAliens.length; i++) {
-        topAliens[i].x1 = -35 - windowWidth + Alien.size * i + cameraOffsetX;
-        topAliens[i].y1 = -windowHeight - Alien.size * 1.8 + cameraOffsetY;
+        topAliens[i].x = -0.0125 * windowWidth - windowWidth / 20 - windowWidth + Alien.size * i + cameraOffsetX;
+        topAliens[i].y = -windowHeight - Alien.size * 1.8 + cameraOffsetY;
         topAliens[i].drawAlien();
     }
+    push();
+    rotate(180);
+    for (let i = 0; i < bottomAliens.length; i++) {
+        bottomAliens[i].x = -0.0125 * windowWidth - windowWidth / 20 - windowWidth * 2 + Alien.size * i - cameraOffsetX;
+        bottomAliens[i].y = -windowHeight * 2 - (wallWidth / 20) * 2 - Alien.size * 1.8 - cameraOffsetY;
+        bottomAliens[i].drawAlien();
+    }
+    pop();
 }
 
 function createAliens() {
-    for (let i = 0; i < 31; i++) {
-        let alien = new Alien(0, 0)
-        topAliens.push(alien);
-        console.log(`alien created`)
+    for (let i = 0; i < 32; i++) {
+        let alien1 = new Alien(0, 0);
+        topAliens.push(alien1);
+        let alien2 = new Alien(0, 0);
+        bottomAliens.push(alien2);
+        console.log(`aliens created`);
     }
 }
 
@@ -114,7 +122,7 @@ function displayObjects() {
 
 function shootProjectiles() {
     if ((keyIsDown(32) || (mouseIsPressed && mouseButton === LEFT)) && frameCount % 30 === 0) {
-        let projectile = new Projectile(user.x, user.y, 10, 20, userAngle);
+        let projectile = new Projectile(user.x, user.y, windowWidth * 3.90625E-3, windowWidth * 7.8125E-3, userAngle);
         projectiles.push(projectile);
     }
 
