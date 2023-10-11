@@ -11,6 +11,7 @@ let cameraOffsetX = undefined, cameraOffsetY = undefined;
 let walls = [], wallWidth, touchingWalls = false;
 let projectiles = [];
 let topAliens = [], bottomAliens = [], leftAliens = [], rightAliens = [];
+let heightRatio = 0.513671875;
 
 /** Description of preload*/
 function preload() {
@@ -35,27 +36,27 @@ function setup() {
 function createWalls() {
     let topWall = {
         x: -windowWidth,
-        y: -windowHeight - wallWidth,
+        y: -windowWidth * heightRatio - wallWidth,
         w: windowWidth * 3,
         h: wallWidth,
         fill: 'red'
     }, bottomWall = {
         x: -windowWidth,
-        y: windowHeight * 2,
+        y: windowWidth * heightRatio * 2,
         w: windowWidth * 3,
         h: wallWidth,
         fill: 'blue'
     }, leftWall = {
         x: -windowWidth - wallWidth,
-        y: -windowHeight - wallWidth,
+        y: -windowWidth * heightRatio - wallWidth,
         w: wallWidth,
-        h: windowHeight * 3 + (wallWidth * 2),
+        h: windowWidth * heightRatio * 3 + (wallWidth * 2),
         fill: 'green'
     }, rightWall = {
         x: windowWidth * 2,
-        y: -windowHeight - wallWidth,
+        y: -windowWidth * heightRatio - wallWidth,
         w: wallWidth,
-        h: windowHeight * 3 + (wallWidth * 2),
+        h: windowWidth * heightRatio * 3 + (wallWidth * 2),
         fill: 'yellow'
     }
     walls.push(topWall, bottomWall, leftWall, rightWall);
@@ -74,26 +75,33 @@ function animation() {
     user.keyMovement();
     wallCollisions();
     displayObjects();
-    shootProjectiles();
+    projectileManagement();
 }
+
+function projectileManagement() {
+    Projectile.shoot(user.x, user.y, user.userAngle, 30);
+    fill('green');
+    Projectile.moveDrawProjectiles(cameraOffsetX, cameraOffsetY);
+}
+
 function drawWallAliens() {
     for (let i = 0; i < topAliens.length; i++) {
         topAliens[i].x = -0.0125 * windowWidth - windowWidth / 20 - windowWidth + Alien.size * i + cameraOffsetX;
-        topAliens[i].y = -windowHeight - Alien.size * 1.8 + cameraOffsetY;
+        topAliens[i].y = -windowWidth * heightRatio - Alien.size * 1.8 + cameraOffsetY;
         topAliens[i].drawAlien();
     }
     push();
     rotate(180);
     for (let i = 0; i < bottomAliens.length; i++) {
         bottomAliens[i].x = -0.0125 * windowWidth - windowWidth / 20 - windowWidth * 2 + Alien.size * i - cameraOffsetX;
-        bottomAliens[i].y = -windowHeight * 2 - (wallWidth / 20) * 2 - Alien.size * 1.8 - cameraOffsetY;
+        bottomAliens[i].y = -windowWidth * heightRatio * 2 - (wallWidth / 20) * 2 - Alien.size * 1.8 - cameraOffsetY;
         bottomAliens[i].drawAlien();
     }
     pop();
     push();
     rotate(90);
     for (let i = 0; i < rightAliens.length; i++) {
-        rightAliens[i].x = -windowWidth * 9.765625E-3 - windowHeight + Alien.size * i + cameraOffsetY;
+        rightAliens[i].x = -windowWidth * 9.765625E-3 - windowWidth * heightRatio + Alien.size * i + cameraOffsetY;
         rightAliens[i].y = -0.0125 * windowWidth * 2 - windowWidth / 20 - windowWidth * 2 - Alien.size - cameraOffsetX;
         rightAliens[i].drawAlien();
     }
@@ -101,7 +109,7 @@ function drawWallAliens() {
     push();
     rotate(-90);
     for (let i = 0; i < leftAliens.length; i++) {
-        leftAliens[i].x = windowWidth * 9.765625E-3 + windowHeight - Alien.size - Alien.size * i - cameraOffsetY;
+        leftAliens[i].x = windowWidth * 9.765625E-3 + windowWidth * heightRatio - Alien.size - Alien.size * i - cameraOffsetY;
         leftAliens[i].y = -0.0125 * windowWidth * 2 - windowWidth / 20 - windowWidth - Alien.size + cameraOffsetX;
         leftAliens[i].drawAlien();
     }
@@ -140,28 +148,6 @@ function displayObjects() {
     touchingWalls = false;
 }
 
-function shootProjectiles() {
-    if ((keyIsDown(32) || (mouseIsPressed && mouseButton === LEFT)) && frameCount % 30 === 0) {
-        let projectile = new Projectile(user.x, user.y, windowWidth * 3.90625E-3, windowWidth * 7.8125E-3, user.userAngle);
-        projectiles.push(projectile);
-    }
-
-    for (let projectile of projectiles) {
-        projectile.x += (cos(projectile.angle) * projectile.speed) + user.vx;
-        projectile.y += (sin(projectile.angle) * projectile.speed) + user.vy;
-        // console.log(`Proj angle: ${projectile.angle} speed: ${projectile.speed}`)
-        // console.log(`projectile Coords, X: ${projectile.x}, Y: ${projectile.y}\n speedX: ${cos(projectile.speed)}, speedY: ${sin(projectile.speed)}`)
-        ellipse(projectile.x + cameraOffsetX, projectile.y + cameraOffsetY, projectile.size, projectile.size);
-    }
-    for (let i = projectiles.length - 1; i >= 0; i--) {
-        for (let wall of walls) {
-            if (collideRectCircle(wall.x, wall.y, wall.w, wall.h, projectiles[i].x, projectiles[i].y, projectiles[i].size)) {
-                projectiles.splice(i, 1);
-                break;
-            }
-        }
-    }
-}
 
 function wallCollisions() {
     for (let wall of walls) {
@@ -187,6 +173,14 @@ function wallCollisions() {
                 user.vx *= -0.9;
             }
             touchingWalls = true;
+        }
+    }
+    for (let i = Projectile.projectiles.length - 1; i >= 0; i--) {
+        for (let wall of walls) {
+            if (collideRectCircle(wall.x, wall.y, wall.w, wall.h, Projectile.projectiles[i].x, Projectile.projectiles[i].y, Projectile.projectiles[i].size)) {
+                Projectile.projectiles.splice(i, 1);
+                break;
+            }
         }
     }
 }
