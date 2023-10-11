@@ -10,7 +10,7 @@ let user, userTexture, userAngle;
 let cameraOffsetX = undefined, cameraOffsetY = undefined;
 let walls = [], wallWidth, touchingWalls = false;
 let projectiles = [];
-let alien, topAliens = [], bottomAliens = [];
+let topAliens = [], bottomAliens = [], leftAliens = [], rightAliens = [];
 
 /** Description of preload*/
 function preload() {
@@ -30,7 +30,6 @@ function setup() {
     textAlign(CENTER, CENTER);
     Alien.size = 0.09765625 * windowWidth;
     createAliens();
-    alien = new Alien(windowWidth / 2 - Alien.size / 2, windowHeight / 2 - Alien.size);
 }
 
 function createWalls() {
@@ -72,7 +71,6 @@ function animation() {
     background(0);
     Alien.alienAnimation();
     drawWallAliens();
-    alien.drawAlien();
     user.keyMovement();
     wallCollisions();
     displayObjects();
@@ -92,6 +90,22 @@ function drawWallAliens() {
         bottomAliens[i].drawAlien();
     }
     pop();
+    push();
+    rotate(90);
+    for (let i = 0; i < rightAliens.length; i++) {
+        rightAliens[i].x = -windowWidth * 9.765625E-3 - windowHeight + Alien.size * i + cameraOffsetY;
+        rightAliens[i].y = -0.0125 * windowWidth * 2 - windowWidth / 20 - windowWidth * 2 - Alien.size - cameraOffsetX;
+        rightAliens[i].drawAlien();
+    }
+    pop();
+    push();
+    rotate(-90);
+    for (let i = 0; i < leftAliens.length; i++) {
+        leftAliens[i].x = windowWidth * 9.765625E-3 + windowHeight  - Alien.size - Alien.size * i - cameraOffsetY;
+        leftAliens[i].y = -0.0125 * windowWidth * 2 - windowWidth / 20 - windowWidth - Alien.size + cameraOffsetX;
+        leftAliens[i].drawAlien();
+    }
+    pop();
 }
 
 function createAliens() {
@@ -101,6 +115,12 @@ function createAliens() {
         let alien2 = new Alien(0, 0);
         bottomAliens.push(alien2);
         console.log(`aliens created`);
+    }
+    for (let i = 0; i < 16; i++) {
+        let alien1 = new Alien(0, 0);
+        leftAliens.push(alien1);
+        let alien2 = new Alien(0, 0);
+        rightAliens.push(alien2);
     }
 }
 
