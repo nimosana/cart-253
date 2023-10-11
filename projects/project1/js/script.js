@@ -10,13 +10,13 @@ let user, userTexture, userAngle;
 let cameraOffsetX = undefined, cameraOffsetY = undefined;
 let walls = [], wallWidth, touchingWalls = false;
 let projectiles = [];
-let topAliens = [], bottomAliens = [], leftAliens = [], rightAliens = [];
+let titleAliens = [], topAliens = [], bottomAliens = [], leftAliens = [], rightAliens = [];
 
 let heightRatio = 0.513671875;
 let state = `title`;
 let titleFirstFrame = true, simulationFirstFrame = true;
 
-let beginningTitleI = 255, beginningClownI = 0, beginningClownetteI = 0, beginningAliensI = 0, beginningTitleSpeed;
+let beginningClownI = 0, beginningClownetteI = 0, beginningAliensI = 0, beginningTitleSpeed, beginningAlienSpeed;
 let titleClown = {
     x: 0,
     y: 0,
@@ -39,6 +39,7 @@ function preload() {
 /** Description of setup*/
 function setup() {
     beginningTitleSpeed = windowWidth * 7.824726E-4;
+    beginningAlienSpeed = windowHeight * 1.171875E-3 / 2.8;
     titleClownette.size = titleClown.size = windowHeight / 4;
     titleClownette.y = titleClown.y = windowHeight - titleClown.size / 2;
     user = new Player(windowWidth / 2, windowHeight / 2, windowWidth * 0.039, windowWidth * 7.8125E-5, (windowWidth * 1.953125E-3) * 3);
@@ -50,7 +51,6 @@ function setup() {
     noStroke();
     angleMode(DEGREES);
     textAlign(CENTER, CENTER);
-    createAliens();
 }
 
 function createWalls() {
@@ -84,6 +84,7 @@ function createWalls() {
 
 /** Description of draw() */
 function draw() {
+    Alien.alienAnimation();
     if (state === `title`) {
         title();
     } else if (state === `simulation`) {
@@ -99,11 +100,14 @@ function title() {
 
 }
 function beginningAnimation() {
-    if (beginningTitleI > 0) {
-        fill(255, beginningTitleI, beginningTitleI, beginningTitleI);
+    for (let alien of titleAliens) {
+        alien.drawAlien();
+    }
+    let reversedBeginningClownI = map(beginningClownI, 0, 255, 255, 0);
+    if (reversedBeginningClownI > 0) {
+        fill(255, reversedBeginningClownI, reversedBeginningClownI, reversedBeginningClownI);
         textSize(64);
         text(`Project 1: \n The clownapping`, windowWidth / 2, windowHeight / 2);
-        beginningTitleI--;
     }
     textSize(32);
     if (beginningClownI < windowWidth / 3) {
@@ -119,29 +123,53 @@ function beginningAnimation() {
         titleClown.x = beginningClownI;
         titleClownette.x = beginningClownI + windowWidth / 3;
         beginningClownI += beginningTitleSpeed;
-    } else {
-        textSize(64);
-        fill('white');
-        text("WASD/Arrow Keys to move\n\nSpace/Left click to shoot\n\nClick to start", windowWidth / 2, windowHeight / 2);
-        if (mouseIsPressed) {
-            state = `simulation`;
+    } else if (beginningAliensI < Alien.size * 0.8) {
+        for (let alien of titleAliens) {
+            alien.y = windowHeight - Alien.size / 2 - beginningAliensI;
+            beginningAliensI += beginningAlienSpeed;
         }
+        if (beginningAliensI < Alien.size * 0.8 / 3) {
+            textSize(40);
+            fill(255, 150, 255);
+            text("Allie:\nMy neck, my back", (windowWidth / 3) / 2, windowHeight - beginningAliensI - Alien.size * 0.1);
+        } else if ((beginningAliensI > Alien.size * 0.8 / 3) && beginningAliensI < 2 * Alien.size * 0.8 / 3) {
+            fill('lime');
+            text("Allen:\nWhy didn't you tell me they had\nsuch good music here earlier!", 2 * windowWidth / 3 - Alien.size / 2, windowHeight - beginningAliensI - Alien.size * 0.1);
+        } else if ((beginningAliensI > 2 * Alien.size * 0.8 / 3)) {
+            fill('cyan');
+            text("Alionso:\nYo what do we have here?\n is that a clown with makeup?💀", windowWidth - Alien.size / 2, windowHeight - beginningAliensI - Alien.size * 0.1)
+        }
+    }
+    if (beginningAliensI >= Alien.size * 0.8) {
+        fill(255, 150, 255);
+        text("They're so cute!", (windowWidth / 3) / 2, windowHeight - beginningAliensI - Alien.size * 0.1);
+        fill('lime');
+        text("Yeah I like her eyelashes", 2 * windowWidth / 3 - Alien.size / 2, windowHeight - beginningAliensI - Alien.size * 0.1);
+        fill('cyan');
+        text("Let's take them to the clowniseum", windowWidth - Alien.size / 2, windowHeight - beginningAliensI - Alien.size * 0.1)
+    }
+    // textSize(64);
+    // fill('white');
+    // text("WASD/Arrow Keys to move\n\nSpace/Left click to shoot\n\nClick to start", windowWidth / 2, windowHeight / 2);
+    if (mouseIsPressed) {
+        state = `simulation`;
     }
     displayImage(titleClown, 0);
     displayImage(titleClownette, 0);
-
 }
+
 
 function titleSetup() {
     Alien.size = windowWidth / 3;
+    createAliens();
     titleFirstFrame = false;
     simulationFirstFrame = true;
 }
 
 function simulationSetup() {
+    Alien.size = 0.09765625 * windowWidth;
     simulationFirstFrame = false;
     titleFirstFrame = true;
-    Alien.size = 0.09765625 * windowWidth;
 }
 
 function simulation() {
@@ -149,7 +177,6 @@ function simulation() {
         simulationSetup();
     }
     background(0);
-    Alien.alienAnimation();
     drawWallAliens();
     user.keyMovement();
     wallCollisions();
@@ -196,18 +223,17 @@ function drawWallAliens() {
 }
 
 function createAliens() {
+    for (let i = 0; i < 3; i++) {
+        titleAliens.push(new Alien(Alien.size * i, windowHeight))
+    }
     for (let i = 0; i < 32; i++) {
-        let alien1 = new Alien(0, 0);
-        topAliens.push(alien1);
-        let alien2 = new Alien(0, 0);
-        bottomAliens.push(alien2);
+        topAliens.push(new Alien(0, 0));
+        bottomAliens.push(new Alien(0, 0));
         console.log(`aliens created`);
     }
     for (let i = 0; i < 16; i++) {
-        let alien1 = new Alien(0, 0);
-        leftAliens.push(alien1);
-        let alien2 = new Alien(0, 0);
-        rightAliens.push(alien2);
+        leftAliens.push(new Alien(0, 0));
+        rightAliens.push(new Alien(0, 0));
     }
 }
 

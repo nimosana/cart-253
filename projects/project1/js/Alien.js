@@ -143,6 +143,7 @@ class Alien {
     static boppingX(maxOffset) {
         Alien.offset1 += Alien.direction1 * Alien.size * 2.1E-3;
         if (Alien.offset1 >= maxOffset || Alien.offset1 <= -maxOffset) {
+            Alien.offset1 = maxOffset * Math.sign(Alien.offset1);
             Alien.direction1 *= -1;
         }
     }
@@ -152,6 +153,7 @@ class Alien {
     static boppingY(maxOffset) {
         Alien.offset2 += Alien.direction2 * Alien.size * 4.2E-3;
         if (Alien.offset2 >= maxOffset || Alien.offset2 <= -maxOffset) {
+            Alien.offset2 = maxOffset * Math.sign(Alien.offset2);
             Alien.direction2 *= -1;
         }
     }
@@ -161,6 +163,7 @@ class Alien {
     static bodyWiggle(maxOffset) {
         Alien.offset3 += Alien.direction3 * 2E-3;
         if (Alien.offset3 >= maxOffset || Alien.offset3 <= -maxOffset) {
+            Alien.offset3 = maxOffset * Math.sign(Alien.offset3);
             Alien.direction3 *= -1;
         }
     }
@@ -170,6 +173,7 @@ class Alien {
         let maxOffset = Alien.size * 0.04;
         Alien.offset4 += Alien.direction4 * (Alien.size * 0.04) / 30;
         if (Alien.offset4 >= maxOffset || Alien.offset4 <= -maxOffset) {
+            Alien.offset4 = maxOffset * Math.sign(Alien.offset4);
             Alien.direction4 *= -1;
         }
     }
