@@ -9,7 +9,7 @@ class Projectile {
     }
     static shoot(x, y, angle, fireRate) {
         if ((keyIsDown(32) || (mouseIsPressed && mouseButton === LEFT)) && frameCount % fireRate === 0) {
-            Projectile.projectiles.push(new Projectile(x, y, windowWidth * 3.90625E-3, windowWidth * 7.8125E-3 * 3, angle));
+            Projectile.projectiles.push(new Projectile(x, y, windowWidth * 3.90625E-3, windowWidth * 7.8125E-3 * 2, angle));
         }
     }
     static moveDrawProjectiles(cameraOffsetX, cameraOffsetY) {

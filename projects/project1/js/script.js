@@ -11,18 +11,36 @@ let cameraOffsetX = undefined, cameraOffsetY = undefined;
 let walls = [], wallWidth, touchingWalls = false;
 let projectiles = [];
 let topAliens = [], bottomAliens = [], leftAliens = [], rightAliens = [];
+
 let heightRatio = 0.513671875;
 let state = `title`;
 let titleFirstFrame = true, simulationFirstFrame = true;
-let beginningTitleI = 255, beginningClownI = 0, beginningClownetteI = 0, beginningAliensI = 0;
+
+let beginningTitleI = 255, beginningClownI = 0, beginningClownetteI = 0, beginningAliensI = 0, beginningTitleSpeed;
+let titleClown = {
+    x: 0,
+    y: 0,
+    size: 250,
+    texture: undefined
+}, titleClownette = {
+    x: 0,
+    y: 0,
+    size: 250,
+    texture: undefined
+}
 
 /** Description of preload*/
 function preload() {
     userTexture = loadImage('assets/images/clown.png');
+    titleClown.texture = loadImage('assets/images/clown.png');
+    titleClownette.texture = loadImage('assets/images/clownette.png');
 }
 
 /** Description of setup*/
 function setup() {
+    beginningTitleSpeed = windowWidth * 7.824726E-4;
+    titleClownette.size = titleClown.size = windowHeight / 4;
+    titleClownette.y = titleClown.y = windowHeight - titleClown.size / 2;
     user = new Player(windowWidth / 2, windowHeight / 2, windowWidth * 0.039, windowWidth * 7.8125E-5, (windowWidth * 1.953125E-3) * 3);
     user.texture = userTexture;
     wallWidth = windowWidth / 20;
@@ -30,7 +48,6 @@ function setup() {
     createWalls();
     console.log(`Window width: ${windowWidth}, Window height: ${windowHeight}`);
     noStroke();
-    textSize(64);
     angleMode(DEGREES);
     textAlign(CENTER, CENTER);
     createAliens();
@@ -83,18 +100,36 @@ function title() {
 }
 function beginningAnimation() {
     if (beginningTitleI > 0) {
-        fill(beginningTitleI);
-        text(`Project 1 \n The clownapping`, windowWidth / 2, windowHeight / 2);
+        fill(255, beginningTitleI, beginningTitleI, beginningTitleI);
+        textSize(64);
+        text(`Project 1: \n The clownapping`, windowWidth / 2, windowHeight / 2);
         beginningTitleI--;
     }
-    fill("white");
-    ellipse(windowWidth / 2, windowHeight / 2 + beginningClownI, 200);
-    if (beginningClownI < windowHeight / 2) {
-        beginningClownI++;
+    textSize(32);
+    if (beginningClownI < windowWidth / 3) {
+        fill(255, 0, 255);
+        if (beginningClownI < (windowWidth / 3) / 3) {
+            text("Why did the clown go to the doctor?\n he was feeling a bit funny!", beginningClownI + windowWidth / 3, windowHeight * (11 / 16))
+        } else if ((beginningClownI > (windowWidth / 3) / 3) && beginningClownI < windowWidth / 3 - (windowWidth / 3) / 3) {
+            text("You really bring out the circus in me!\nUwU", beginningClownI + windowWidth / 3, windowHeight * (11 / 16))
+        } else if ((beginningClownI > windowWidth / 3 - (windowWidth / 3) / 3) && beginningClownI < windowWidth / 3) {
+            fill('orange');
+            text("haha babe you're so funny..\n you're like a joke!", beginningClownI, windowHeight * (11 / 16))
+        }
+        titleClown.x = beginningClownI;
+        titleClownette.x = beginningClownI + windowWidth / 3;
+        beginningClownI += beginningTitleSpeed;
+    } else {
+        textSize(64);
+        fill('white');
+        text("WASD/Arrow Keys to move\n\nSpace/Left click to shoot\n\nClick to start", windowWidth / 2, windowHeight / 2);
+        if (mouseIsPressed) {
+            state = `simulation`;
+        }
     }
-    if (mouseIsPressed && beginningClownI >= windowHeight / 2) {
-        state = `simulation`;
-    }
+    displayImage(titleClown, 0);
+    displayImage(titleClownette, 0);
+
 }
 
 function titleSetup() {
@@ -226,5 +261,25 @@ function wallCollisions() {
                 break;
             }
         }
+    }
+}
+/** easily display images instead of shapes
+ * @param obj object to be drawn
+ * @param type type or case of object to be drawn
+ * @param specialTexture a specific texture to be used (for type 2)*/
+function displayImage(obj, type, specialTexture) {
+    switch (type) {
+        case 0: //adjust to draw instead of an ellispe (centered)
+            image(obj.texture, obj.x - obj.size / 2, obj.y - obj.size / 2, obj.size, obj.size);
+            break;
+        case 1: //adjust to draw instead of a square (corner)
+            image(obj.texture, obj.x, obj.y, obj.size, obj.size);
+            break;
+        case 2: //adjust to draw instead of an ellispe but using a predefined texture
+            image(specialTexture, obj.x - obj.size / 2, obj.y - obj.size / 2, obj.size, obj.size);
+            break;
+        default: //invalid type
+            console.log("DisplayImage Wrong type bud: " + type);
+            break;
     }
 }
