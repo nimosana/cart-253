@@ -101,7 +101,7 @@ function drawWallAliens() {
     push();
     rotate(-90);
     for (let i = 0; i < leftAliens.length; i++) {
-        leftAliens[i].x = windowWidth * 9.765625E-3 + windowHeight  - Alien.size - Alien.size * i - cameraOffsetY;
+        leftAliens[i].x = windowWidth * 9.765625E-3 + windowHeight - Alien.size - Alien.size * i - cameraOffsetY;
         leftAliens[i].y = -0.0125 * windowWidth * 2 - windowWidth / 20 - windowWidth - Alien.size + cameraOffsetX;
         leftAliens[i].drawAlien();
     }
@@ -127,7 +127,7 @@ function createAliens() {
 function displayObjects() {
     cameraOffsetX = windowWidth / 2 - user.x + user.vx * 4;
     cameraOffsetY = windowHeight / 2 - user.y + user.vy * 4;
-    displayRotatingPlayer();
+    user.displayRotatingPlayer(cameraOffsetX, cameraOffsetY);
     for (let wall of walls) {
         fill(wall.fill);
         rect(wall.x + cameraOffsetX, wall.y + cameraOffsetY, wall.w, wall.h);
@@ -142,7 +142,7 @@ function displayObjects() {
 
 function shootProjectiles() {
     if ((keyIsDown(32) || (mouseIsPressed && mouseButton === LEFT)) && frameCount % 30 === 0) {
-        let projectile = new Projectile(user.x, user.y, windowWidth * 3.90625E-3, windowWidth * 7.8125E-3, userAngle);
+        let projectile = new Projectile(user.x, user.y, windowWidth * 3.90625E-3, windowWidth * 7.8125E-3, user.userAngle);
         projectiles.push(projectile);
     }
 
@@ -161,16 +161,6 @@ function shootProjectiles() {
             }
         }
     }
-}
-
-function displayRotatingPlayer() {
-    push();
-    userAngle = atan2(mouseY - height / 2 - (user.vy * 4), mouseX - width / 2 - (user.vx * 4));
-    translate(user.x + cameraOffsetX, user.y + cameraOffsetY);
-    rotate(userAngle - 90);
-    user.displayImageForRotation();
-    pop();
-    // console.log(`User angle: ${userAngle}`)
 }
 
 function wallCollisions() {

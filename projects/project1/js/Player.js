@@ -12,6 +12,7 @@ class Player {
         this.maxSpeed = maxSpeed;
         this.speed = 0;
         this.texture = undefined;
+        this.userAngle;
     }
     /** Allows the user to control the player's speed with accelerations,
      *  using the arrow keys or WASD*/
@@ -50,6 +51,16 @@ class Player {
         this.x += this.vx;
         this.y += this.vy;
         // console.log(`spd X: ${this.vx} spd Y: ${this.vy}`);
+    }
+
+    displayRotatingPlayer(cameraOffsetX, cameraOffsetY) {
+        push();
+        this.userAngle = atan2(mouseY - height / 2 - (user.vy * 4), mouseX - width / 2 - (user.vx * 4));
+        translate(user.x + cameraOffsetX, user.y + cameraOffsetY);
+        rotate(this.userAngle - 90);
+        this.displayImageForRotation();
+        pop();
+        // console.log(`User angle: ${userAngle}`)
     }
 
     displayImageForRotation() {
