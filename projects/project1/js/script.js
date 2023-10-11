@@ -12,6 +12,9 @@ let walls = [], wallWidth, touchingWalls = false;
 let projectiles = [];
 let topAliens = [], bottomAliens = [], leftAliens = [], rightAliens = [];
 let heightRatio = 0.513671875;
+let state = `title`;
+let titleFirstFrame = true, simulationFirstFrame = true;
+let beginningTitleI = 255, beginningClownI = 0, beginningClownetteI = 0, beginningAliensI = 0;
 
 /** Description of preload*/
 function preload() {
@@ -27,9 +30,9 @@ function setup() {
     createWalls();
     console.log(`Window width: ${windowWidth}, Window height: ${windowHeight}`);
     noStroke();
+    textSize(64);
     angleMode(DEGREES);
     textAlign(CENTER, CENTER);
-    Alien.size = 0.09765625 * windowWidth;
     createAliens();
 }
 
@@ -64,11 +67,52 @@ function createWalls() {
 
 /** Description of draw() */
 function draw() {
-    animation();
-    // console.log(`user MaxSpd: ${user.maxSpeed}`)
+    if (state === `title`) {
+        title();
+    } else if (state === `simulation`) {
+        simulation();
+    }
+}
+function title() {
+    if (titleFirstFrame) {
+        titleSetup();
+    }
+    background(0);
+    beginningAnimation();
+
+}
+function beginningAnimation() {
+    if (beginningTitleI > 0) {
+        fill(beginningTitleI);
+        text(`Project 1 \n The clownapping`, windowWidth / 2, windowHeight / 2);
+        beginningTitleI--;
+    }
+    fill("white");
+    ellipse(windowWidth / 2, windowHeight / 2 + beginningClownI, 200);
+    if (beginningClownI < windowHeight / 2) {
+        beginningClownI++;
+    }
+    if (mouseIsPressed && beginningClownI >= windowHeight / 2) {
+        state = `simulation`;
+    }
 }
 
-function animation() {
+function titleSetup() {
+    Alien.size = windowWidth / 3;
+    titleFirstFrame = false;
+    simulationFirstFrame = true;
+}
+
+function simulationSetup() {
+    simulationFirstFrame = false;
+    titleFirstFrame = true;
+    Alien.size = 0.09765625 * windowWidth;
+}
+
+function simulation() {
+    if (simulationFirstFrame) {
+        simulationSetup();
+    }
     background(0);
     Alien.alienAnimation();
     drawWallAliens();
