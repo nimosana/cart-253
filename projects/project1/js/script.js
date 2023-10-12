@@ -17,7 +17,7 @@ let titleAliens = [], topAliens = [], bottomAliens = [], leftAliens = [], rightA
 
 let state = `title`;
 let titleFirstFrame = true, simulationFirstFrame = true;
-let beginningClownI = 0, beginningClownII = 0, beginningClownetteI = 0, beginningAliensI = 0, beginningAliensII = 0, beginningTitleSpeed, finalTitleSpeed, beginningAlienSpeed, beginningSimulationI;
+let titleClownMovement = 0, titleFinalMovement = 0, titleAliensMovement = 0, titleAliensTimer = 0, titleBeginningSpeed, titleFinalSpeed, titleAlienSpeed, beginningSimulationI;
 let titleClown = {
     x: 0,
     y: 0,
@@ -54,9 +54,9 @@ function setup() {
 }
 
 function titleSetup() {
-    beginningTitleSpeed = windowWidth * 7.824726E-4;
-    finalTitleSpeed = windowHeight * 1.801801802E-3;
-    beginningAlienSpeed = windowHeight * 1.171875E-3 / 2.8;
+    titleBeginningSpeed = windowWidth * 7.824726E-4;
+    titleFinalSpeed = windowHeight * 1.801801802E-3;
+    titleAlienSpeed = windowHeight * 1.171875E-3 / 2.8;
     titleClownette.size = titleClown.size = windowHeight / 4;
     titleClownette.y = titleClown.y = windowHeight - titleClown.size / 2;
     titleFirstFrame = false;
@@ -104,81 +104,81 @@ function beginningAnimation() {
     for (let alien of titleAliens) {
         alien.drawAlien();
     }
-    let reversedBeginningClownI = map(beginningClownI, 0, 255, 255, 0);
-    if (reversedBeginningClownI > 0) {
-        fill(255, reversedBeginningClownI, reversedBeginningClownI, reversedBeginningClownI);
+    let gameTitleColor = map(titleClownMovement, 0, 255, 255, 0);
+    if (gameTitleColor > 0) {
+        fill(255, gameTitleColor, gameTitleColor, gameTitleColor);
         textSize(0.025 * windowWidth);
         text(`Project 1: \n The clownapping`, windowWidth / 2, windowHeight / 2);
     }
     textSize(0.0125 * windowWidth);
-    if (beginningClownI < windowWidth / 3) {
+    if (titleClownMovement < windowWidth / 3) {
         fill(255, 0, 255);
-        if (beginningClownI < (windowWidth / 3) / 3) {
-            text("Why did the clown go to the doctor?\n he was feeling a bit funny!", beginningClownI + windowWidth / 3, windowHeight * (11 / 16));
-        } else if ((beginningClownI > (windowWidth / 3) / 3) && beginningClownI < windowWidth / 3 - (windowWidth / 3) / 3) {
-            text("You really bring out the circus in me!\nUwU", beginningClownI + windowWidth / 3, windowHeight * (11 / 16));
-        } else if ((beginningClownI > windowWidth / 3 - (windowWidth / 3) / 3) && beginningClownI < windowWidth / 3) {
+        if (titleClownMovement < (windowWidth / 3) / 3) {
+            text("Why did the clown go to the doctor?\n he was feeling a bit funny!", titleClownMovement + windowWidth / 3, windowHeight * (11 / 16));
+        } else if ((titleClownMovement > (windowWidth / 3) / 3) && titleClownMovement < windowWidth / 3 - (windowWidth / 3) / 3) {
+            text("You really bring out the circus in me!\nUwU", titleClownMovement + windowWidth / 3, windowHeight * (11 / 16));
+        } else if ((titleClownMovement > windowWidth / 3 - (windowWidth / 3) / 3) && titleClownMovement < windowWidth / 3) {
             fill('orange');
-            text("haha babe you're so funny..\n you're like a joke!", beginningClownI, windowHeight * (11 / 16));
+            text("haha babe you're so funny..\n you're like a joke!", titleClownMovement, windowHeight * (11 / 16));
         }
-        titleClown.x = beginningClownI;
-        titleClownette.x = beginningClownI + windowWidth / 3;
-        beginningClownI += beginningTitleSpeed;
-    } else if (beginningAliensI < Alien.size * 0.8) {
+        titleClown.x = titleClownMovement;
+        titleClownette.x = titleClownMovement + windowWidth / 3;
+        titleClownMovement += titleBeginningSpeed;
+    } else if (titleAliensMovement < Alien.size * 0.8) {
         for (let alien of titleAliens) {
-            alien.y = windowHeight - Alien.size / 2 - beginningAliensI;
-            beginningAliensI += beginningAlienSpeed;
+            alien.y = windowHeight - Alien.size / 2 - titleAliensMovement;
+            titleAliensMovement += titleAlienSpeed;
         }
-        if (beginningAliensI < Alien.size * 0.8 / 3) {
+        if (titleAliensMovement < Alien.size * 0.8 / 3) {
             textSize(0.015625 * windowWidth);
             fill(255, 150, 255);
-            text("Allie:\nAlors on danse!", (windowWidth / 3) / 2, windowHeight - beginningAliensI - Alien.size * 0.1);
-        } else if ((beginningAliensI > Alien.size * 0.8 / 3) && beginningAliensI < 2 * Alien.size * 0.8 / 3) {
+            text("Allie:\nAlors on danse!", (windowWidth / 3) / 2, windowHeight - titleAliensMovement - Alien.size * 0.1);
+        } else if ((titleAliensMovement > Alien.size * 0.8 / 3) && titleAliensMovement < 2 * Alien.size * 0.8 / 3) {
             fill('lime');
-            text("Allen:\nWhy didn't you tell me they had\nsuch good music here earlier!", 2 * windowWidth / 3 - Alien.size / 2, windowHeight - beginningAliensI - Alien.size * 0.1);
-        } else if ((beginningAliensI > 2 * Alien.size * 0.8 / 3)) {
+            text("Allen:\nWhy didn't you tell me they had\nsuch good music here earlier!", 2 * windowWidth / 3 - Alien.size / 2, windowHeight - titleAliensMovement - Alien.size * 0.1);
+        } else if ((titleAliensMovement > 2 * Alien.size * 0.8 / 3)) {
             fill('cyan');
-            text("Alionso:\nWhat do we have here,\n a couple of clowns?", windowWidth - Alien.size / 2, windowHeight - beginningAliensI - Alien.size * 0.1);
+            text("Alionso:\nWhat do we have here,\n a couple of clowns?", windowWidth - Alien.size / 2, windowHeight - titleAliensMovement - Alien.size * 0.1);
         }
     } else {
-        if (beginningAliensII < 255 * 2.5) {
-            beginningAliensII++;
+        if (titleAliensTimer < 255 * 2.5) {
+            titleAliensTimer++;
         }
-        if (beginningAliensII < 255 * 2) {
-            if (beginningAliensII < 255 / 4) {
+        if (titleAliensTimer < 255 * 2) {
+            if (titleAliensTimer < 255 / 4) {
                 fill('orange');
-                text("A couple of clowns\nlol", beginningClownI, windowHeight * (11 / 16));
+                text("A couple of clowns\nlol", titleClownMovement, windowHeight * (11 / 16));
                 fill(255, 0, 255);
-                text("A couple of clowns\nlol", beginningClownI + windowWidth / 3, windowHeight * (11 / 16));
+                text("A couple of clowns\nlol", titleClownMovement + windowWidth / 3, windowHeight * (11 / 16));
             }
-            fill(255, 150, 255, beginningAliensII);
-            text("They're so cute!", (windowWidth / 3) / 2, windowHeight - beginningAliensI - Alien.size * 0.1);
-            fill(105, 255, 105, beginningAliensII - (255 / 2));
-            text("Bro she looks drawn on MS paint", 2 * windowWidth / 3 - Alien.size / 2, windowHeight - beginningAliensI - Alien.size * 0.1);
-            fill(0, 255, 255, beginningAliensII - (255));
-            text("Let's take them to the clowniseum", windowWidth - Alien.size / 2, windowHeight - beginningAliensI - Alien.size * 0.1);
+            fill(255, 150, 255, titleAliensTimer);
+            text("They're so cute!", (windowWidth / 3) / 2, windowHeight - titleAliensMovement - Alien.size * 0.1);
+            fill(105, 255, 105, titleAliensTimer - (255 / 2));
+            text("Bro she looks drawn on MS paint", 2 * windowWidth / 3 - Alien.size / 2, windowHeight - titleAliensMovement - Alien.size * 0.1);
+            fill(0, 255, 255, titleAliensTimer - (255));
+            text("Let's take them to the clowniseum", windowWidth - Alien.size / 2, windowHeight - titleAliensMovement - Alien.size * 0.1);
         }
-        if (beginningAliensII > 255 * 2 && beginningAliensII < 255 * 2.5) {
+        if (titleAliensTimer > 255 * 2 && titleAliensTimer < 255 * 2.5) {
             fill('orange');
-            text("the clowniseum???", beginningClownI, windowHeight * (11 / 16));
+            text("the clowniseum???", titleClownMovement, windowHeight * (11 / 16));
             fill(255, 0, 255);
-            text("the clowniseum???", beginningClownI + windowWidth / 3, windowHeight * (11 / 16));
-        } else if (beginningAliensII > 255 * 2.5) {
-            if (beginningClownII < windowHeight / 2 + Alien.size / 3) {
+            text("the clowniseum???", titleClownMovement + windowWidth / 3, windowHeight * (11 / 16));
+        } else if (titleAliensTimer > 255 * 2.5) {
+            if (titleFinalMovement < windowHeight / 2 + Alien.size / 3) {
                 fill(255, 150, 255);
-                text("Muahahahaha", (windowWidth / 3) / 2, beginningClownII + windowHeight - beginningAliensI - Alien.size * 0.1);
+                text("Muahahahaha", (windowWidth / 3) / 2, titleFinalMovement + windowHeight - titleAliensMovement - Alien.size * 0.1);
                 fill(105, 255, 105);
-                text("Muahahahaha", 2 * windowWidth / 3 - Alien.size / 2, beginningClownII + windowHeight - beginningAliensI - Alien.size * 0.1);
+                text("Muahahahaha", 2 * windowWidth / 3 - Alien.size / 2, titleFinalMovement + windowHeight - titleAliensMovement - Alien.size * 0.1);
                 fill(0, 255, 255);
-                text("Muahahahaha", windowWidth - Alien.size / 2, beginningClownII + windowHeight - beginningAliensI - Alien.size * 0.1);
+                text("Muahahahaha", windowWidth - Alien.size / 2, titleFinalMovement + windowHeight - titleAliensMovement - Alien.size * 0.1);
                 fill('orange');
-                text("Noooooo", beginningClownI, beginningClownII + windowHeight * (11 / 16));
+                text("Noooooo", titleClownMovement, titleFinalMovement + windowHeight * (11 / 16));
                 fill(255, 0, 255);
-                text("Noooooo", beginningClownI + windowWidth / 3, beginningClownII + windowHeight * (11 / 16));
-                beginningClownII += finalTitleSpeed;
-                titleClownette.y = titleClown.y += finalTitleSpeed;
+                text("Noooooo", titleClownMovement + windowWidth / 3, titleFinalMovement + windowHeight * (11 / 16));
+                titleFinalMovement += titleFinalSpeed;
+                titleClownette.y = titleClown.y += titleFinalSpeed;
                 for (let alien of titleAliens) {
-                    alien.y += finalTitleSpeed;
+                    alien.y += titleFinalSpeed;
                 }
             } else {
                 state = `simulation`;
