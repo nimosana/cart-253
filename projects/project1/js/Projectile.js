@@ -7,8 +7,8 @@ class Projectile {
         this.speed = speed;
         this.angle = angle;
     }
-    static shoot(x, y, angle, fireRate) {
-        if ((keyIsDown(32) || (mouseIsPressed && mouseButton === LEFT)) && frameCount % fireRate === 0) {
+    static shoot(x, y, angle) {
+        if ((keyIsDown(32) || (mouseIsPressed && mouseButton === LEFT))) {
             Projectile.projectiles.push(new Projectile(x, y, windowWidth * 3.90625E-3, windowWidth * 7.8125E-3 * 2, angle));
         }
     }

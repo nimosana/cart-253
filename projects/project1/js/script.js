@@ -11,12 +11,12 @@ let user, userTexture;
 let cameraOffsetX = undefined, cameraOffsetY = undefined;
 
 let walls = [], wallWidth;
-let projectiles = [];
+let projectiles = [], fireRate = 0, fireDelay = 0;
 let titleAliens = [], topAliens = [], bottomAliens = [], leftAliens = [], rightAliens = [];
 
 let state = `title`;
 let titleFirstFrame = true, simulationFirstFrame = true;
-let beginningClownI = 0, beginningClownII = 0, beginningClownetteI = 0, beginningAliensI = 0, beginningAliensII = 0, beginningTitleSpeed, finalTitleSpeed, beginningAlienSpeed;
+let beginningClownI = 0, beginningClownII = 0, beginningClownetteI = 0, beginningAliensI = 0, beginningAliensII = 0, beginningTitleSpeed, finalTitleSpeed, beginningAlienSpeed, beginningSimulationI;
 let titleClown = {
     x: 0,
     y: 0,
@@ -38,12 +38,14 @@ function preload() {
 
 /** Description of setup*/
 function setup() {
+    console.log(`Window width: ${windowWidth}, Window height: ${windowHeight}`);
+    createCanvas(windowWidth, windowHeight);
     user = new Player(windowWidth / 2, windowHeight / 2, windowWidth * 0.039, windowWidth * 7.8125E-5, (windowWidth * 1.953125E-3) * 3);
     user.texture = userTexture;
+    Alien.size = windowWidth / 3;
+    createAliens();
     wallWidth = windowWidth / 20;
-    createCanvas(windowWidth, windowHeight);
     createWalls();
-    console.log(`Window width: ${windowWidth}, Window height: ${windowHeight}`);
     noStroke();
     angleMode(DEGREES);
     textAlign(CENTER, CENTER);
@@ -55,13 +57,12 @@ function titleSetup() {
     beginningAlienSpeed = windowHeight * 1.171875E-3 / 2.8;
     titleClownette.size = titleClown.size = windowHeight / 4;
     titleClownette.y = titleClown.y = windowHeight - titleClown.size / 2;
-    Alien.size = windowWidth / 3;
-    createAliens();
     titleFirstFrame = false;
     simulationFirstFrame = true;
 }
 
 function simulationSetup() {
+    beginningSimulationI = 0;
     Alien.size = 0.09765625 * windowWidth;
     simulationFirstFrame = false;
     titleFirstFrame = true;
@@ -91,7 +92,6 @@ function simulation() {
         simulationSetup();
     }
     background(0);
-    drawWallAliens();
     user.keyMovement();
     wallCollisions();
     displayObjects();
@@ -105,10 +105,10 @@ function beginningAnimation() {
     let reversedBeginningClownI = map(beginningClownI, 0, 255, 255, 0);
     if (reversedBeginningClownI > 0) {
         fill(255, reversedBeginningClownI, reversedBeginningClownI, reversedBeginningClownI);
-        textSize(64);
+        textSize(0.025 * windowWidth);
         text(`Project 1: \n The clownapping`, windowWidth / 2, windowHeight / 2);
     }
-    textSize(32);
+    textSize(0.0125 * windowWidth);
     if (beginningClownI < windowWidth / 3) {
         fill(255, 0, 255);
         if (beginningClownI < (windowWidth / 3) / 3) {
@@ -128,7 +128,7 @@ function beginningAnimation() {
             beginningAliensI += beginningAlienSpeed;
         }
         if (beginningAliensI < Alien.size * 0.8 / 3) {
-            textSize(40);
+            textSize(0.015625 * windowWidth);
             fill(255, 150, 255);
             text("Allie:\nAlors on danse!", (windowWidth / 3) / 2, windowHeight - beginningAliensI - Alien.size * 0.1);
         } else if ((beginningAliensI > Alien.size * 0.8 / 3) && beginningAliensI < 2 * Alien.size * 0.8 / 3) {
@@ -174,8 +174,7 @@ function beginningAnimation() {
                 fill(255, 0, 255);
                 text("Noooooo", beginningClownI + windowWidth / 3, beginningClownII + windowHeight * (11 / 16));
                 beginningClownII += finalTitleSpeed;
-                titleClown.y += finalTitleSpeed;
-                titleClownette.y += finalTitleSpeed;
+                titleClownette.y = titleClown.y += finalTitleSpeed;
                 for (let alien of titleAliens) {
                     alien.y += finalTitleSpeed;
                 }
@@ -184,9 +183,6 @@ function beginningAnimation() {
             }
         }
     }
-    // textSize(64);
-    // fill('white');
-    // text("WASD/Arrow Keys to move\n\nSpace/Left click to shoot\n\nClick to start", windowWidth / 2, windowHeight / 2);
     if (mouseIsPressed) {
         state = `simulation`;
     }
@@ -195,7 +191,12 @@ function beginningAnimation() {
 }
 
 function projectileManagement() {
-    Projectile.shoot(user.x, user.y, user.angle, 30);
+    if (fireDelay > fireRate && (keyIsDown(32) || (mouseIsPressed && mouseButton === LEFT))) {
+        Projectile.shoot(user.x, user.y, user.angle);
+        fireDelay = 0;
+    }
+    fireDelay++;
+    console.log(`delay : ${fireDelay}`)
     fill('green');
     Projectile.moveDrawProjectiles(cameraOffsetX, cameraOffsetY);
 }
@@ -203,10 +204,24 @@ function projectileManagement() {
 function displayObjects() {
     cameraOffsetX = windowWidth / 2 - user.x + user.vx * 4;
     cameraOffsetY = windowHeight / 2 - user.y + user.vy * 4;
+    drawWallAliens();
     user.displayRotatingPlayer(cameraOffsetX, cameraOffsetY);
     for (let wall of walls) {
-        fill(wall.fill);
+        fill('gray');
         rect(wall.x + cameraOffsetX, wall.y + cameraOffsetY, wall.w, wall.h);
+    }
+    if (beginningSimulationI < 255 * 2) {
+        textSize(0.025 * windowWidth);
+        if (beginningSimulationI < 255) {
+            let reversedBeginningSimulationI = map(beginningSimulationI, 0, 255, 255, 0);
+            fill(255, 255, 255, reversedBeginningSimulationI);
+            text("WASD/🠹🠻🠸🠺 to move", windowWidth / 2, windowHeight / 4);
+        } else {
+            let reversedBeginningSimulationII = map(beginningSimulationI, 255, 255 * 2, 255, 0);
+            fill(255, 255, 255, reversedBeginningSimulationII);
+            text("Space/Left click to shoot mucus", windowWidth / 2, windowHeight / 4);
+        }
+        beginningSimulationI++;
     }
 }
 
@@ -248,25 +263,21 @@ function createWalls() {
         y: -windowWidth * heightRatio - wallWidth,
         w: windowWidth * 3,
         h: wallWidth,
-        fill: 'red'
     }, bottomWall = {
         x: -windowWidth,
         y: windowWidth * heightRatio * 2,
         w: windowWidth * 3,
         h: wallWidth,
-        fill: 'blue'
     }, leftWall = {
         x: -windowWidth - wallWidth,
         y: -windowWidth * heightRatio - wallWidth,
         w: wallWidth,
         h: windowWidth * heightRatio * 3 + (wallWidth * 2),
-        fill: 'green'
     }, rightWall = {
         x: windowWidth * 2,
         y: -windowWidth * heightRatio - wallWidth,
         w: wallWidth,
         h: windowWidth * heightRatio * 3 + (wallWidth * 2),
-        fill: 'yellow'
     };
     walls.push(topWall, bottomWall, leftWall, rightWall);
 }
