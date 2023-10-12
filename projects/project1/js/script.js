@@ -6,18 +6,23 @@
  * and this description to match your project!
  */
 "use strict";
+//used to always have a similar gameplay area no matter the screen ratio/dimensions
 let heightRatio = 0.513671875;
+//represents the user
 let user, userTexture;
+//camera offsets used to follow the user
 let cameraOffsetX = undefined, cameraOffsetY = undefined;
+//represent gameplay elements
 let clowniseumTexture;
-
 let walls = [], wallWidth;
 let projectiles = [], fireRate = 0, fireDelay = 0;
 let titleAliens = [], topAliens = [], bottomAliens = [], leftAliens = [], rightAliens = [];
-
+//variables used to correctly execute different states of the simulation
 let state = `title`;
 let titleFirstFrame = true, simulationFirstFrame = true;
+//variables used for the beginning animation
 let titleClownMovement = 0, titleFinalMovement = 0, titleAliensMovement = 0, titleAliensTimer = 0, titleBeginningSpeed, titleFinalSpeed, titleAlienSpeed, beginningSimulationI;
+//represents Clown & Clownette
 let titleClown = {
     x: 0,
     y: 0,
@@ -30,7 +35,7 @@ let titleClown = {
     texture: undefined
 };
 
-/** Description of preload*/
+/** Loads the textures/images used in the simulation*/
 function preload() {
     clowniseumTexture = loadImage('assets/images/clowniseum.png');
     userTexture = loadImage('assets/images/clown.png');
@@ -38,7 +43,7 @@ function preload() {
     titleClownette.texture = loadImage('assets/images/clownette.png');
 }
 
-/** Description of setup*/
+/** sets up the critical variables, settings or executes the necessary actions in order to correctly launch the simulation */
 function setup() {
     console.log(`Window width: ${windowWidth}, Window height: ${windowHeight}`);
     createCanvas(windowWidth, windowHeight);
@@ -53,6 +58,7 @@ function setup() {
     textAlign(CENTER, CENTER);
 }
 
+/** sets up the critical variables in order to correctly run the title state of the simulation */
 function titleSetup() {
     titleBeginningSpeed = windowWidth * 7.824726E-4;
     titleFinalSpeed = windowHeight * 1.801801802E-3;
@@ -63,35 +69,40 @@ function titleSetup() {
     simulationFirstFrame = true;
 }
 
-function simulationSetup() {
+/** sets up the critical variables in order to correctly run the gameplay state of the simulation */
+function gameplaySetup() {
     beginningSimulationI = 0;
     Alien.size = 0.09765625 * windowWidth;
     simulationFirstFrame = false;
     titleFirstFrame = true;
 }
 
-/** Description of draw() */
+/** Ensures the aliens are always being animated and draws the correct state of the simulation accoding the application's state */
 function draw() {
     Alien.alienAnimation();
     if (state === `title`) {
         title();
-    } else if (state === `simulation`) {
-        simulation();
+    } else if (state === `gameplay`) {
+        gameplay();
     }
 }
 
+/** runs the 'title' of the simulation, where the beginning animation is set up and automatically plays, can be skipped by clicking */
 function title() {
     if (titleFirstFrame) {
         titleSetup();
     }
     background(0);
     beginningAnimation();
-
+    if (mouseIsPressed) {
+        state = `gameplay`;
+    }
 }
 
-function simulation() {
+/** runs the 'gameplay' part of the simulation, where the user can interact, move, shoot, etc. inside the game area*/
+function gameplay() {
     if (simulationFirstFrame) {
-        simulationSetup();
+        gameplaySetup();
     }
     background(0);
     user.keyMovement();
@@ -100,6 +111,7 @@ function simulation() {
     projectileManagement();
 }
 
+/** generates the beginning animation where Clown & Clownette are interrupted and then kidnapped by Allie, Allen & Alionso */
 function beginningAnimation() {
     for (let alien of titleAliens) {
         alien.drawAlien();
@@ -134,10 +146,10 @@ function beginningAnimation() {
             fill(255, 150, 255);
             text("Allie:\nAlors on danse!", (windowWidth / 3) / 2, windowHeight - titleAliensMovement - Alien.size * 0.1);
         } else if ((titleAliensMovement > Alien.size * 0.8 / 3) && titleAliensMovement < 2 * Alien.size * 0.8 / 3) {
-            fill('lime');
+            fill(105, 255, 105);
             text("Allen:\nWhy didn't you tell me they had\nsuch good music here earlier!", 2 * windowWidth / 3 - Alien.size / 2, windowHeight - titleAliensMovement - Alien.size * 0.1);
         } else if ((titleAliensMovement > 2 * Alien.size * 0.8 / 3)) {
-            fill('cyan');
+            fill(0, 255, 255);
             text("Alionso:\nWhat do we have here,\n a couple of clowns?", windowWidth - Alien.size / 2, windowHeight - titleAliensMovement - Alien.size * 0.1);
         }
     } else {
@@ -181,17 +193,15 @@ function beginningAnimation() {
                     alien.y += titleFinalSpeed;
                 }
             } else {
-                state = `simulation`;
+                state = `gameplay`;
             }
         }
-    }
-    if (mouseIsPressed) {
-        state = `simulation`;
     }
     displayImage(titleClown, 0);
     displayImage(titleClownette, 0);
 }
-
+/** creates projectiles at the request of the user (Space/LeftClick) in accordance to a fire rate
+ *  also recalculates the positions and draws existing projectiles for every frame */
 function projectileManagement() {
     if (fireDelay > fireRate && (keyIsDown(32) || (mouseIsPressed && mouseButton === LEFT))) {
         Projectile.shoot(user.x, user.y, user.angle);
@@ -203,6 +213,8 @@ function projectileManagement() {
     Projectile.moveDrawProjectiles(cameraOffsetX, cameraOffsetY);
 }
 
+/** displays all the objects of the simulation (user, walls, wall aliens & background)
+ *  relative to the user, the image is centered on the user, with a speed effect (cameraOffsets) */
 function displayObjects() {
     cameraOffsetX = windowWidth / 2 - user.x + user.vx * 4;
     cameraOffsetY = windowHeight / 2 - user.y + user.vy * 4;
@@ -228,6 +240,7 @@ function displayObjects() {
     }
 }
 
+/** draws the aliens along the walls/game area */
 function drawWallAliens() {
     for (let i = 0; i < topAliens.length; i++) {
         topAliens[i].x = -0.0125 * windowWidth - windowWidth / 20 - windowWidth + Alien.size * i + cameraOffsetX;
@@ -260,6 +273,7 @@ function drawWallAliens() {
     pop();
 }
 
+/** creates the outside walls/game area relative to the window width */
 function createWalls() {
     let topWall = {
         x: -windowWidth,
@@ -285,6 +299,8 @@ function createWalls() {
     walls.push(topWall, bottomWall, leftWall, rightWall);
 }
 
+/** creates aliens of the beginning animation,
+ *  also creates the aliens to place along the outside walls */
 function createAliens() {
     for (let i = 0; i < 3; i++) {
         titleAliens.push(new Alien(Alien.size * i, windowHeight));
@@ -300,6 +316,8 @@ function createAliens() {
     console.log(`aliens created`);
 }
 
+/** detects wall collisions with the user to bring and bounce him back into the game area
+ * also detects collisions with the projectiles and removes them if they hit a wall */
 function wallCollisions() {
     for (let wall of walls) {
         if (collideRectCircle(wall.x, wall.y, wall.w, wall.h, user.x, user.y, user.size)) {
@@ -338,7 +356,7 @@ function wallCollisions() {
 /** easily display images instead of shapes
  * @param obj object to be drawn
  * @param type type or case of object to be drawn
- * @param specialTexture a specific texture to be used (for type 2)*/
+ * @param specialTexture a specific texture to be used (for type 2) */
 function displayImage(obj, type, specialTexture) {
     switch (type) {
         case 0: //adjust to draw instead of an ellispe (centered)
