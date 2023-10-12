@@ -3,6 +3,8 @@
  * Allows the creation of animated dancing disco party animal aliens that change colors
  * and move their arms to the beat!*/
 class Alien {
+    
+    //properties shared across all aliens (animation variables, colors & size)
     static offset1 = 0;
     static offset2 = 0;
     static offset3 = 0;

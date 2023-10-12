@@ -1,6 +1,5 @@
-/**
- * Title of Project
- * Author Name
+/** Project 1: The clownapping
+ * @author Nicolas Morales-Sanabria
  * 
  * This is a template. You must fill in the title, author, 
  * and this description to match your project!
@@ -15,14 +14,14 @@ let cameraOffsetX = undefined, cameraOffsetY = undefined;
 //represent gameplay elements
 let clowniseumTexture;
 let walls = [], wallWidth;
-let projectiles = [], fireRate = 0, fireDelay = 0;
+let fireRate = 0, fireDelay = 0;
 let titleAliens = [], topAliens = [], bottomAliens = [], leftAliens = [], rightAliens = [];
 //variables used to correctly execute different states of the simulation
 let state = `title`;
 let titleFirstFrame = true, simulationFirstFrame = true;
 //variables used for the beginning animation
 let titleClownMovement = 0, titleFinalMovement = 0, titleAliensMovement = 0, titleAliensTimer = 0, titleBeginningSpeed, titleFinalSpeed, titleAlienSpeed, beginningSimulationI;
-//represents Clown & Clownette
+//represents the animation Clown & Clownette
 let titleClown = {
     x: 0,
     y: 0,

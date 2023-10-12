@@ -1,7 +1,15 @@
+/** Player class
+ * @author Nicolas Morales-Sanabria
+ * Allows the creation and control of a user with a texture that can move around with keys,
+ * and rotate following the mouse */
 class Player {
-    // user.size: approx. 100 for a 2560 px screen
-    // user.accel: windowWidth * 7.8125E-5 = 0.2 for a 2560px width screen
-    // user.maxSpeed: windowWidth * (1.953125E-3) * 3 = maxSpeed of 15 in a 2560x1440 screen
+
+    /** Creates a Player object at the desired position, with the desired size, acceleration & max speed
+     * @param  x desired horizontal position
+     * @param  y desired vertical position
+     * @param  size desired size
+     * @param  accel desired acceleration
+     * @param  maxSpeed desired max speed */
     constructor(x, y, size, accel, maxSpeed) {
         this.x = x;
         this.y = y;
@@ -14,6 +22,7 @@ class Player {
         this.texture = undefined;
         this.angle;
     }
+
     /** Allows the user to control the player's speed with accelerations,
      *  using the arrow keys or WASD*/
     keyMovement() {
@@ -53,9 +62,12 @@ class Player {
         // console.log(`spd X: ${this.vx} spd Y: ${this.vy}`);
     }
 
+    /** calculates the angle between the user and draws him rotated, taking into account any offset of the user (ie. from the middle of the screen)
+     * @param cameraOffsetX any horizontal offset to take into account to draw the user
+     * @param cameraOffsetY any vertical offset to take into account to draw the user */
     displayRotatingPlayer(cameraOffsetX, cameraOffsetY) {
         push();
-        this.angle = atan2(mouseY - height / 2 - (user.vy * 4), mouseX - width / 2 - (user.vx * 4));
+        this.angle = atan2(mouseY - windowHeight / 2 - (user.vy * 4), mouseX - windowWidth / 2 - (user.vx * 4));
         translate(user.x + cameraOffsetX, user.y + cameraOffsetY);
         rotate(this.angle - 90);
         this.displayImageForRotation();
@@ -63,6 +75,7 @@ class Player {
         // console.log(`User angle: ${angle}`)
     }
 
+    /** displays the user's texture to remain centered even if rotated*/
     displayImageForRotation() {
         image(this.texture, -this.size / 2, -this.size / 2, this.size, this.size);
     }
