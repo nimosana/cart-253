@@ -3,7 +3,7 @@
  * Allows the creation of animated dancing disco party animal aliens that change colors
  * and move their arms to the beat!*/
 class Alien {
-    
+
     //properties shared across all aliens (animation variables, colors & size)
     static offset1 = 0;
     static offset2 = 0;
@@ -141,7 +141,7 @@ class Alien {
     }
 
     /** creates a left-right movement, modifying the xOffset.
-     * @param maxOffset maximum value of the offset (absolute)*/
+     * @param maxOffset maximum value of the offset (absolute) */
     static boppingX(maxOffset) {
         Alien.offset1 += Alien.direction1 * Alien.size * 2.1E-3;
         if (Alien.offset1 >= maxOffset || Alien.offset1 <= -maxOffset) {
@@ -151,7 +151,7 @@ class Alien {
     }
 
     /** creates an up-down movement, modifying the offset2.
-     * @param maxOffset maximum value of the offset (absolute)*/
+     * @param maxOffset maximum value of the offset (absolute) */
     static boppingY(maxOffset) {
         Alien.offset2 += Alien.direction2 * Alien.size * 4.2E-3;
         if (Alien.offset2 >= maxOffset || Alien.offset2 <= -maxOffset) {
@@ -160,8 +160,8 @@ class Alien {
         }
     }
 
-    /**modifies offset3, the value oscillates between its max offset
-     * @param maxOffset maximum value of the offset (absolute)*/
+    /**creates a body wiggle movement, modifying the offset3
+     * @param maxOffset maximum value of the offset (absolute) */
     static bodyWiggle(maxOffset) {
         Alien.offset3 += Alien.direction3 * 2E-3;
         if (Alien.offset3 >= maxOffset || Alien.offset3 <= -maxOffset) {
@@ -170,7 +170,7 @@ class Alien {
         }
     }
 
-    /**generates the opening/closing movement of the eyes*/
+    /**generates the opening/closing movement of the eyes, modifying offset4 */
     static eyesClosing() {
         let maxOffset = Alien.size * 0.04;
         Alien.offset4 += Alien.direction4 * (Alien.size * 0.04) / 30;

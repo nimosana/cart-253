@@ -9,12 +9,12 @@
 let heightRatio = 0.513671875;
 //represents the user
 let user, userTexture;
+let fireRate = 0, fireDelay = 0;
 //camera offsets used to follow the user
 let cameraOffsetX = undefined, cameraOffsetY = undefined;
-//represent gameplay elements
+//represent various simlulation elements
 let clowniseumTexture;
 let walls = [], wallWidth;
-let fireRate = 0, fireDelay = 0;
 let titleAliens = [], topAliens = [], bottomAliens = [], leftAliens = [], rightAliens = [];
 //variables used to correctly execute different states of the simulation
 let state = `title`;
@@ -239,7 +239,7 @@ function displayObjects() {
         fill('lime');
         rect(wall.x + cameraOffsetX, wall.y + cameraOffsetY, wall.w, wall.h);
     }
-    //draws the initial simulation text and explains the controls
+    //draws the initial simulation text & explains the controls
     if (beginningSimulationI < 255 * 2) {
         textSize(0.025 * windowWidth);
         if (beginningSimulationI < 255) {

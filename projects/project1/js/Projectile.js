@@ -3,7 +3,7 @@
  Allows the creation, repositioning and drawing of a single or multiple Projectile objects 
  at different positions, with different speeds, sizes and directions*/
 class Projectile {
-    
+
     //Array of exisitng projectiles
     static projectiles = [];
     /** Creates a new projectile at the desired coordinates, with the desired size, speed and angle
@@ -32,8 +32,10 @@ class Projectile {
      * @param cameraOffsetY any vertical offset to take into account to draw the projectile */
     static moveDrawProjectiles(cameraOffsetX, cameraOffsetY) {
         for (let projectile of Projectile.projectiles) {
+            //recalculates projectile positions
             projectile.x += (cos(projectile.angle) * projectile.speed);
             projectile.y += (sin(projectile.angle) * projectile.speed);
+            //draws the projectiles
             ellipse(projectile.x + cameraOffsetX, projectile.y + cameraOffsetY, projectile.size, projectile.size);
             // console.log(`Proj speeds: X: ${cos(projectile.angle)} speed: ${projectile.speed}`);
         }
