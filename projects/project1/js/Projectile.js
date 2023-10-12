@@ -16,8 +16,8 @@ class Projectile {
         for (let projectile of Projectile.projectiles) {
             projectile.x += (cos(projectile.angle) * projectile.speed);
             projectile.y += (sin(projectile.angle) * projectile.speed);
-            console.log(`Proj speeds: X: ${cos(projectile.angle)} speed: ${projectile.speed}`)
             ellipse(projectile.x + cameraOffsetX, projectile.y + cameraOffsetY, projectile.size, projectile.size);
+            // console.log(`Proj speeds: X: ${cos(projectile.angle)} speed: ${projectile.speed}`);
         }
     }
 }

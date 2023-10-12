@@ -6,17 +6,17 @@
  * and this description to match your project!
  */
 "use strict";
-let user, userTexture, userAngle;
+let heightRatio = 0.513671875;
+let user, userTexture;
 let cameraOffsetX = undefined, cameraOffsetY = undefined;
-let walls = [], wallWidth, touchingWalls = false;
+
+let walls = [], wallWidth;
 let projectiles = [];
 let titleAliens = [], topAliens = [], bottomAliens = [], leftAliens = [], rightAliens = [];
 
-let heightRatio = 0.513671875;
 let state = `title`;
 let titleFirstFrame = true, simulationFirstFrame = true;
-
-let beginningClownI = 0, beginningClownII = 0, beginningClownetteI = 0, beginningAliensI = 0, beginningAliensII = 0, beginningTitleSpeed, beginningAlienSpeed;
+let beginningClownI = 0, beginningClownII = 0, beginningClownetteI = 0, beginningAliensI = 0, beginningAliensII = 0, beginningTitleSpeed, finalTitleSpeed, beginningAlienSpeed;
 let titleClown = {
     x: 0,
     y: 0,
@@ -27,7 +27,7 @@ let titleClown = {
     y: 0,
     size: 250,
     texture: undefined
-}
+};
 
 /** Description of preload*/
 function preload() {
@@ -38,10 +38,6 @@ function preload() {
 
 /** Description of setup*/
 function setup() {
-    beginningTitleSpeed = windowWidth * 7.824726E-4;
-    beginningAlienSpeed = windowHeight * 1.171875E-3 / 2.8;
-    titleClownette.size = titleClown.size = windowHeight / 4;
-    titleClownette.y = titleClown.y = windowHeight - titleClown.size / 2;
     user = new Player(windowWidth / 2, windowHeight / 2, windowWidth * 0.039, windowWidth * 7.8125E-5, (windowWidth * 1.953125E-3) * 3);
     user.texture = userTexture;
     wallWidth = windowWidth / 20;
@@ -53,33 +49,22 @@ function setup() {
     textAlign(CENTER, CENTER);
 }
 
-function createWalls() {
-    let topWall = {
-        x: -windowWidth,
-        y: -windowWidth * heightRatio - wallWidth,
-        w: windowWidth * 3,
-        h: wallWidth,
-        fill: 'red'
-    }, bottomWall = {
-        x: -windowWidth,
-        y: windowWidth * heightRatio * 2,
-        w: windowWidth * 3,
-        h: wallWidth,
-        fill: 'blue'
-    }, leftWall = {
-        x: -windowWidth - wallWidth,
-        y: -windowWidth * heightRatio - wallWidth,
-        w: wallWidth,
-        h: windowWidth * heightRatio * 3 + (wallWidth * 2),
-        fill: 'green'
-    }, rightWall = {
-        x: windowWidth * 2,
-        y: -windowWidth * heightRatio - wallWidth,
-        w: wallWidth,
-        h: windowWidth * heightRatio * 3 + (wallWidth * 2),
-        fill: 'yellow'
-    }
-    walls.push(topWall, bottomWall, leftWall, rightWall);
+function titleSetup() {
+    beginningTitleSpeed = windowWidth * 7.824726E-4;
+    finalTitleSpeed = windowHeight * 1.801801802E-3;
+    beginningAlienSpeed = windowHeight * 1.171875E-3 / 2.8;
+    titleClownette.size = titleClown.size = windowHeight / 4;
+    titleClownette.y = titleClown.y = windowHeight - titleClown.size / 2;
+    Alien.size = windowWidth / 3;
+    createAliens();
+    titleFirstFrame = false;
+    simulationFirstFrame = true;
+}
+
+function simulationSetup() {
+    Alien.size = 0.09765625 * windowWidth;
+    simulationFirstFrame = false;
+    titleFirstFrame = true;
 }
 
 /** Description of draw() */
@@ -91,6 +76,7 @@ function draw() {
         simulation();
     }
 }
+
 function title() {
     if (titleFirstFrame) {
         titleSetup();
@@ -98,6 +84,18 @@ function title() {
     background(0);
     beginningAnimation();
 
+}
+
+function simulation() {
+    if (simulationFirstFrame) {
+        simulationSetup();
+    }
+    background(0);
+    drawWallAliens();
+    user.keyMovement();
+    wallCollisions();
+    displayObjects();
+    projectileManagement();
 }
 
 function beginningAnimation() {
@@ -114,12 +112,12 @@ function beginningAnimation() {
     if (beginningClownI < windowWidth / 3) {
         fill(255, 0, 255);
         if (beginningClownI < (windowWidth / 3) / 3) {
-            text("Why did the clown go to the doctor?\n he was feeling a bit funny!", beginningClownI + windowWidth / 3, windowHeight * (11 / 16))
+            text("Why did the clown go to the doctor?\n he was feeling a bit funny!", beginningClownI + windowWidth / 3, windowHeight * (11 / 16));
         } else if ((beginningClownI > (windowWidth / 3) / 3) && beginningClownI < windowWidth / 3 - (windowWidth / 3) / 3) {
-            text("You really bring out the circus in me!\nUwU", beginningClownI + windowWidth / 3, windowHeight * (11 / 16))
+            text("You really bring out the circus in me!\nUwU", beginningClownI + windowWidth / 3, windowHeight * (11 / 16));
         } else if ((beginningClownI > windowWidth / 3 - (windowWidth / 3) / 3) && beginningClownI < windowWidth / 3) {
             fill('orange');
-            text("haha babe you're so funny..\n you're like a joke!", beginningClownI, windowHeight * (11 / 16))
+            text("haha babe you're so funny..\n you're like a joke!", beginningClownI, windowHeight * (11 / 16));
         }
         titleClown.x = beginningClownI;
         titleClownette.x = beginningClownI + windowWidth / 3;
@@ -138,7 +136,7 @@ function beginningAnimation() {
             text("Allen:\nWhy didn't you tell me they had\nsuch good music here earlier!", 2 * windowWidth / 3 - Alien.size / 2, windowHeight - beginningAliensI - Alien.size * 0.1);
         } else if ((beginningAliensI > 2 * Alien.size * 0.8 / 3)) {
             fill('cyan');
-            text("Alionso:\nWhat do we have here,\n a couple of clowns?", windowWidth - Alien.size / 2, windowHeight - beginningAliensI - Alien.size * 0.1)
+            text("Alionso:\nWhat do we have here,\n a couple of clowns?", windowWidth - Alien.size / 2, windowHeight - beginningAliensI - Alien.size * 0.1);
         }
     } else {
         if (beginningAliensII < 255 * 2.5) {
@@ -175,11 +173,11 @@ function beginningAnimation() {
                 text("Noooooo", beginningClownI, beginningClownII + windowHeight * (11 / 16));
                 fill(255, 0, 255);
                 text("Noooooo", beginningClownI + windowWidth / 3, beginningClownII + windowHeight * (11 / 16));
-                beginningClownII += 2;
-                titleClown.y += 2;
-                titleClownette.y += 2;
+                beginningClownII += finalTitleSpeed;
+                titleClown.y += finalTitleSpeed;
+                titleClownette.y += finalTitleSpeed;
                 for (let alien of titleAliens) {
-                    alien.y += 2;
+                    alien.y += finalTitleSpeed;
                 }
             } else {
                 state = `simulation`;
@@ -196,37 +194,20 @@ function beginningAnimation() {
     displayImage(titleClownette, 0);
 }
 
-
-function titleSetup() {
-    // beginningClownII = windowHeight / 2;
-    Alien.size = windowWidth / 3;
-    createAliens();
-    titleFirstFrame = false;
-    simulationFirstFrame = true;
-}
-
-function simulationSetup() {
-    Alien.size = 0.09765625 * windowWidth;
-    simulationFirstFrame = false;
-    titleFirstFrame = true;
-}
-
-function simulation() {
-    if (simulationFirstFrame) {
-        simulationSetup();
-    }
-    background(0);
-    drawWallAliens();
-    user.keyMovement();
-    wallCollisions();
-    displayObjects();
-    projectileManagement();
-}
-
 function projectileManagement() {
-    Projectile.shoot(user.x, user.y, user.userAngle, 30);
+    Projectile.shoot(user.x, user.y, user.angle, 30);
     fill('green');
     Projectile.moveDrawProjectiles(cameraOffsetX, cameraOffsetY);
+}
+
+function displayObjects() {
+    cameraOffsetX = windowWidth / 2 - user.x + user.vx * 4;
+    cameraOffsetY = windowHeight / 2 - user.y + user.vy * 4;
+    user.displayRotatingPlayer(cameraOffsetX, cameraOffsetY);
+    for (let wall of walls) {
+        fill(wall.fill);
+        rect(wall.x + cameraOffsetX, wall.y + cameraOffsetY, wall.w, wall.h);
+    }
 }
 
 function drawWallAliens() {
@@ -261,37 +242,49 @@ function drawWallAliens() {
     pop();
 }
 
+function createWalls() {
+    let topWall = {
+        x: -windowWidth,
+        y: -windowWidth * heightRatio - wallWidth,
+        w: windowWidth * 3,
+        h: wallWidth,
+        fill: 'red'
+    }, bottomWall = {
+        x: -windowWidth,
+        y: windowWidth * heightRatio * 2,
+        w: windowWidth * 3,
+        h: wallWidth,
+        fill: 'blue'
+    }, leftWall = {
+        x: -windowWidth - wallWidth,
+        y: -windowWidth * heightRatio - wallWidth,
+        w: wallWidth,
+        h: windowWidth * heightRatio * 3 + (wallWidth * 2),
+        fill: 'green'
+    }, rightWall = {
+        x: windowWidth * 2,
+        y: -windowWidth * heightRatio - wallWidth,
+        w: wallWidth,
+        h: windowWidth * heightRatio * 3 + (wallWidth * 2),
+        fill: 'yellow'
+    };
+    walls.push(topWall, bottomWall, leftWall, rightWall);
+}
+
 function createAliens() {
     for (let i = 0; i < 3; i++) {
-        titleAliens.push(new Alien(Alien.size * i, windowHeight))
+        titleAliens.push(new Alien(Alien.size * i, windowHeight));
     }
     for (let i = 0; i < 32; i++) {
         topAliens.push(new Alien(0, 0));
         bottomAliens.push(new Alien(0, 0));
-        console.log(`aliens created`);
     }
     for (let i = 0; i < 16; i++) {
         leftAliens.push(new Alien(0, 0));
         rightAliens.push(new Alien(0, 0));
     }
+    console.log(`aliens created`);
 }
-
-function displayObjects() {
-    cameraOffsetX = windowWidth / 2 - user.x + user.vx * 4;
-    cameraOffsetY = windowHeight / 2 - user.y + user.vy * 4;
-    user.displayRotatingPlayer(cameraOffsetX, cameraOffsetY);
-    for (let wall of walls) {
-        fill(wall.fill);
-        rect(wall.x + cameraOffsetX, wall.y + cameraOffsetY, wall.w, wall.h);
-    }
-    if (!touchingWalls) {
-        fill('white');
-    } else {
-        fill('red');
-    }
-    touchingWalls = false;
-}
-
 
 function wallCollisions() {
     for (let wall of walls) {
@@ -316,7 +309,6 @@ function wallCollisions() {
                 user.x = wall.x - user.size / 2;
                 user.vx *= -0.9;
             }
-            touchingWalls = true;
         }
     }
     for (let i = Projectile.projectiles.length - 1; i >= 0; i--) {
@@ -328,6 +320,7 @@ function wallCollisions() {
         }
     }
 }
+
 /** easily display images instead of shapes
  * @param obj object to be drawn
  * @param type type or case of object to be drawn
