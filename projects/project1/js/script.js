@@ -9,6 +9,7 @@
 let heightRatio = 0.513671875;
 let user, userTexture;
 let cameraOffsetX = undefined, cameraOffsetY = undefined;
+let clowniseumTexture;
 
 let walls = [], wallWidth;
 let projectiles = [], fireRate = 0, fireDelay = 0;
@@ -31,6 +32,7 @@ let titleClown = {
 
 /** Description of preload*/
 function preload() {
+    clowniseumTexture = loadImage('assets/images/clowniseum.png');
     userTexture = loadImage('assets/images/clown.png');
     titleClown.texture = loadImage('assets/images/clown.png');
     titleClownette.texture = loadImage('assets/images/clownette.png');
@@ -205,9 +207,10 @@ function displayObjects() {
     cameraOffsetX = windowWidth / 2 - user.x + user.vx * 4;
     cameraOffsetY = windowHeight / 2 - user.y + user.vy * 4;
     drawWallAliens();
+    image(clowniseumTexture, -windowWidth + cameraOffsetX, -windowWidth * heightRatio - wallWidth + cameraOffsetY, windowWidth * 3, windowWidth * heightRatio * 3 + (wallWidth * 2))
     user.displayRotatingPlayer(cameraOffsetX, cameraOffsetY);
     for (let wall of walls) {
-        fill('gray');
+        fill('lime');
         rect(wall.x + cameraOffsetX, wall.y + cameraOffsetY, wall.w, wall.h);
     }
     if (beginningSimulationI < 255 * 2) {
