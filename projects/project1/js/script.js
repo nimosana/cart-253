@@ -10,12 +10,13 @@ let heightRatio = 0.513671875;
 //represents the user
 let user, userTexture;
 //projectile arrays and fire rates
-let userProjectiles = [], enemyProjectiles = [], userFireRate = 20, enemyFireRate = 0;
+let userProjectiles = [], enemyProjectiles = [], userFireRate = 30, enemyFireRate = 60;
 //camera offsets used to follow the user
 let cameraOffsetX = undefined, cameraOffsetY = undefined;
 //represent various simlulation elements
+let restart = false;
 let clowniseumTexture;
-let evilClowns = [], wave = 10, evilClownTexture;
+let evilClowns = [], wave = 1, evilClownTexture;
 let walls = [], wallWidth;
 let titleAliens = [], topAliens = [], bottomAliens = [], leftAliens = [], rightAliens = [];
 //variables used to correctly execute different states of the simulation
@@ -49,7 +50,7 @@ function preload() {
 function setup() {
     console.log(`Window width: ${windowWidth}, Window height: ${windowHeight}`);
     createCanvas(windowWidth, windowHeight);
-    user = new Player(windowWidth / 2, windowHeight / 2, windowWidth * 0.039, windowWidth * 7.8125E-5, (windowWidth * 1.953125E-3) * 3);
+    user = new Player(windowWidth / 2, windowHeight / 2, windowWidth * 0.039, windowWidth * 7.8125E-5, (windowWidth * 1.953125E-3) * 2);
     user.texture = userTexture;
     Alien.size = windowWidth / 3;
     createAliens();
@@ -73,6 +74,13 @@ function titleSetup() {
 
 /** sets up the critical variables in order to correctly run the gameplay state of the simulation */
 function gameplaySetup() {
+    if (restart) {
+        user.health = 100;
+        wave = 1;
+        evilClowns = [];
+        enemyProjectiles = [];
+        restart = false;
+    }
     generateEvilClowns(1);
     gameplayDialogue = 0;
     Alien.size = 0.09765625 * windowWidth;
@@ -87,6 +95,8 @@ function draw() {
         title();
     } else if (state === `gameplay`) {
         gameplay();
+    } else if (state === `loss`) {
+        loss();
     }
 }
 
@@ -118,8 +128,21 @@ function gameplay() {
     collisions();
     displayObjects();
     projectileManagement();
+    userHealthManagement();
     for (let evilClown of evilClowns) {
         evilClown.chaseFleeTarget(user, 1);
+    }
+}
+
+function loss() {
+    restart = true;
+    simulationFirstFrame = true;
+    background(0);
+    textSize(0.025 * windowWidth);
+    fill('red')
+    text(`You died at wave ${wave}\n You couldn't save Clownette\nClick to restart`, windowWidth / 2, windowHeight / 2);
+    if (mouseIsPressed) {
+        state = `gameplay`;
     }
 }
 
@@ -128,14 +151,14 @@ function gameplay() {
 function projectileManagement() {
     //creates user projectiles with his position & angle if his fireRate delay has passed
     if (user.fireDelay > userFireRate && (keyIsDown(32) || (mouseIsPressed && mouseButton === LEFT))) {
-        userProjectiles.push(new Projectile(user.x, user.y, windowWidth * 3.90625E-3, windowWidth * 7.8125E-3 * 2, user.angle));
+        userProjectiles.push(new Projectile(user.x, user.y, windowWidth * 3.90625E-3, windowWidth * 7.8125E-3, user.angle));
         user.fireDelay = 0;
     }
     user.fireDelay++;
     //creates the projectiles of the evil clowns if they are close enough and their fireRate delay has passed 
     for (let evilClown of evilClowns) {
         if (evilClown.fireDelay > enemyFireRate && dist(evilClown.x, evilClown.y, user.x, user.y) < windowWidth / 2) {
-            enemyProjectiles.push(new Projectile(evilClown.x, evilClown.y, windowWidth * 3.90625E-3, windowWidth * 7.8125E-3 * 2, evilClown.angle));
+            enemyProjectiles.push(new Projectile(evilClown.x, evilClown.y, windowWidth * 3.90625E-3, windowWidth * 7.8125E-3, evilClown.angle));
             evilClown.fireDelay = 0;
         }
         evilClown.fireDelay++;
@@ -173,32 +196,23 @@ function displayObjects() {
     fill(255, 0, 255);
     text(`Wave: ${wave}`, 0, 0);
     pop();
-    //display the controls & the initial simulation dialogue
-    if (gameplayDialogue < 255 * 5) {
-        textSize(0.025 * windowWidth);
-        let reversedGameplayDialogue;
-        if (gameplayDialogue < 255) {
-            reversedGameplayDialogue = map(gameplayDialogue, 0, 255, 255, 0);
-            fill(255, 255, 255, reversedGameplayDialogue);
-            text("WASD/🠹🠻🠸🠺 to move\nSpace/Left click to shoot mucus", windowWidth / 2, windowHeight / 4);
-        } else if (gameplayDialogue > 255 && gameplayDialogue < 255 * 2) {
-            reversedGameplayDialogue = map(gameplayDialogue, 255, 255 * 2, 255, 0);
-            fill(255, 165, 0, reversedGameplayDialogue);
-            text("What have you done to these poor clowns..\n and why are they so HD?", windowWidth / 2, windowHeight / 4);
-        } else if (gameplayDialogue > 255 * 2 && gameplayDialogue < 255 * 3) {
-            reversedGameplayDialogue = map(gameplayDialogue, 255 * 2, 255 * 3, 255, 0);
-            fill(255, 150, 255, reversedGameplayDialogue);
-            text("Allie:\n I forgot to feed them this week...\nOopsie!", windowWidth / 2, windowHeight / 4);
-        } else if (gameplayDialogue > 255 * 3 && gameplayDialogue < 255 * 4) {
-            reversedGameplayDialogue = map(gameplayDialogue, 255 * 3, 255 * 4, 255, 0);
-            fill(0, 255, 255, reversedGameplayDialogue);
-            text("Alionso:\nWe'll free you & clownette if you entertain us enough", windowWidth / 2, windowHeight / 4);
-        } else if (gameplayDialogue > 255 * 4 && gameplayDialogue < 255 * 5) {
-            reversedGameplayDialogue = map(gameplayDialogue, 255 * 4, 255 * 5, 255, 0);
-            fill(105, 255, 105, reversedGameplayDialogue);
-            text("Allen:\nK, Beat 20 waves and we'll let you go", windowWidth / 2, windowHeight / 4);
-        }
-        gameplayDialogue++;
+    //displays the intro
+    gameplayIntro();
+}
+/** Manages the display of the user's Health bar and its regeneration*/
+function userHealthManagement() {
+    //display the health bar
+    let healthTransparency = map(user.health, 100, 0, 255, 0);
+    fill(0, 0, 0, 150);
+    rect(windowWidth / 2 - windowWidth * 0.1, windowHeight * 0.8, windowWidth * 0.2, windowHeight * 0.1);
+    fill(0, 255, 0, healthTransparency);
+    rect(windowWidth / 2 - windowWidth * 0.1, windowHeight * 0.8, windowWidth * 0.2 * (user.health / 100), windowHeight * 0.1);
+    fill(255);
+    textSize(0.025 * windowWidth);
+    text(`HP: ${user.health}`, windowWidth / 2, windowHeight * 0.85);
+    //+2 health if hurt, every ~1 second
+    if (frameCount % 60 === 0 && user.health < 100) {
+        user.health += 2;
     }
 }
 
@@ -302,7 +316,10 @@ function collisions() {
     for (let i = userProjectiles.length - 1; i >= 0; i--) {
         for (let j = evilClowns.length - 1; j >= 0; j--) {
             if (collideCircleCircle(evilClowns[j].x, evilClowns[j].y, evilClowns[j].size, userProjectiles[i].x, userProjectiles[i].y, userProjectiles[i].size)) {
-                evilClowns.splice(j, 1);
+                evilClowns[j].health -= 25;
+                if (evilClowns[j].health <= 0) {
+                    evilClowns.splice(j, 1);
+                }
                 userProjectiles.splice(i, 1)
                 break;
             }
@@ -311,6 +328,10 @@ function collisions() {
     //detects any enemy projectile hitting the user
     for (let i = enemyProjectiles.length - 1; i >= 0; i--) {
         if (collideCircleCircle(user.x, user.y, user.size, enemyProjectiles[i].x, enemyProjectiles[i].y, enemyProjectiles[i].size)) {
+            user.health -= 5;
+            if (user.health <= 0) {
+                state = 'loss';
+            }
             enemyProjectiles.splice(i, 1);
         }
     }
@@ -395,6 +416,36 @@ function generateEvilClowns(wave) {
             tempPos.y = random(-windowWidth * heightRatio + user.size / 2, windowWidth * heightRatio * 2 - user.size / 2);
         }
         evilClowns.push(new EvilClown(tempPos.x, tempPos.y, user.size, user.accelX / 2, user.maxSpeed));
+    }
+}
+
+/** displays the controls & the initial simulation dialogue */
+function gameplayIntro() {
+    if (gameplayDialogue < 255 * 5) {
+        textSize(0.025 * windowWidth);
+        let reversedGameplayDialogue;
+        if (gameplayDialogue < 255) {
+            reversedGameplayDialogue = map(gameplayDialogue, 0, 255, 255, 0);
+            fill(255, 255, 255, reversedGameplayDialogue);
+            text("WASD/🠹🠻🠸🠺 to move\nSpace/Left click to shoot mucus", windowWidth / 2, windowHeight / 4);
+        } else if (gameplayDialogue > 255 && gameplayDialogue < 255 * 2) {
+            reversedGameplayDialogue = map(gameplayDialogue, 255, 255 * 2, 255, 0);
+            fill(255, 165, 0, reversedGameplayDialogue);
+            text("What have you done to these poor clowns..\n and why are they so HD?", windowWidth / 2, windowHeight / 4);
+        } else if (gameplayDialogue > 255 * 2 && gameplayDialogue < 255 * 3) {
+            reversedGameplayDialogue = map(gameplayDialogue, 255 * 2, 255 * 3, 255, 0);
+            fill(255, 150, 255, reversedGameplayDialogue);
+            text("Allie:\n I forgot to feed them this week...\nOopsie!", windowWidth / 2, windowHeight / 4);
+        } else if (gameplayDialogue > 255 * 3 && gameplayDialogue < 255 * 4) {
+            reversedGameplayDialogue = map(gameplayDialogue, 255 * 3, 255 * 4, 255, 0);
+            fill(0, 255, 255, reversedGameplayDialogue);
+            text("Alionso:\nWe'll free you & clownette if you entertain us enough", windowWidth / 2, windowHeight / 4);
+        } else if (gameplayDialogue > 255 * 4 && gameplayDialogue < 255 * 5) {
+            reversedGameplayDialogue = map(gameplayDialogue, 255 * 4, 255 * 5, 255, 0);
+            fill(105, 255, 105, reversedGameplayDialogue);
+            text("Allen:\nK, Beat 20 waves and we'll let you go", windowWidth / 2, windowHeight / 4);
+        }
+        gameplayDialogue++;
     }
 }
 

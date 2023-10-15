@@ -22,6 +22,7 @@ class Player {
         this.texture = undefined;
         this.angle;
         this.fireDelay = 0;
+        this.health = 100;
     }
 
     /** Allows the user to control the player's speed with accelerations,

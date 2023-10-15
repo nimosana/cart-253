@@ -22,6 +22,7 @@ class EvilClown {
         this.speed = 0;
         this.angle;
         this.fireDelay = 0;
+        this.health = 100;
     }
 
     /** calculates the angle between the clown & the target and draws him rotated, taking into account any camera offset
