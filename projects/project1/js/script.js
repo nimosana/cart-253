@@ -14,6 +14,7 @@ let fireRate = 0, fireDelay = 0;
 let cameraOffsetX = undefined, cameraOffsetY = undefined;
 //represent various simlulation elements
 let clowniseumTexture;
+let evilClowns = [], wave = 1, evilClownTexture;
 let walls = [], wallWidth;
 let titleAliens = [], topAliens = [], bottomAliens = [], leftAliens = [], rightAliens = [];
 //variables used to correctly execute different states of the simulation
@@ -36,6 +37,7 @@ let titleClown = {
 
 /** Loads the textures/images used in the simulation*/
 function preload() {
+    EvilClown.texture = loadImage('assets/images/evilClown.png');
     clowniseumTexture = loadImage('assets/images/clowniseum.png');
     userTexture = loadImage('assets/images/clown.png');
     titleClown.texture = loadImage('assets/images/clown.png');
@@ -70,6 +72,7 @@ function titleSetup() {
 
 /** sets up the critical variables in order to correctly run the gameplay state of the simulation */
 function gameplaySetup() {
+    generateEvilClowns();
     beginningSimulationI = 0;
     Alien.size = 0.09765625 * windowWidth;
     simulationFirstFrame = false;
@@ -110,6 +113,9 @@ function gameplay() {
     wallCollisions();
     displayObjects();
     projectileManagement();
+    for (let evilClown of evilClowns) {
+        evilClown.chaseFleeTarget(user, 1);
+    }
 }
 
 /** generates the beginning animation where Clown & Clownette are interrupted and then kidnapped by Allie, Allen & Alionso */
@@ -209,6 +215,7 @@ function beginningAnimation() {
     displayImage(titleClown, 0);
     displayImage(titleClownette, 0);
 }
+
 /** creates projectiles at the request of the user (Space/LeftClick) in the correct direction & 
  * in accordance to a fire rate, also recalculates the positions and draws existing projectiles */
 function projectileManagement() {
@@ -234,6 +241,9 @@ function displayObjects() {
     image(clowniseumTexture, -windowWidth + cameraOffsetX, -windowWidth * heightRatio - wallWidth + cameraOffsetY, windowWidth * 3, windowWidth * heightRatio * 3 + (wallWidth * 2))
     //draws the user
     user.displayRotatingPlayer(cameraOffsetX, cameraOffsetY);
+    for (let evilClown of evilClowns) {
+        evilClown.displayRotatingClown(cameraOffsetX, cameraOffsetY, user);
+    }
     //draws the walls
     for (let wall of walls) {
         fill('lime');
@@ -292,7 +302,7 @@ function drawWallAliens() {
     pop();
 }
 
-/** creates the outside walls/game area relative to the window width */
+/** creates the outside walls/game area relative to the window width and places them into their array */
 function createWalls() {
     //creates the walls
     let topWall = {
@@ -397,5 +407,21 @@ function displayImage(obj, type, specialTexture) {
         default: //invalid type
             console.log("DisplayImage Wrong type bud: " + type);
             break;
+    }
+}
+
+/** generates a set amount of evil clowns outside the user's personal space.
+ * the clowns will each have a random position outside the user's view */
+function generateEvilClowns() {
+    for (let i = 0; i < wave * 2; i++) {
+        let tempPos = {
+            x: random(0, windowWidth),
+            y: random(0, windowHeight)
+        }
+        while (dist(user.x, user.y, tempPos.x, tempPos.y) < windowWidth / 2 + user.size) {
+            tempPos.x = random(-windowWidth + user.size / 2, windowWidth * 2 - user.size / 2);
+            tempPos.y = random(-windowWidth * heightRatio + user.size / 2, windowWidth * heightRatio * 2 - user.size / 2);
+        }
+        evilClowns.push(new EvilClown(tempPos.x, tempPos.y, user.size, user.accelX / 2, user.maxSpeed / 2));
     }
 }
