@@ -10,7 +10,7 @@ let heightRatio = 0.513671875;
 //represents the user
 let user, userTexture;
 //projectile arrays and fire rates
-let userProjectiles = [], enemyProjectiles = [], userFireRate = 30, enemyFireRate = 60;
+let userProjectiles = [], enemyProjectiles = [], userFireRate = 0, enemyFireRate = 60;
 //camera offsets used to follow the user
 let cameraOffsetX = undefined, cameraOffsetY = undefined;
 //represent various simlulation elements
@@ -97,6 +97,8 @@ function draw() {
         gameplay();
     } else if (state === `loss`) {
         loss();
+    } else if (state === `win`) {
+        win();
     }
 }
 
@@ -122,6 +124,9 @@ function gameplay() {
     if (evilClowns.length === 0) {
         generateEvilClowns(wave + 1);
         wave++;
+        if (wave >= 21) {
+            state = 'win';
+        }
     }
     background(0);
     user.keyMovement();
@@ -134,16 +139,30 @@ function gameplay() {
     }
 }
 
+/** displays the loss state of the simulation, opting to restart it */
 function loss() {
     restart = true;
     simulationFirstFrame = true;
     background(0);
     textSize(0.025 * windowWidth);
-    fill('red')
+    fill('red');
     text(`You died at wave ${wave}\n You couldn't save Clownette\nClick to restart`, windowWidth / 2, windowHeight / 2);
     if (mouseIsPressed) {
         state = `gameplay`;
     }
+}
+
+/** displays the win state of the simulation and stops it */
+function win() {
+    //displays Clown & Clownette thanking you for playing
+    background(0);
+    fill('orange');
+    text(`You survived the clownapping &\n saved Clownette!\n Thanks for playing`, windowWidth / 2, windowHeight / 2);
+    titleClown.x = windowWidth / 3;
+    titleClownette.x = (windowWidth / 3) * 2;
+    displayImage(titleClown, 0);
+    displayImage(titleClownette, 0);
+    noLoop();
 }
 
 /** creates projectiles at the request of the user (Space/LeftClick) or evil clowns in accordance to their angles, 
