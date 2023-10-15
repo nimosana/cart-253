@@ -22,7 +22,7 @@ let titleAliens = [], topAliens = [], bottomAliens = [], leftAliens = [], rightA
 let state = `title`;
 let titleFirstFrame = true, simulationFirstFrame = true;
 //variables used for the beginning animation
-let titleClownMovement = 0, titleFinalMovement = 0, titleAliensMovement = 0, titleAliensTimer = 0, titleBeginningSpeed, titleFinalSpeed, titleAlienSpeed, beginningSimulationI;
+let titleClownMovement = 0, titleFinalMovement = 0, titleAliensMovement = 0, titleAliensTimer = 0, titleBeginningSpeed, titleFinalSpeed, titleAlienSpeed, gameplayDialogue;
 //represents the animation Clown & Clownette
 let titleClown = {
     x: 0,
@@ -74,7 +74,7 @@ function titleSetup() {
 /** sets up the critical variables in order to correctly run the gameplay state of the simulation */
 function gameplaySetup() {
     generateEvilClowns();
-    beginningSimulationI = 0;
+    gameplayDialogue = 0;
     Alien.size = 0.09765625 * windowWidth;
     simulationFirstFrame = false;
     titleFirstFrame = true;
@@ -119,104 +119,6 @@ function gameplay() {
     }
 }
 
-/** generates the beginning animation where Clown & Clownette are interrupted and then kidnapped by Allie, Allen & Alionso */
-function beginningAnimation() {
-    //displays Allie, Allen & Alionso
-    for (let alien of titleAliens) {
-        alien.drawAlien();
-    }
-    //Displays the project title at the beginning
-    let gameTitleColor = map(titleClownMovement, 0, 255, 255, 0);
-    if (gameTitleColor > 0) {
-        fill(255, gameTitleColor, gameTitleColor, gameTitleColor);
-        textSize(0.025 * windowWidth);
-        text(`Project 1: \n The clownapping`, windowWidth / 2, windowHeight / 2);
-    }
-    // Displays clown & clownette moving to the center & talking to eachother
-    textSize(0.0125 * windowWidth);
-    if (titleClownMovement < windowWidth / 3) {
-        fill(255, 0, 255);
-        if (titleClownMovement < (windowWidth / 3) / 3) {
-            text("Why did the clown go to the doctor?\n he was feeling a bit funny!", titleClownMovement + windowWidth / 3, windowHeight * (11 / 16));
-        } else if ((titleClownMovement > (windowWidth / 3) / 3) && titleClownMovement < windowWidth / 3 - (windowWidth / 3) / 3) {
-            text("You really bring out the circus in me!\nUwU", titleClownMovement + windowWidth / 3, windowHeight * (11 / 16));
-        } else if ((titleClownMovement > windowWidth / 3 - (windowWidth / 3) / 3) && titleClownMovement < windowWidth / 3) {
-            fill('orange');
-            text("haha babe you're so funny..\n you're like a joke!", titleClownMovement, windowHeight * (11 / 16));
-        }
-        titleClown.x = titleClownMovement;
-        titleClownette.x = titleClownMovement + windowWidth / 3;
-        titleClownMovement += titleBeginningSpeed;
-    } else if (titleAliensMovement < Alien.size * 0.8) {
-        //Animates the aliens to move up and say their initial lines 
-        for (let alien of titleAliens) {
-            alien.y = windowHeight - Alien.size / 2 - titleAliensMovement;
-            titleAliensMovement += titleAlienSpeed;
-        }
-        if (titleAliensMovement < Alien.size * 0.8 / 3) {
-            textSize(0.015625 * windowWidth);
-            fill(255, 150, 255);
-            text("Allie:\nAlors on danse!", (windowWidth / 3) / 2, windowHeight - titleAliensMovement - Alien.size * 0.1);
-        } else if ((titleAliensMovement > Alien.size * 0.8 / 3) && titleAliensMovement < 2 * Alien.size * 0.8 / 3) {
-            fill(105, 255, 105);
-            text("Allen:\nWhy didn't you tell me they had\nsuch good music here earlier!", 2 * windowWidth / 3 - Alien.size / 2, windowHeight - titleAliensMovement - Alien.size * 0.1);
-        } else if ((titleAliensMovement > 2 * Alien.size * 0.8 / 3)) {
-            fill(0, 255, 255);
-            text("Alionso:\nWhat do we have here,\n a couple of clowns?", windowWidth - Alien.size / 2, windowHeight - titleAliensMovement - Alien.size * 0.1);
-        }
-    } else {
-        // Animates the final exchange between the aliens & the clowns
-        if (titleAliensTimer < 255 * 2.5) {
-            titleAliensTimer++;
-        }
-        if (titleAliensTimer < 255 * 2) {
-            if (titleAliensTimer < 255 / 4) {
-                fill('orange');
-                text("A couple of clowns\nlol", titleClownMovement, windowHeight * (11 / 16));
-                fill(255, 0, 255);
-                text("A couple of clowns\nlol", titleClownMovement + windowWidth / 3, windowHeight * (11 / 16));
-            }
-            fill(255, 150, 255, titleAliensTimer);
-            text("They're so cute!", (windowWidth / 3) / 2, windowHeight - titleAliensMovement - Alien.size * 0.1);
-            fill(105, 255, 105, titleAliensTimer - (255 / 2));
-            text("Bro she looks drawn on MS paint", 2 * windowWidth / 3 - Alien.size / 2, windowHeight - titleAliensMovement - Alien.size * 0.1);
-            fill(0, 255, 255, titleAliensTimer - (255));
-            text("Let's take them to the clowniseum", windowWidth - Alien.size / 2, windowHeight - titleAliensMovement - Alien.size * 0.1);
-        }
-        if (titleAliensTimer > 255 * 2 && titleAliensTimer < 255 * 2.5) {
-            fill('orange');
-            text("the clowniseum???", titleClownMovement, windowHeight * (11 / 16));
-            fill(255, 0, 255);
-            text("the clowniseum???", titleClownMovement + windowWidth / 3, windowHeight * (11 / 16));
-        } else if (titleAliensTimer > 255 * 2.5) {
-            // Animates the horrible kidnapping of the clowns by aliens
-            if (titleFinalMovement < windowHeight / 2 + Alien.size / 3) {
-                fill(255, 150, 255);
-                text("Muahahahaha", (windowWidth / 3) / 2, titleFinalMovement + windowHeight - titleAliensMovement - Alien.size * 0.1);
-                fill(105, 255, 105);
-                text("Muahahahaha", 2 * windowWidth / 3 - Alien.size / 2, titleFinalMovement + windowHeight - titleAliensMovement - Alien.size * 0.1);
-                fill(0, 255, 255);
-                text("Muahahahaha", windowWidth - Alien.size / 2, titleFinalMovement + windowHeight - titleAliensMovement - Alien.size * 0.1);
-                fill('orange');
-                text("Noooooo", titleClownMovement, titleFinalMovement + windowHeight * (11 / 16));
-                fill(255, 0, 255);
-                text("Noooooo", titleClownMovement + windowWidth / 3, titleFinalMovement + windowHeight * (11 / 16));
-                titleFinalMovement += titleFinalSpeed;
-                titleClownette.y = titleClown.y += titleFinalSpeed;
-                for (let alien of titleAliens) {
-                    alien.y += titleFinalSpeed;
-                }
-            } else {
-                // runs the gameplay part of the simulation after the final animation is over
-                state = `gameplay`;
-            }
-        }
-    }
-    //displays Clown & Clownette
-    displayImage(titleClown, 0);
-    displayImage(titleClownette, 0);
-}
-
 /** creates projectiles at the request of the user (Space/LeftClick) or evil clowns in accordance to their angles, 
  * positions, fire rates and delays, also recalculates the projectile positions and draws them */
 function projectileManagement() {
@@ -249,7 +151,7 @@ function displayObjects() {
     cameraOffsetY = windowHeight / 2 - user.y + user.vy * 4;
     //draw the outside wall aliens & game area texture
     drawWallAliens();
-    image(clowniseumTexture, -windowWidth + cameraOffsetX, -windowWidth * heightRatio - wallWidth + cameraOffsetY, windowWidth * 3, windowWidth * heightRatio * 3 + (wallWidth * 2))
+    image(clowniseumTexture, -windowWidth + cameraOffsetX, -windowWidth * heightRatio - wallWidth + cameraOffsetY, windowWidth * 3, windowWidth * heightRatio * 3 + (wallWidth * 2));
     //draws the user
     user.displayRotatingPlayer(cameraOffsetX, cameraOffsetY);
     for (let evilClown of evilClowns) {
@@ -260,19 +162,39 @@ function displayObjects() {
         fill('lime');
         rect(wall.x + cameraOffsetX, wall.y + cameraOffsetY, wall.w, wall.h);
     }
-    //draws the initial simulation text & explains the controls
-    if (beginningSimulationI < 255 * 2) {
+    //displays the current wave
+    push();
+    textAlign(LEFT, TOP);
+    textSize(0.025 * windowWidth);
+    fill(255, 0, 255);
+    text(`Wave: ${wave}`, 0, 0);
+    pop();
+    //display the controls & the initial simulation dialogue
+    if (gameplayDialogue < 255 * 5) {
         textSize(0.025 * windowWidth);
-        if (beginningSimulationI < 255) {
-            let reversedBeginningSimulationI = map(beginningSimulationI, 0, 255, 255, 0);
-            fill(255, 255, 255, reversedBeginningSimulationI);
-            text("WASD/🠹🠻🠸🠺 to move", windowWidth / 2, windowHeight / 4);
-        } else {
-            let reversedBeginningSimulationII = map(beginningSimulationI, 255, 255 * 2, 255, 0);
-            fill(255, 255, 255, reversedBeginningSimulationII);
-            text("Space/Left click to shoot mucus", windowWidth / 2, windowHeight / 4);
+        let reversedGameplayDialogue;
+        if (gameplayDialogue < 255) {
+            reversedGameplayDialogue = map(gameplayDialogue, 0, 255, 255, 0);
+            fill(255, 255, 255, reversedGameplayDialogue);
+            text("WASD/🠹🠻🠸🠺 to move\nSpace/Left click to shoot mucus", windowWidth / 2, windowHeight / 4);
+        } else if (gameplayDialogue > 255 && gameplayDialogue < 255 * 2) {
+            reversedGameplayDialogue = map(gameplayDialogue, 255, 255 * 2, 255, 0);
+            fill(255, 165, 0, reversedGameplayDialogue);
+            text("What have you done to these poor clowns..\n and why are they so HD?", windowWidth / 2, windowHeight / 4);
+        } else if (gameplayDialogue > 255 * 2 && gameplayDialogue < 255 * 3) {
+            reversedGameplayDialogue = map(gameplayDialogue, 255 * 2, 255 * 3, 255, 0);
+            fill(255, 150, 255, reversedGameplayDialogue);
+            text("Allie:\n I forgot to feed them this week...\nOopsie!", windowWidth / 2, windowHeight / 4);
+        } else if (gameplayDialogue > 255 * 3 && gameplayDialogue < 255 * 4) {
+            reversedGameplayDialogue = map(gameplayDialogue, 255 * 3, 255 * 4, 255, 0);
+            fill(0, 255, 255, reversedGameplayDialogue);
+            text("Alionso:\nWe'll free you & clownette if you entertain us enough", windowWidth / 2, windowHeight / 4);
+        } else if (gameplayDialogue > 255 * 4 && gameplayDialogue < 255 * 5) {
+            reversedGameplayDialogue = map(gameplayDialogue, 255 * 4, 255 * 5, 255, 0);
+            fill(105, 255, 105, reversedGameplayDialogue);
+            text("Allen:\nK, Beat 20 waves and we'll let you go", windowWidth / 2, windowHeight / 4);
         }
-        beginningSimulationI++;
+        gameplayDialogue++;
     }
 }
 
@@ -453,4 +375,102 @@ function generateEvilClowns() {
         }
         evilClowns.push(new EvilClown(tempPos.x, tempPos.y, user.size, user.accelX / 2, user.maxSpeed / 2));
     }
+}
+
+/** generates the beginning animation where Clown & Clownette are interrupted and then kidnapped by Allie, Allen & Alionso */
+function beginningAnimation() {
+    //displays Allie, Allen & Alionso
+    for (let alien of titleAliens) {
+        alien.drawAlien();
+    }
+    //Displays the project title at the beginning
+    let gameTitleColor = map(titleClownMovement, 0, 255, 255, 0);
+    if (gameTitleColor > 0) {
+        fill(255, gameTitleColor, gameTitleColor, gameTitleColor);
+        textSize(0.025 * windowWidth);
+        text(`Project 1: \n The clownapping`, windowWidth / 2, windowHeight / 2);
+    }
+    // Displays clown & clownette moving to the center & talking to eachother
+    textSize(0.0125 * windowWidth);
+    if (titleClownMovement < windowWidth / 3) {
+        fill(255, 0, 255);
+        if (titleClownMovement < (windowWidth / 3) / 3) {
+            text("Why did the clown go to the doctor?\n he was feeling a bit funny!", titleClownMovement + windowWidth / 3, windowHeight * (11 / 16));
+        } else if ((titleClownMovement > (windowWidth / 3) / 3) && titleClownMovement < windowWidth / 3 - (windowWidth / 3) / 3) {
+            text("You really bring out the circus in me!\nUwU", titleClownMovement + windowWidth / 3, windowHeight * (11 / 16));
+        } else if ((titleClownMovement > windowWidth / 3 - (windowWidth / 3) / 3) && titleClownMovement < windowWidth / 3) {
+            fill('orange');
+            text("haha babe you're so funny..\n you're like a joke!", titleClownMovement, windowHeight * (11 / 16));
+        }
+        titleClown.x = titleClownMovement;
+        titleClownette.x = titleClownMovement + windowWidth / 3;
+        titleClownMovement += titleBeginningSpeed;
+    } else if (titleAliensMovement < Alien.size * 0.8) {
+        //Animates the aliens to move up and say their initial lines 
+        for (let alien of titleAliens) {
+            alien.y = windowHeight - Alien.size / 2 - titleAliensMovement;
+            titleAliensMovement += titleAlienSpeed;
+        }
+        if (titleAliensMovement < Alien.size * 0.8 / 3) {
+            textSize(0.015625 * windowWidth);
+            fill(255, 150, 255);
+            text("Allie:\nAlors on danse!", (windowWidth / 3) / 2, windowHeight - titleAliensMovement - Alien.size * 0.1);
+        } else if ((titleAliensMovement > Alien.size * 0.8 / 3) && titleAliensMovement < 2 * Alien.size * 0.8 / 3) {
+            fill(105, 255, 105);
+            text("Allen:\nWhy didn't you tell me they had\nsuch good music here earlier!", 2 * windowWidth / 3 - Alien.size / 2, windowHeight - titleAliensMovement - Alien.size * 0.1);
+        } else if ((titleAliensMovement > 2 * Alien.size * 0.8 / 3)) {
+            fill(0, 255, 255);
+            text("Alionso:\nWhat do we have here,\n a couple of clowns?", windowWidth - Alien.size / 2, windowHeight - titleAliensMovement - Alien.size * 0.1);
+        }
+    } else {
+        // Animates the final exchange between the aliens & the clowns
+        if (titleAliensTimer < 255 * 2.5) {
+            titleAliensTimer++;
+        }
+        if (titleAliensTimer < 255 * 2) {
+            if (titleAliensTimer < 255 / 4) {
+                fill('orange');
+                text("A couple of clowns\nlol", titleClownMovement, windowHeight * (11 / 16));
+                fill(255, 0, 255);
+                text("A couple of clowns\nlol", titleClownMovement + windowWidth / 3, windowHeight * (11 / 16));
+            }
+            fill(255, 150, 255, titleAliensTimer);
+            text("They're so cute!", (windowWidth / 3) / 2, windowHeight - titleAliensMovement - Alien.size * 0.1);
+            fill(105, 255, 105, titleAliensTimer - (255 / 2));
+            text("Bro she looks drawn on MS paint", 2 * windowWidth / 3 - Alien.size / 2, windowHeight - titleAliensMovement - Alien.size * 0.1);
+            fill(0, 255, 255, titleAliensTimer - (255));
+            text("Let's take them to the clowniseum", windowWidth - Alien.size / 2, windowHeight - titleAliensMovement - Alien.size * 0.1);
+        }
+        if (titleAliensTimer > 255 * 2 && titleAliensTimer < 255 * 2.5) {
+            fill('orange');
+            text("the clowniseum???", titleClownMovement, windowHeight * (11 / 16));
+            fill(255, 0, 255);
+            text("the clowniseum???", titleClownMovement + windowWidth / 3, windowHeight * (11 / 16));
+        } else if (titleAliensTimer > 255 * 2.5) {
+            // Animates the horrible kidnapping of the clowns by aliens
+            if (titleFinalMovement < windowHeight / 2 + Alien.size / 3) {
+                fill(255, 150, 255);
+                text("Muahahahaha", (windowWidth / 3) / 2, titleFinalMovement + windowHeight - titleAliensMovement - Alien.size * 0.1);
+                fill(105, 255, 105);
+                text("Muahahahaha", 2 * windowWidth / 3 - Alien.size / 2, titleFinalMovement + windowHeight - titleAliensMovement - Alien.size * 0.1);
+                fill(0, 255, 255);
+                text("Muahahahaha", windowWidth - Alien.size / 2, titleFinalMovement + windowHeight - titleAliensMovement - Alien.size * 0.1);
+                fill('orange');
+                text("Noooooo", titleClownMovement, titleFinalMovement + windowHeight * (11 / 16));
+                fill(255, 0, 255);
+                text("Noooooo", titleClownMovement + windowWidth / 3, titleFinalMovement + windowHeight * (11 / 16));
+                titleFinalMovement += titleFinalSpeed;
+                titleClownette.y = titleClown.y += titleFinalSpeed;
+                for (let alien of titleAliens) {
+                    alien.y += titleFinalSpeed;
+                }
+            } else {
+                // runs the gameplay part of the simulation after the final animation is over
+                state = `gameplay`;
+            }
+        }
+    }
+    //displays Clown & Clownette
+    displayImage(titleClown, 0);
+    displayImage(titleClownette, 0);
 }
