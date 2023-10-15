@@ -9,12 +9,13 @@
 let heightRatio = 0.513671875;
 //represents the user
 let user, userTexture;
-let fireRate = 0, fireDelay = 0;
+//projectile arrays and fire rates
+let userProjectiles = [], enemyProjectiles = [], userFireRate = 20, enemyFireRate = 5;
 //camera offsets used to follow the user
 let cameraOffsetX = undefined, cameraOffsetY = undefined;
 //represent various simlulation elements
 let clowniseumTexture;
-let evilClowns = [], wave = 1, evilClownTexture;
+let evilClowns = [], wave = 10, evilClownTexture;
 let walls = [], wallWidth;
 let titleAliens = [], topAliens = [], bottomAliens = [], leftAliens = [], rightAliens = [];
 //variables used to correctly execute different states of the simulation
@@ -216,18 +217,28 @@ function beginningAnimation() {
     displayImage(titleClownette, 0);
 }
 
-/** creates projectiles at the request of the user (Space/LeftClick) in the correct direction & 
- * in accordance to a fire rate, also recalculates the positions and draws existing projectiles */
+/** creates projectiles at the request of the user (Space/LeftClick) or evil clowns in accordance to their angles, 
+ * positions, fire rates and delays, also recalculates the projectile positions and draws them */
 function projectileManagement() {
-    //creates a projectile from using the user's position & angle if his fireRate delay has passed
-    if (fireDelay > fireRate && (keyIsDown(32) || (mouseIsPressed && mouseButton === LEFT))) {
-        Projectile.shoot(user.x, user.y, user.angle);
-        fireDelay = 0;
+    //creates user projectiles with his position & angle if his fireRate delay has passed
+    if (user.fireDelay > userFireRate && (keyIsDown(32) || (mouseIsPressed && mouseButton === LEFT))) {
+        userProjectiles.push(new Projectile(user.x, user.y, windowWidth * 3.90625E-3, windowWidth * 7.8125E-3 * 2, user.angle));
+        user.fireDelay = 0;
     }
-    fireDelay++;
-    //draws the projectiles
+    user.fireDelay++;
+    //creates the projectiles of the evil clowns if they are close enough and their fireRate delay has passed 
+    for (let evilClown of evilClowns) {
+        if (evilClown.fireDelay > enemyFireRate && dist(evilClown.x, evilClown.y, user.x, user.y) < windowWidth / 2) {
+            enemyProjectiles.push(new Projectile(evilClown.x, evilClown.y, windowWidth * 3.90625E-3, windowWidth * 7.8125E-3 * 2, evilClown.angle));
+            evilClown.fireDelay = 0;
+        }
+        evilClown.fireDelay++;
+    }
+    //recalculates the positions and draws the projectiles
     fill('green');
-    Projectile.moveDrawProjectiles(cameraOffsetX, cameraOffsetY);
+    Projectile.moveDrawProjectiles(cameraOffsetX, cameraOffsetY, userProjectiles);
+    fill('orange');
+    Projectile.moveDrawProjectiles(cameraOffsetX, cameraOffsetY, enemyProjectiles);
 }
 
 /** displays all the objects of the simulation (user, walls, wall aliens & background)
@@ -350,41 +361,59 @@ function createAliens() {
     console.log(`aliens created`);
 }
 
-/** detects wall collisions with the user to bring and bounce him back into the game area
+/** detects collisions with the user to bring and bounce him back into the game area
  * also detects collisions with the projectiles and removes them if they hit a wall */
 function wallCollisions() {
     for (let wall of walls) {
-        //detects collisions between any wall and the user
-        if (collideRectCircle(wall.x, wall.y, wall.w, wall.h, user.x, user.y, user.size)) {
-            // top wall
-            if ((user.x > wall.x && user.x < wall.x + wall.w) && (user.y > wall.y + wall.h)) {
-                user.y = wall.y + wall.h + user.size / 2;
-                user.vy *= -0.9;
-            }
-            //bottom wall
-            if ((user.x > wall.x && user.x < wall.x + wall.w) && (user.y < wall.y)) {
-                user.y = wall.y - user.size / 2;
-                user.vy *= -0.9;
-            }
-            //left wall
-            if ((user.y > wall.y && user.y < wall.y + wall.h) && (user.x > wall.x + wall.w)) {
-                user.x = wall.x + wall.w + user.size / 2;
-                user.vx *= -0.9;
-            }
-            //right wall
-            if ((user.y > wall.y && user.y < wall.y + wall.h) && (user.x < wall.x)) {
-                user.x = wall.x - user.size / 2;
-                user.vx *= -0.9;
+        //collisions between walls and the user
+        wallBounce(wall, user);
+        //collisions between walls and any evil clown
+        for (let evilClown of evilClowns) {
+            wallBounce(wall, evilClown);
+        }
+    }
+    //deletes any projectile in collision with a wall
+    for (let i = userProjectiles.length - 1; i >= 0; i--) {
+        for (let wall of walls) {
+            if (collideRectCircle(wall.x, wall.y, wall.w, wall.h, userProjectiles[i].x, userProjectiles[i].y, userProjectiles[i].size)) {
+                userProjectiles.splice(i, 1);
+                break;
             }
         }
     }
-    //deletes any projectile if it is in collision with a wall
-    for (let i = Projectile.projectiles.length - 1; i >= 0; i--) {
+    for (let i = enemyProjectiles.length - 1; i >= 0; i--) {
         for (let wall of walls) {
-            if (collideRectCircle(wall.x, wall.y, wall.w, wall.h, Projectile.projectiles[i].x, Projectile.projectiles[i].y, Projectile.projectiles[i].size)) {
-                Projectile.projectiles.splice(i, 1);
+            if (collideRectCircle(wall.x, wall.y, wall.w, wall.h, enemyProjectiles[i].x, enemyProjectiles[i].y, enemyProjectiles[i].size)) {
+                enemyProjectiles.splice(i, 1);
                 break;
             }
+        }
+    }
+}
+
+/** makes an object bounce off of a wall, repositionintg it so it doesn't get stuck inside &
+ * changing its speed to make it 'bounce' off in the correct direction*/
+function wallBounce(wall, object) {
+    if (collideRectCircle(wall.x, wall.y, wall.w, wall.h, object.x, object.y, object.size)) {
+        // top wall
+        if ((object.x > wall.x && object.x < wall.x + wall.w) && (object.y > wall.y + wall.h)) {
+            object.y = wall.y + wall.h + object.size / 2;
+            object.vy *= -0.9;
+        }
+        //bottom wall
+        if ((object.x > wall.x && object.x < wall.x + wall.w) && (object.y < wall.y)) {
+            object.y = wall.y - object.size / 2;
+            object.vy *= -0.9;
+        }
+        //left wall
+        if ((object.y > wall.y && object.y < wall.y + wall.h) && (object.x > wall.x + wall.w)) {
+            object.x = wall.x + wall.w + object.size / 2;
+            object.vx *= -0.9;
+        }
+        //right wall
+        if ((object.y > wall.y && object.y < wall.y + wall.h) && (object.x < wall.x)) {
+            object.x = wall.x - object.size / 2;
+            object.vx *= -0.9;
         }
     }
 }
