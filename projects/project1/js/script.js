@@ -10,7 +10,7 @@ let heightRatio = 0.513671875;
 //represents the user
 let user, userTexture;
 //projectile arrays and fire rates
-let userProjectiles = [], enemyProjectiles = [], userFireRate = 20, enemyFireRate = 5;
+let userProjectiles = [], enemyProjectiles = [], userFireRate = 20, enemyFireRate = 0;
 //camera offsets used to follow the user
 let cameraOffsetX = undefined, cameraOffsetY = undefined;
 //represent various simlulation elements
@@ -73,7 +73,7 @@ function titleSetup() {
 
 /** sets up the critical variables in order to correctly run the gameplay state of the simulation */
 function gameplaySetup() {
-    generateEvilClowns();
+    generateEvilClowns(1);
     gameplayDialogue = 0;
     Alien.size = 0.09765625 * windowWidth;
     simulationFirstFrame = false;
@@ -109,9 +109,13 @@ function gameplay() {
         gameplaySetup(); //adjusts variables to correctly run
     }
     //runs the gameplay
+    if (evilClowns.length === 0) {
+        generateEvilClowns(wave + 1);
+        wave++;
+    }
     background(0);
     user.keyMovement();
-    wallCollisions();
+    collisions();
     displayObjects();
     projectileManagement();
     for (let evilClown of evilClowns) {
@@ -283,9 +287,9 @@ function createAliens() {
     console.log(`aliens created`);
 }
 
-/** detects collisions with the user to bring and bounce him back into the game area
- * also detects collisions with the projectiles and removes them if they hit a wall */
-function wallCollisions() {
+/** detects collisions between walls and clowns to bring/bounce him back into the game area,
+ * also detects collisions with the projectiles and removes them if they hit a wall or a clown */
+function collisions() {
     for (let wall of walls) {
         //collisions between walls and the user
         wallBounce(wall, user);
@@ -294,7 +298,23 @@ function wallCollisions() {
             wallBounce(wall, evilClown);
         }
     }
-    //deletes any projectile in collision with a wall
+    //detects any user projectile hitting a clown
+    for (let i = userProjectiles.length - 1; i >= 0; i--) {
+        for (let j = evilClowns.length - 1; j >= 0; j--) {
+            if (collideCircleCircle(evilClowns[j].x, evilClowns[j].y, evilClowns[j].size, userProjectiles[i].x, userProjectiles[i].y, userProjectiles[i].size)) {
+                evilClowns.splice(j, 1);
+                userProjectiles.splice(i, 1)
+                break;
+            }
+        }
+    }
+    //detects any enemy projectile hitting the user
+    for (let i = enemyProjectiles.length - 1; i >= 0; i--) {
+        if (collideCircleCircle(user.x, user.y, user.size, enemyProjectiles[i].x, enemyProjectiles[i].y, enemyProjectiles[i].size)) {
+            enemyProjectiles.splice(i, 1);
+        }
+    }
+    //detects any user projectile hitting a wall
     for (let i = userProjectiles.length - 1; i >= 0; i--) {
         for (let wall of walls) {
             if (collideRectCircle(wall.x, wall.y, wall.w, wall.h, userProjectiles[i].x, userProjectiles[i].y, userProjectiles[i].size)) {
@@ -303,6 +323,7 @@ function wallCollisions() {
             }
         }
     }
+    //detects any enemy projectile hitting a wall
     for (let i = enemyProjectiles.length - 1; i >= 0; i--) {
         for (let wall of walls) {
             if (collideRectCircle(wall.x, wall.y, wall.w, wall.h, enemyProjectiles[i].x, enemyProjectiles[i].y, enemyProjectiles[i].size)) {
@@ -363,8 +384,8 @@ function displayImage(obj, type, specialTexture) {
 
 /** generates a set amount of evil clowns outside the user's personal space.
  * the clowns will each have a random position outside the user's view */
-function generateEvilClowns() {
-    for (let i = 0; i < wave * 2; i++) {
+function generateEvilClowns(wave) {
+    for (let i = 0; i < ((wave) * 2); i++) {
         let tempPos = {
             x: random(0, windowWidth),
             y: random(0, windowHeight)
@@ -373,7 +394,7 @@ function generateEvilClowns() {
             tempPos.x = random(-windowWidth + user.size / 2, windowWidth * 2 - user.size / 2);
             tempPos.y = random(-windowWidth * heightRatio + user.size / 2, windowWidth * heightRatio * 2 - user.size / 2);
         }
-        evilClowns.push(new EvilClown(tempPos.x, tempPos.y, user.size, user.accelX / 2, user.maxSpeed / 2));
+        evilClowns.push(new EvilClown(tempPos.x, tempPos.y, user.size, user.accelX / 2, user.maxSpeed));
     }
 }
 
