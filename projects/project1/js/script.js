@@ -218,6 +218,7 @@ function displayObjects() {
     //displays the intro
     gameplayIntro();
 }
+
 /** Manages the display of the user's Health bar and its regeneration*/
 function userHealthManagement() {
     //display the health bar
