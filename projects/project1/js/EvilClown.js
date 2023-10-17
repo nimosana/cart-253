@@ -43,6 +43,7 @@ class EvilClown {
     }
 
     /**compares positions of the clown & their target & affects their accel/speed to chase or flee the target
+     * this function is taken from my "Love actually" exercise"
      * @param  target the target object
      * @param  usage 1 to  chase, -1 to flee */
     chaseFleeTarget(target, usage) {

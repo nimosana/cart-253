@@ -1,9 +1,12 @@
 /** Project 1: The clownapping
  * @author Nicolas Morales-Sanabria
  * 
- * This is a template. You must fill in the title, author, 
- * and this description to match your project!
- */
+ * This is a simulation where clown & clownette get kidnapped by aliens, they are sent to the "clowniseum"
+ * and the clown (the user) must survive 20 rounds to save clownette. It begins with an animation and then
+ * jumps into a playable survival game where the user must shoot and protect himself from evil clowns. The player
+ * controls the clown with keys and mouse. If the clown dies the user is prompted to restart, otherwise they
+ * are congratulated for saving clownette. 
+ * this project uses Ben Moren's p5.collide2D library. */
 "use strict";
 //used to always have a similar gameplay area no matter the screen ratio/dimensions
 let heightRatio = 0.513671875;
@@ -15,8 +18,8 @@ let userProjectiles = [], enemyProjectiles = [], userFireRate = 0, enemyFireRate
 let cameraOffsetX = undefined, cameraOffsetY = undefined;
 //represent various simlulation elements
 let restart = false;
-let clowniseumTexture;
-let evilClowns = [], wave = 1, evilClownTexture;
+let clowniseumTexture, evilClownTexture;
+let evilClowns = [], wave = 1;
 let walls = [], wallWidth;
 let titleAliens = [], topAliens = [], bottomAliens = [], leftAliens = [], rightAliens = [];
 //variables used to correctly execute different states of the simulation
@@ -74,13 +77,17 @@ function titleSetup() {
 
 /** sets up the critical variables in order to correctly run the gameplay state of the simulation */
 function gameplaySetup() {
+    //Reset the game to its initial state if restarting
     if (restart) {
         user.health = 100;
+        user.x = windowWidth/2;
+        user.y = windowHeight/2;
         wave = 1;
         evilClowns = [];
         enemyProjectiles = [];
         restart = false;
     }
+    //Start the first wave and variables
     generateEvilClowns(1);
     gameplayDialogue = 0;
     Alien.size = 0.09765625 * windowWidth;
@@ -128,6 +135,7 @@ function gameplay() {
             state = 'win';
         }
     }
+    //runs the necessary functions for the gameplay
     background(0);
     user.keyMovement();
     collisions();
@@ -139,15 +147,15 @@ function gameplay() {
     }
 }
 
-/** displays the loss state of the simulation, opting to restart it */
+/** displays the loss state/text of the simulation, opting to restart it */
 function loss() {
     restart = true;
     simulationFirstFrame = true;
     background(0);
     textSize(0.025 * windowWidth);
     fill('red');
-    text(`You died at wave ${wave}\n You couldn't save Clownette\nClick to restart`, windowWidth / 2, windowHeight / 2);
-    if (mouseIsPressed) {
+    text(`You died at wave ${wave}\n You couldn't save Clownette\npress "Enter" to restart`, windowWidth / 2, windowHeight / 2);
+    if (keyIsDown(13)) {
         state = `gameplay`;
     }
 }
@@ -215,7 +223,7 @@ function displayObjects() {
     fill(255, 0, 255);
     text(`Wave: ${wave}`, 0, 0);
     pop();
-    //displays the intro
+    //displays the intro text
     gameplayIntro();
 }
 
@@ -403,6 +411,7 @@ function wallBounce(wall, object) {
 }
 
 /** easily display images instead of shapes
+ *  this function is reused from my "Love Actually" exercise
  * @param obj object to be drawn
  * @param type type or case of object to be drawn
  * @param specialTexture a specific texture to be used (for type 2) */
@@ -430,7 +439,7 @@ function generateEvilClowns(wave) {
         let tempPos = {
             x: random(0, windowWidth),
             y: random(0, windowHeight)
-        }
+        } //ensure the clowns spawn inside the game area but outside the user's screen
         while (dist(user.x, user.y, tempPos.x, tempPos.y) < windowWidth / 2 + user.size) {
             tempPos.x = random(-windowWidth + user.size / 2, windowWidth * 2 - user.size / 2);
             tempPos.y = random(-windowWidth * heightRatio + user.size / 2, windowWidth * heightRatio * 2 - user.size / 2);
@@ -447,7 +456,7 @@ function gameplayIntro() {
         if (gameplayDialogue < 255) {
             reversedGameplayDialogue = map(gameplayDialogue, 0, 255, 255, 0);
             fill(255, 255, 255, reversedGameplayDialogue);
-            text("WASD/🠹🠻🠸🠺 to move\nSpace/Left click to shoot mucus", windowWidth / 2, windowHeight / 4);
+            text("WASD/Arrow Keys to move\nSpace/Left click to shoot mucus", windowWidth / 2, windowHeight / 4);
         } else if (gameplayDialogue > 255 && gameplayDialogue < 255 * 2) {
             reversedGameplayDialogue = map(gameplayDialogue, 255, 255 * 2, 255, 0);
             fill(255, 165, 0, reversedGameplayDialogue);

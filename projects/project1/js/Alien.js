@@ -1,7 +1,8 @@
 /** Dancing Alien class
  * @author Nicolas Morales-Sanabria
  * Allows the creation of animated dancing disco party animal aliens that change colors
- * and move their arms to the beat!*/
+ * and move their arms to the beat!
+ * this alien is a class version of my "I like to move it" exercise */
 class Alien {
 
     //properties shared across all aliens (animation variables, colors & size)
