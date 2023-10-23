@@ -21,10 +21,10 @@ function preload() {
  * Description of setup
 */
 function setup() {
-    createCanvas(600, 600);
+    createCanvas(windowWidth, windowHeight);
+    // Create the initial fish and add them to the school array
     for (let i = 0; i < schoolSize; i++) {
-        let fish = createFish(random(0, width), random(0, height))
-        school.push(fish);
+        school.push(createFish(random(0, width), random(0, height)));
     }
 }
 
@@ -33,9 +33,9 @@ function setup() {
 */
 function draw() {
     background(0);
-    for (let i = 0; i < school.length; i++) {
-        moveFish(school[i]);
-        displayFish(school[i]);
+    for (let fish of school) {
+        moveFish(fish);
+        displayFish(fish);
     }
 }
 
@@ -58,11 +58,9 @@ function moveFish(fish) {
         fish.vx = random(-fish.speed, fish.speed);
         fish.vy = random(-fish.speed, fish.speed);
     }
-    
     // Move the fish
     fish.x = fish.x + fish.vx;
     fish.y = fish.y + fish.vy;
-
     // Constrain the fish to the canvas
     fish.x = constrain(fish.x, 0, width);
     fish.y = constrain(fish.y, 0, height);
@@ -77,6 +75,5 @@ function displayFish(fish) {
 }
 
 function mousePressed() {
-    let fish = createFish(mouseX, mouseY);
-    school.push(fish);
+    school.push(createFish(mouseX, mouseY));
 }
