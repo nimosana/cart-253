@@ -9,6 +9,7 @@
 "use strict";
 let school = [];
 let schoolSize = 10;
+let waterRatio = 0.8, waterSurface;
 
 /**
  * Description of preload
@@ -22,6 +23,7 @@ function preload() {
 */
 function setup() {
     createCanvas(windowWidth, windowHeight);
+    waterSurface = height * (1 - waterRatio);
     // Create the initial fish and add them to the school array
     for (let i = 0; i < schoolSize; i++) {
         school.push(createFish(random(0, width), random(0, height)));
@@ -32,10 +34,13 @@ function setup() {
  * Description of draw()
 */
 function draw() {
+    //draw background
     background(0);
+    fill(0,0,100);
+    rect(0, waterSurface, width, height * 0.8);
+    //animate and draw fish
     for (let fish of school) {
         moveFish(fish);
-        fishConstraining(fish);
         displayFish(fish);
     }
 }
@@ -44,10 +49,11 @@ function createFish(x, y) {
     let fish = {
         x: x,
         y: y,
-        size: random(25,50),
+        size: random(25, 50),
         vx: 0,
         vy: 0,
-        speed: 2,
+        speed: 2.5,
+        changeRate: random(0.5,5),
         fill: {
             r: random(0, 255),
             g: random(50, 255),
@@ -59,15 +65,29 @@ function createFish(x, y) {
 
 function moveFish(fish) {
     // Choose whether to change direction
-    let change = random(0, 1);
-    if (change < 0.02) {
-        fish.vx = random(-fish.speed, fish.speed);
-        fish.vy = random(-fish.speed, fish.speed);
+    if (fish.y > waterSurface) {
+        let change = random(0, 100);
+        if (change < fish.changeRate) {
+            fish.vx = random(-fish.speed, fish.speed);
+            fish.vy = random(-fish.speed, fish.speed);
+        }
     }
     // Move the fish
     fish.x = fish.x + fish.vx;
     fish.y = fish.y + fish.vy;
+    // Constrain the fish to the canvas
+    if (fish.x < fish.size / 2 || fish.x > width - (fish.size / 2)) {
+        fish.vx *= -0.5;
+        fish.x = constrain(fish.x, fish.size / 2, width - (fish.size / 2));
+    }
+    if (fish.y < fish.size / 2 || fish.y > height - (fish.size / 2)) {
+        fish.vy *= -0.5;
+        fish.y = constrain(fish.y, fish.size / 2, height - (fish.size / 2));
+    }
     // detectfishCollisions();
+    if (fish.y < waterSurface) {
+        fish.vy += 0.1;
+    }
 }
 
 function displayFish(fish) {
@@ -80,18 +100,6 @@ function displayFish(fish) {
 
 function mousePressed() {
     school.push(createFish(mouseX, mouseY));
-}
-
-function fishConstraining(fish) {
-    // Constrain the fish to the canvas
-    if (fish.x < fish.size / 2 || fish.x > width - (fish.size / 2)) {
-        fish.vx *= -0.5;
-    }
-    if (fish.y < fish.size / 2 || fish.y > height - (fish.size / 2)) {
-        fish.vy *= -0.5;
-    }
-    fish.x = constrain(fish.x, fish.size / 2, width - (fish.size / 2));
-    fish.y = constrain(fish.y, fish.size / 2, height - (fish.size / 2));
 }
 
 // function detectfishCollisions() {
