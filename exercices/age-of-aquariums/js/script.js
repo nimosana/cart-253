@@ -11,13 +11,14 @@ let school = [];
 let schoolSize = 20;
 let waterRatio = 0.8, waterSurface;
 let fishTextureR, fishTextureL;
+let fishHookSpeed = undefined;
 let user = {
     score: 0,
     boat: {
         x: 0,
         y: 0,
-        w: 400,
-        h: 200,
+        w: undefined,
+        h: undefined,
         vx: 0,
         accelX: 0.1,
         maxSpeed: 2
@@ -27,7 +28,7 @@ let user = {
         yOrigin: 0,
         x: 0,
         y: 0,
-        size: 10,
+        size: undefined,
         vy: 0,
         busy: false
     },
@@ -48,15 +49,20 @@ function preload() {
 */
 function setup() {
     createCanvas(windowWidth, windowHeight);
-    waterSurface = height * (1 - waterRatio);
+    console.log(`width ${windowWidth} height ${windowHeight}`);
+    console.log(`width ${width} height ${height}`);
+    user.boat.w = 0.15625 * windowWidth;
+    user.boat.h = user.boat.w / 2;
+    user.hook.size = 3.90635E-3 * windowWidth;
+    fishHookSpeed = 1.5625E-3 * windowWidth;
+    waterSurface = windowHeight * (1 - waterRatio);
     user.boat.y = waterSurface - (user.boat.h * 0.8);
     user.hook.y = user.boat.y + (user.boat.h / 2);
-    textAlign(LEFT,TOP);
-    textSize(50);
-    noStroke();
+    textAlign(LEFT, TOP);
+    textSize(0.0195 * windowWidth);
     // Create the initial fish and add them to the school array
     for (let i = 0; i < schoolSize; i++) {
-        school.push(createFish(random(0, width), random(0, height)));
+        school.push(createFish(random(0, width), random(waterSurface, height)));
     }
 }
 
@@ -64,6 +70,10 @@ function setup() {
  * Description of draw()
 */
 function draw() {
+    simulation();
+}
+
+function simulation() {
     //draw background
     background('lightblue');
     keyMovement();
@@ -73,15 +83,15 @@ function draw() {
     //animate and draw fish
     for (let fish of school) {
         moveFish(fish);
-        // displayFish(fish);
         displayRotatingFish(fish);
     }
     controlBoatHook();
     text(`Fishies caught: ${user.score}`, 0, 0);
 }
+
 function controlBoatHook() {
     push();
-    strokeWeight(5);
+    strokeWeight(user.hook.size / 2);
     stroke("white");
     for (let fish of school) {
         if (!user.hook.busy && (dist(user.hook.xOrigin, user.hook.y, fish.x, fish.y) < (fish.size / 2 + user.hook.size / 2))) {
@@ -98,12 +108,10 @@ function controlBoatHook() {
         for (let i = school.length - 1; i >= 0; i--) {
             if (school[i].caught) {
                 line(user.hook.xOrigin, user.boat.y + (user.boat.h * 0.15), school[i].x, school[i].y);
-                // fill('red'); 
-                // ellipse(school[i].x, school[i].y, user.hook.size);
                 if (keyIsDown(32)) {
                     let angle = atan2(user.hook.xOrigin - school[i].x, user.hook.yOrigin - school[i].y);
-                    school[i].vx = school[i].speed * sin(angle);
-                    school[i].vy = school[i].speed * cos(angle);
+                    school[i].vx = fishHookSpeed * sin(angle);
+                    school[i].vy = fishHookSpeed * cos(angle);
                 }
                 if (dist(user.hook.xOrigin, user.hook.yOrigin, school[i].x, school[i].y) < school[i].size) {
                     school.splice(i, 1);
@@ -121,17 +129,12 @@ function createFish(x, y) {
     let fish = {
         x: x,
         y: y,
-        size: random(25, 50),
+        size: random(9.765E-3 * windowWidth, 0.03 * windowWidth),
         vx: 0,
         vy: 0,
-        speed: 2.5,
+        speed: random(5.86E-4 * windowWidth, fishHookSpeed),
         changeRate: random(0.5, 5),
-        caught: false,
-        fill: {
-            r: random(0, 255),
-            g: random(50, 255),
-            b: random(50, 255)
-        }
+        caught: false
     };
     return fish;
 }
@@ -159,16 +162,8 @@ function moveFish(fish) {
     }
     // detectfishCollisions();
     if (fish.y < waterSurface) {
-        fish.vy += 0.1;
+        fish.vy += 3.90625E-5 * windowWidth;
     }
-}
-
-function displayFish(fish) {
-    push();
-    fill(fish.fill.r, fish.fill.g, fish.fill.b);
-    // noStroke();
-    ellipse(fish.x, fish.y, fish.size);
-    pop();
 }
 
 function displayRotatingFish(fish) {
@@ -206,9 +201,9 @@ function keyMovement() {
         }
     }
     if (keyIsDown(32) && !user.hook.busy) {
-        user.hook.y += 2;
+        user.hook.y += fishHookSpeed;
     } else if (!keyIsDown(32) && !user.hook.busy && user.hook.y > user.hook.yOrigin) {
-        user.hook.y -= 2;
+        user.hook.y -= fishHookSpeed;
     }
     //move obj
     if (user.boat.x < 0 || user.boat.x > width - user.boat.w) {
