@@ -35,8 +35,8 @@ let user = {
 */
 function preload() {
     user.texture = loadImage('assets/images/fisherman.png');
-    fishTextureL = loadImage('assets/images/guppyL.png');
-    fishTextureR = loadImage('assets/images/guppyR.png');
+    fishTextureL = loadImage('assets/images/GuppyL.png');
+    fishTextureR = loadImage('assets/images/GuppyR.png');
 }
 
 /**
