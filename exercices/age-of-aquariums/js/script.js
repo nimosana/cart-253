@@ -1,9 +1,8 @@
-/**
- * Age of Aquariums
+/** Age of Aquariums
  * @author Nicolas Morales-Sanabria
  * 
  * This is a fishing simulation, the user can move around and catch fish, he can win by catching enough or losing by catching a carnivore.
- * the player can click around to add fish to the simulation, */
+ * the player can click around to add fish to the simulation */
 "use strict";
 
 let state = `title`;
@@ -85,6 +84,7 @@ function draw() {
         loss();
     }
 }
+
 /** displays the initial state and the instructions */
 function title() {
     push();
