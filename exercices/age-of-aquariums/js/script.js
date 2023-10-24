@@ -8,14 +8,35 @@
 
 "use strict";
 let school = [];
-let schoolSize = 10;
+let schoolSize = 20;
 let waterRatio = 0.8, waterSurface;
+let fishTextureR, fishTextureL;
+let user = {
+    boat: {
+        x: 0,
+        y: 0,
+        w: 200,
+        h: 100,
+        vx: 0,
+        accelX: 0.1,
+        maxSpeed: 2
+    },
+    hook: {
+        x: 0,
+        y: 0,
+        size: 10,
+        vy: 0
+    },
+    texture: undefined
+}
 
 /**
  * Description of preload
 */
 function preload() {
-
+    user.texture = loadImage('assets/images/fisherman.png');
+    fishTextureL = loadImage('assets/images/guppyL.png');
+    fishTextureR = loadImage('assets/images/guppyR.png');
 }
 
 /**
@@ -24,6 +45,7 @@ function preload() {
 function setup() {
     createCanvas(windowWidth, windowHeight);
     waterSurface = height * (1 - waterRatio);
+    user.boat.y = waterSurface - (user.boat.h * 0.8);
     // Create the initial fish and add them to the school array
     for (let i = 0; i < schoolSize; i++) {
         school.push(createFish(random(0, width), random(0, height)));
@@ -35,14 +57,17 @@ function setup() {
 */
 function draw() {
     //draw background
-    background(0);
-    fill(0,0,100);
-    rect(0, waterSurface, width, height * 0.8);
+    background('lightblue');
+    fill(0, 0, 100);
+    rect(0, waterSurface, width, height * waterRatio);
     //animate and draw fish
     for (let fish of school) {
         moveFish(fish);
-        displayFish(fish);
+        // displayFish(fish);
+        displayRotatingFish(fish);
     }
+    keyMovement();
+    image(user.texture, user.boat.x, user.boat.y, user.boat.w, user.boat.h);
 }
 
 function createFish(x, y) {
@@ -53,7 +78,7 @@ function createFish(x, y) {
         vx: 0,
         vy: 0,
         speed: 2.5,
-        changeRate: random(0.5,5),
+        changeRate: random(0.5, 5),
         fill: {
             r: random(0, 255),
             g: random(50, 255),
@@ -98,8 +123,42 @@ function displayFish(fish) {
     pop();
 }
 
+function displayRotatingFish(fish) {
+    push();
+    let angle = atan2(fish.vy, fish.vx);
+    translate(fish.x, fish.y);
+    rotate(angle);
+    if (fish.vx < 0) {
+        rotate(135);
+        image(fishTextureL, -fish.size / 2, -fish.size / 2, fish.size, fish.size);
+    } else {
+        image(fishTextureR, -fish.size / 2, -fish.size / 2, fish.size, fish.size);
+    }
+    pop();
+}
+
 function mousePressed() {
     school.push(createFish(mouseX, mouseY));
+}
+
+/** Allows the user to control the player's speed with accelerations,
+ *  using the arrow keys or WASD
+ *  adaptation of the keyMovement function in project 1*/
+function keyMovement() {
+    //horizontal movement
+    if ((keyIsDown(39) && !keyIsDown(37)) || (keyIsDown(68) && !keyIsDown(65))) {
+        user.boat.vx += user.boat.accelX;
+    } else if (keyIsDown(37) && !keyIsDown(39) || (keyIsDown(65) && !keyIsDown(68))) {
+        user.boat.vx -= user.boat.accelX;
+    } else if ((!keyIsDown(37) && !keyIsDown(39)) || (keyIsDown(37) && keyIsDown(39)) || (keyIsDown(65) && keyIsDown(68))) {
+        if (abs(user.boat.vx) > (user.boat.maxSpeed * 0.01)) {
+            user.boat.vx /= 1.03;
+        } else {
+            user.boat.vx = 0;
+        }
+    }
+    //move obj
+    user.boat.x += user.boat.vx;
 }
 
 // function detectfishCollisions() {
