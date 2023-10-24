@@ -1,17 +1,18 @@
 /**
- * Title of Project
- * Author Name
+ * Age of Aquariums
+ * @author Nicolas Morales-Sanabria
  * 
- * This is a template. You must fill in the title, author, 
- * and this description to match your project!
- */
-
+ * This is a fishing simulation, the user can move around and catch fish, he can win by catching enough or losing by catching a carnivore.
+ * the player can click around to add fish to the simulation, */
 "use strict";
-let school = [];
-let schoolSize = 20;
+
+let state = `title`;
+let school = [], evilSchool = [];
+let schoolSize = 30, evilSchoolSize = 5;
 let waterRatio = 0.8, waterSurface;
-let fishTextureR, fishTextureL;
+let fishTextureR, fishTextureL, evilTextureR, evilTextureL;
 let fishHookSpeed = undefined;
+//represents the user on the boat
 let user = {
     score: 0,
     boat: {
@@ -35,18 +36,16 @@ let user = {
     texture: undefined
 }
 
-/**
- * Description of preload
-*/
+/** load the required textures for the fish and the user */
 function preload() {
     user.texture = loadImage('assets/images/fisherman.png');
     fishTextureL = loadImage('assets/images/GuppyL.png');
     fishTextureR = loadImage('assets/images/GuppyR.png');
+    evilTextureL = loadImage('assets/images/CarnivoreL.png');
+    evilTextureR = loadImage('assets/images/CarnivoreR.png');
 }
 
-/**
- * Description of setup
-*/
+/** Set important variables correctly, create the fish and position the boat*/
 function setup() {
     createCanvas(windowWidth, windowHeight);
     console.log(`width ${windowWidth} height ${windowHeight}`);
@@ -59,46 +58,101 @@ function setup() {
     user.boat.y = waterSurface - (user.boat.h * 0.8);
     user.hook.y = user.boat.y + (user.boat.h / 2);
     textAlign(LEFT, TOP);
-    textSize(0.0195 * windowWidth);
     // Create the initial fish and add them to the school array
-    for (let i = 0; i < schoolSize; i++) {
-        school.push(createFish(random(0, width), random(waterSurface, height)));
+    for (let i = 0; i < schoolSize - 2; i++) {
+        school.push(createFish(random(0, width), random(waterSurface, height), 0));
+    }
+    for (let i = 0; i < evilSchoolSize; i++) {
+        school.push(createFish(random(0, width), random(waterSurface, height), 1));
     }
 }
 
-/**
- * Description of draw()
-*/
+/** draws and generates the correct animation depending on the simulation state */
 function draw() {
-    simulation();
-}
-
-function simulation() {
-    //draw background
+    //draw the boat and the water
     background('lightblue');
-    keyMovement();
     image(user.texture, user.boat.x, user.boat.y, user.boat.w, user.boat.h);
     fill(0, 0, 100);
     rect(0, waterSurface, width, height * waterRatio);
+    //draw the animation depending on the simulation state
+    if (state === `title`) {
+        title();
+    } else if (state === `simulation`) {
+        simulation();
+    } else if (state === `win`) {
+        win();
+    } else if (state === 'loss') {
+        loss();
+    }
+}
+/** displays the initial state and the instructions */
+function title() {
+    push();
+    textAlign(CENTER, CENTER);
+    fill('lightblue');
+    textSize(0.04 * windowWidth);
+    text(`Age of Aquariums\n\nAD/Arrow Keys to move\nPress space to lower hook & reel fish in\nClick to start or add fish to the aquarium`, windowWidth / 2, windowHeight / 2);
+    pop();
+    if (mouseIsPressed) {
+        state = `simulation`;
+    }
+}
+
+/** continues the animation after the player has won */
+function win() {
+    //animate and draw fish
+    for (let fish of school) {
+        moveFish(fish);
+        displayRotatingFish(fish);
+    }
+    push();
+    textAlign(CENTER, TOP);
+    text(`You caught enough fish, now sit back and relax.\nClick to add more fishies`, windowWidth / 2, 0.01 * windowHeight);
+    pop();
+}
+
+/** continues the animation after the player has lost */
+function loss() {
+    //animate and draw fish
+    for (let fish of school) {
+        moveFish(fish);
+        displayRotatingFish(fish);
+    }
+    push();
+    textAlign(CENTER, TOP);
+    text(`You caught a carnivore what are you doing??\nenough fishing for today..\nClick to add fishies`, windowWidth / 2, 0.01 * windowHeight);
+    pop();
+}
+
+/** controls the simulation, the state when the user is fishing*/
+function simulation() {
+    //draw background
+    if (user.score >= 20) {
+        state = 'win';
+    }
+    keyMovement();
     //animate and draw fish
     for (let fish of school) {
         moveFish(fish);
         displayRotatingFish(fish);
     }
     controlBoatHook();
-    text(`Fishies caught: ${user.score}`, 0, 0);
+    text(`Fishies caught: ${user.score}`, 0, 0.01 * windowHeight);
 }
 
+/** Display the hook and control actions related to it */
 function controlBoatHook() {
     push();
     strokeWeight(user.hook.size / 2);
     stroke("white");
+    //detect if a fish is touching the hook and catch it if it is
     for (let fish of school) {
         if (!user.hook.busy && (dist(user.hook.xOrigin, user.hook.y, fish.x, fish.y) < (fish.size / 2 + user.hook.size / 2))) {
             user.hook.busy = fish.caught = true;
             console.log('caught');
         }
     }
+    //draw the hook when it hasn't grabbed a fish
     if (!user.hook.busy) {
         line(user.hook.xOrigin, user.boat.y + (user.boat.h * 0.15), user.hook.xOrigin, user.hook.y - user.hook.size / 2);
         noStroke();
@@ -106,18 +160,25 @@ function controlBoatHook() {
         ellipse(user.hook.xOrigin, user.hook.y, user.hook.size);
     } else {
         for (let i = school.length - 1; i >= 0; i--) {
+            //draw the hook stuck to the fish if it's caught one and execute the correct actions 
             if (school[i].caught) {
                 line(user.hook.xOrigin, user.boat.y + (user.boat.h * 0.15), school[i].x, school[i].y);
+                //reel the fish in if he's on the hook
                 if (keyIsDown(32)) {
                     let angle = atan2(user.hook.xOrigin - school[i].x, user.hook.yOrigin - school[i].y);
                     school[i].vx = fishHookSpeed * sin(angle);
                     school[i].vy = fishHookSpeed * cos(angle);
                 }
-                if (dist(user.hook.xOrigin, user.hook.yOrigin, school[i].x, school[i].y) < school[i].size) {
-                    school.splice(i, 1);
+                //remove the fish and free the hook if the user has reeled it in, add 1 to the score
+                if (dist(user.hook.xOrigin, user.hook.yOrigin, school[i].x, school[i].y) < user.hook.size) {
                     user.hook.y = user.hook.yOrigin;
                     user.hook.busy = false;
+                    //lose if its a carnivore
+                    if (school[i].type === 1) {
+                        state = 'loss';
+                    }
                     user.score++;
+                    school.splice(i, 1);
                 }
             }
         }
@@ -125,7 +186,12 @@ function controlBoatHook() {
     pop();
 }
 
-function createFish(x, y) {
+/** creates a fish at the desired position with random size, speed and odds to change direction
+ * @param x horizontal position for the fish to be created
+ * @param y vertical position for the fish to be created
+ * 
+ * @returns a new fish */
+function createFish(x, y, type) {
     let fish = {
         x: x,
         y: y,
@@ -134,11 +200,12 @@ function createFish(x, y) {
         vy: 0,
         speed: random(5.86E-4 * windowWidth, fishHookSpeed),
         changeRate: random(0.5, 5),
-        caught: false
+        caught: false,
+        type: type
     };
     return fish;
 }
-
+/** animate the fish, make them go in random directions, constrain them to the canvas and to the water */
 function moveFish(fish) {
     // Choose whether to change direction
     if (fish.y > waterSurface) {
@@ -160,33 +227,47 @@ function moveFish(fish) {
         fish.vy *= -0.5;
         fish.y = constrain(fish.y, fish.size / 2, height - (fish.size / 2));
     }
-    // detectfishCollisions();
+    // Gravitational effect if the fish get out of the water
     if (fish.y < waterSurface) {
         fish.vy += 3.90625E-5 * windowWidth;
     }
 }
 
+/** display the fish pointing in the direction of his movement */
 function displayRotatingFish(fish) {
+    // calculate the fish's angle and rotate it
     push();
     let angle = atan2(fish.vy, fish.vx);
     translate(fish.x, fish.y);
     rotate(angle);
+    // display the correct image depending on its direction
     if (fish.vx < 0) {
         rotate(135);
-        image(fishTextureL, -fish.size / 2, -fish.size / 2, fish.size, fish.size);
+        if (fish.type === 0) {
+            image(fishTextureL, -fish.size / 2, -fish.size / 2, fish.size, fish.size);
+        } else {
+            image(evilTextureL, -fish.size / 2, -fish.size / 2, fish.size, fish.size);
+        }
     } else {
-        image(fishTextureR, -fish.size / 2, -fish.size / 2, fish.size, fish.size);
+        if (fish.type === 0) {
+            image(fishTextureR, -fish.size / 2, -fish.size / 2, fish.size, fish.size);
+        } else {
+            image(evilTextureR, -fish.size / 2, -fish.size / 2, fish.size, fish.size);
+        }
     }
     pop();
 }
 
+/** spawn fish at mouse position on click */
 function mousePressed() {
-    school.push(createFish(mouseX, mouseY));
+    if (state === 'simulation' || 'win' || 'loss') {
+        school.push(createFish(mouseX, mouseY, 0));
+    }
 }
 
 /** Allows the user to control the player's speed with accelerations,
  *  using the arrow keys or WASD
- *  adaptation of the keyMovement function in project 1*/
+ *  adaptation of the keyMovement function in project 1 */
 function keyMovement() {
     //horizontal movement
     if ((keyIsDown(39) && !keyIsDown(37)) || (keyIsDown(68) && !keyIsDown(65))) {
@@ -200,16 +281,18 @@ function keyMovement() {
             user.boat.vx = 0;
         }
     }
+    //lower hook with the space bar and release to raise it
     if (keyIsDown(32) && !user.hook.busy) {
         user.hook.y += fishHookSpeed;
     } else if (!keyIsDown(32) && !user.hook.busy && user.hook.y > user.hook.yOrigin) {
         user.hook.y -= fishHookSpeed;
     }
-    //move obj
+    // constrain boat to window
     if (user.boat.x < 0 || user.boat.x > width - user.boat.w) {
         user.boat.vx *= -0.5;
         user.boat.x = constrain(user.boat.x, 0, width - user.boat.w);
     }
+    //move boat
     user.boat.x += user.boat.vx;
     user.hook.xOrigin = user.boat.x + (user.boat.w * 0.83);
     user.hook.yOrigin = user.boat.y + (user.boat.h / 2);

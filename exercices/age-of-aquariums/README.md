@@ -1,3 +1,4 @@
-# Template p5 project
+# Age of Aquariums
+## Nicolas Morales-Sanabria
 
-This is the README file for the entire project. For more official projects you should write information here about the nature of the project, your name, any special explanations of how the project works, etc.
+This is a fishing simulation, the user can move around and catch fish, he can win by catching enough or losing by catching a carnivore. the player can click around to add fish to the simulation. The fish 
