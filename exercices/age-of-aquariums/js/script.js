@@ -12,20 +12,24 @@ let schoolSize = 20;
 let waterRatio = 0.8, waterSurface;
 let fishTextureR, fishTextureL;
 let user = {
+    score: 0,
     boat: {
         x: 0,
         y: 0,
-        w: 200,
-        h: 100,
+        w: 400,
+        h: 200,
         vx: 0,
         accelX: 0.1,
         maxSpeed: 2
     },
     hook: {
+        xOrigin: 0,
+        yOrigin: 0,
         x: 0,
         y: 0,
         size: 10,
-        vy: 0
+        vy: 0,
+        busy: false
     },
     texture: undefined
 }
@@ -46,6 +50,10 @@ function setup() {
     createCanvas(windowWidth, windowHeight);
     waterSurface = height * (1 - waterRatio);
     user.boat.y = waterSurface - (user.boat.h * 0.8);
+    user.hook.y = user.boat.y + (user.boat.h / 2);
+    textAlign(LEFT,TOP);
+    textSize(50);
+    noStroke();
     // Create the initial fish and add them to the school array
     for (let i = 0; i < schoolSize; i++) {
         school.push(createFish(random(0, width), random(0, height)));
@@ -58,6 +66,8 @@ function setup() {
 function draw() {
     //draw background
     background('lightblue');
+    keyMovement();
+    image(user.texture, user.boat.x, user.boat.y, user.boat.w, user.boat.h);
     fill(0, 0, 100);
     rect(0, waterSurface, width, height * waterRatio);
     //animate and draw fish
@@ -66,8 +76,45 @@ function draw() {
         // displayFish(fish);
         displayRotatingFish(fish);
     }
-    keyMovement();
-    image(user.texture, user.boat.x, user.boat.y, user.boat.w, user.boat.h);
+    controlBoatHook();
+    text(`Fishies caught: ${user.score}`, 0, 0);
+}
+function controlBoatHook() {
+    push();
+    strokeWeight(5);
+    stroke("white");
+    for (let fish of school) {
+        if (!user.hook.busy && (dist(user.hook.xOrigin, user.hook.y, fish.x, fish.y) < (fish.size / 2 + user.hook.size / 2))) {
+            user.hook.busy = fish.caught = true;
+            console.log('caught');
+        }
+    }
+    if (!user.hook.busy) {
+        line(user.hook.xOrigin, user.boat.y + (user.boat.h * 0.15), user.hook.xOrigin, user.hook.y - user.hook.size / 2);
+        noStroke();
+        fill('red');
+        ellipse(user.hook.xOrigin, user.hook.y, user.hook.size);
+    } else {
+        for (let i = school.length - 1; i >= 0; i--) {
+            if (school[i].caught) {
+                line(user.hook.xOrigin, user.boat.y + (user.boat.h * 0.15), school[i].x, school[i].y);
+                // fill('red'); 
+                // ellipse(school[i].x, school[i].y, user.hook.size);
+                if (keyIsDown(32)) {
+                    let angle = atan2(user.hook.xOrigin - school[i].x, user.hook.yOrigin - school[i].y);
+                    school[i].vx = school[i].speed * sin(angle);
+                    school[i].vy = school[i].speed * cos(angle);
+                }
+                if (dist(user.hook.xOrigin, user.hook.yOrigin, school[i].x, school[i].y) < school[i].size) {
+                    school.splice(i, 1);
+                    user.hook.y = user.hook.yOrigin;
+                    user.hook.busy = false;
+                    user.score++;
+                }
+            }
+        }
+    }
+    pop();
 }
 
 function createFish(x, y) {
@@ -79,6 +126,7 @@ function createFish(x, y) {
         vy: 0,
         speed: 2.5,
         changeRate: random(0.5, 5),
+        caught: false,
         fill: {
             r: random(0, 255),
             g: random(50, 255),
@@ -157,8 +205,19 @@ function keyMovement() {
             user.boat.vx = 0;
         }
     }
+    if (keyIsDown(32) && !user.hook.busy) {
+        user.hook.y += 2;
+    } else if (!keyIsDown(32) && !user.hook.busy && user.hook.y > user.hook.yOrigin) {
+        user.hook.y -= 2;
+    }
     //move obj
+    if (user.boat.x < 0 || user.boat.x > width - user.boat.w) {
+        user.boat.vx *= -0.5;
+        user.boat.x = constrain(user.boat.x, 0, width - user.boat.w);
+    }
     user.boat.x += user.boat.vx;
+    user.hook.xOrigin = user.boat.x + (user.boat.w * 0.83);
+    user.hook.yOrigin = user.boat.y + (user.boat.h / 2);
 }
 
 // function detectfishCollisions() {
