@@ -107,6 +107,7 @@ function win() {
     }
     push();
     textAlign(CENTER, TOP);
+    textSize(0.02 * windowWidth);
     text(`You caught enough fish, now sit back and relax.\nClick to add more fishies`, windowWidth / 2, 0.01 * windowHeight);
     pop();
 }
@@ -120,6 +121,7 @@ function loss() {
     }
     push();
     textAlign(CENTER, TOP);
+    textSize(0.02 * windowWidth);
     text(`You caught a carnivore what are you doing??\nenough fishing for today..\nClick to add fishies`, windowWidth / 2, 0.01 * windowHeight);
     pop();
 }
