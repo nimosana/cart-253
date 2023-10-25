@@ -56,6 +56,7 @@ function setup() {
     waterSurface = windowHeight * (1 - waterRatio);
     user.boat.y = waterSurface - (user.boat.h * 0.8);
     user.hook.y = user.boat.y + (user.boat.h / 2);
+    textSize(0.02 * windowWidth);
     textAlign(LEFT, TOP);
     // Create the initial fish and add them to the school array
     for (let i = 0; i < schoolSize - 2; i++) {
@@ -131,6 +132,8 @@ function simulation() {
     //draw background
     if (user.score >= 20) {
         state = 'win';
+        state = 'win';
+
     }
     keyMovement();
     //animate and draw fish
@@ -207,6 +210,7 @@ function createFish(x, y, type) {
     };
     return fish;
 }
+
 /** animate the fish, make them go in random directions, constrain them to the canvas and to the water */
 function moveFish(fish) {
     // Choose whether to change direction
