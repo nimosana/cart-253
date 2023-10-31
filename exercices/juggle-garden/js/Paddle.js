@@ -3,12 +3,16 @@ class Paddle {
     constructor(w, h) {
         this.width = w;
         this.height = h;
-        this.x = 0;
+        this.x = width / 2;
         this.y = height - this.height / 2;
     }
 
     move() {
-        this.x = mouseX;
+        if (keyIsDown(37) || keyIsDown(65)) {
+            this.x -= 3;
+        } else if (keyIsDown(39) || keyIsDown(68)) {
+            this.x += 3;
+        }
     }
 
     display() {
