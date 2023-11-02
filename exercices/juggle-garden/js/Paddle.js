@@ -5,9 +5,9 @@ class Paddle {
         this.height = h;
         this.player = player;
         if (player === 1) {
-            this.x = 0 + w / 2;
+            this.x = 0;
         } else if (player === 2) {
-            this.x = width - w / 2;
+            this.x = width - w;
         }
         this.y = height / 2 - this.height / 2;
     }
@@ -32,7 +32,6 @@ class Paddle {
         push();
         fill(255);
         noStroke();
-        rectMode(CENTER);
         rect(this.x, this.y, this.width, this.height);
         pop();
     }
