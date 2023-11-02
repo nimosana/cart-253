@@ -11,11 +11,15 @@
 let gravityForce = 0.0025;
 
 let paddle1, paddle2, paddles = [];
-let balls = [];
+let balls = [], imageBalls;
 
 let numBalls = 10;
 let state = `title`;
 let score = 0;
+
+function preload() {
+    imageBalls = loadImage('assets/images/clown.png');
+}
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
@@ -26,7 +30,7 @@ function setup() {
 
     for (let i = 0; i < numBalls; i++) {
         let x = random(width * 0.25, width * 0.75);
-        let y = random(-400, -100);
+        let y = height / 2;
         let ball = new Ball(x, y);
         balls.push(ball);
     }

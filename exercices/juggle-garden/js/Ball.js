@@ -4,7 +4,7 @@ class Ball {
         this.x = x;
         this.y = y;
         this.vx = 3;
-        this.vy = -5;
+        this.vy = 0;
         this.ax = 0;
         this.ay = 0;
         this.maxSpeed = 10;
@@ -42,29 +42,28 @@ class Ball {
     }
 
     bounce(paddle) {
+        // let dx = this.y - paddle.y + paddle.height / 2;
         if (paddle.player === 1) {
             if (collideRectCircle(paddle.x, paddle.y, paddle.width, paddle.height, this.x, this.y, this.size)) {
                 this.x = paddle.x + paddle.width + this.size / 2;
                 this.vx *= -1;
+                // this.vy = this.vy + map(dx, -paddle.height / 2, paddle.height / 2, -2, 2);
             }
         } else if (paddle.player === 2) {
             if (collideRectCircle(paddle.x, paddle.y, paddle.width, paddle.height, this.x, this.y, this.size)) {
                 this.x = width - paddle.width - this.size / 2;
                 this.vx *= -1;
+                // this.vy = this.vy + map(dx, -paddle.height / 2, paddle.height / 2, -2, 2);
             }
         }
-        //     // Bounce
-        //     let dx = this.x - paddle.x;
-        //     this.vx = this.vx + map(dx, -paddle.width / 2, paddle.width / 2, -2, 2);
-        //     this.ay = 0;
-        // }
+        //     Bounce
     }
 
     display() {
         push();
         fill(255, 50, 50);
         stroke(0);
-        ellipse(this.x, this.y, this.size);
+        image(imageBalls, this.x - this.size / 2, this.y - this.size / 2, this.size, this.size);
         pop();
     }
 
