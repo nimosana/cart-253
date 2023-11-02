@@ -10,20 +10,22 @@
 
 let gravityForce = 0.0025;
 
-let paddle;
-
+let paddle1, paddle2, paddles = [];
 let balls = [];
+
 let numBalls = 10;
 let state = `title`;
+let score = 0;
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
-
-    paddle = new Paddle(300, 20);
+    paddles.push(new Paddle(20, 200, 1));
+    paddles.push(new Paddle(20, 200, 2));
     textSize(40);
     textAlign(CENTER, CENTER);
+
     for (let i = 0; i < numBalls; i++) {
-        let x = random(0, width);
+        let x = random(width * 0.25, width * 0.75);
         let y = random(-400, -100);
         let ball = new Ball(x, y);
         balls.push(ball);
@@ -52,16 +54,22 @@ function title() {
 
 function simulation() {
     background(0);
-
-    paddle.move();
-    paddle.display();
+    for (let paddle of paddles) {
+        paddle.move();
+        paddle.display();
+    }
 
     for (let i = balls.length - 1; i >= 0; i--) {
         let ball = balls[i];
         if (ball.active) {
-            ball.gravity(gravityForce);
+            // ball.gravity(gravityForce);
             ball.move();
-            ball.bounce(paddle);
+            ball.constrainToWindow();
+            for (let paddle of paddles) {
+                if (ball.bounce(paddle)) {
+                    score++;
+                }
+            }
             ball.display();
         } else {
             balls.splice(i, 1);

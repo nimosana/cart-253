@@ -4,7 +4,7 @@ class Ball {
         this.x = x;
         this.y = y;
         this.vx = 0;
-        this.vy = 0;
+        this.vy = -10;
         this.ax = 0;
         this.ay = 0;
         this.maxSpeed = 10;
@@ -31,6 +31,16 @@ class Ball {
         }
     }
 
+    constrainToWindow() {
+        if (this.y > height) {
+            this.y = height;
+            this.vy *= -1;
+        } else if (this.y < 0) {
+            this.y = 0;
+            this.vy *= -1;
+        }
+    }
+
     bounce(paddle) {
         if (this.x > paddle.x - paddle.width / 2 &&
             this.x < paddle.x + paddle.width / 2 &&
@@ -42,6 +52,9 @@ class Ball {
 
             this.vy = -this.vy;
             this.ay = 0;
+            return true;
+        } else {
+            return false;
         }
     }
 

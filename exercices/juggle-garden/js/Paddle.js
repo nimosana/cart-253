@@ -1,17 +1,30 @@
 class Paddle {
 
-    constructor(w, h) {
+    constructor(w, h, player) {
         this.width = w;
         this.height = h;
-        this.x = width / 2;
-        this.y = height - this.height / 2;
+        this.player = player;
+        if (player === 1) {
+            this.x = 0 + w / 2;
+        } else if (player === 2) {
+            this.x = width - w / 2;
+        }
+        this.y = height / 2 - this.height / 2;
     }
 
     move() {
-        if (keyIsDown(37) || keyIsDown(65)) {
-            this.x -= 3;
-        } else if (keyIsDown(39) || keyIsDown(68)) {
-            this.x += 3;
+        if (this.player === 1) {
+            if (keyIsDown(87)) {
+                this.y -= 3;
+            } else if (keyIsDown(83)) {
+                this.y += 3;
+            }
+        } else if (this.player === 2) {
+            if (keyIsDown(38)) {
+                this.y -= 3;
+            } else if (keyIsDown(40)) {
+                this.y += 3;
+            }
         }
     }
 
