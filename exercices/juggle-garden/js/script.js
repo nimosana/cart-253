@@ -10,8 +10,8 @@
 
 let gravityForce = 0.0025;
 
-let paddle1, paddle2, paddles = [];
-let balls = [], imageBalls;
+let paddles = [];
+let ball, imageBalls;
 
 let numBalls = 10;
 let state = `title`;
@@ -23,68 +23,18 @@ function preload() {
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
-    paddles.push(new Paddle(20, 200, 1));
-    paddles.push(new Paddle(20, 200, 2));
+    paddles.push(new Paddle(20, 200, 1), new Paddle(20, 200, 2));
     textSize(40);
     textAlign(CENTER, CENTER);
-
-    for (let i = 0; i < numBalls; i++) {
-        let x = random(width * 0.25, width * 0.75);
-        let y = height / 2;
-        let ball = new Ball(x, y);
-        balls.push(ball);
-    }
+    ball = new Ball(width / 2, height / 2);
 }
 
 function draw() {
     if (state === `title`) {
-        title();
+        States.title();
     } else if (state === `simulation`) {
-        simulation();
+        States.simulation();
     } else if (state === `loss`) {
-        loss();
+        States.loss();
     }
-    // console.log(`size: ${balls.length}`);
-}
-
-function title() {
-    background(0);
-    fill("white");
-    text("juggle juggle", width / 2, height / 2);
-    if (mouseIsPressed) {
-        state = `simulation`;
-    }
-}
-
-function simulation() {
-    background(0);
-    for (let paddle of paddles) {
-        paddle.move();
-        paddle.display();
-    }
-
-    for (let i = balls.length - 1; i >= 0; i--) {
-        let ball = balls[i];
-        if (ball.active) {
-            // ball.gravity(gravityForce);
-            ball.move();
-            ball.constrainToWindow();
-            for (let paddle of paddles) {
-                if (ball.bounce(paddle)) {
-                    score++;
-                }
-            }
-            ball.display();
-        } else {
-            balls.splice(i, 1);
-        }
-    }
-    if (balls.length === 0) {
-        state = `loss`;
-    }
-}
-
-function loss() {
-    background(0);
-    text("haha loser", width / 2, height / 2);
 }
