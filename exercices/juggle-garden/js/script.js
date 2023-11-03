@@ -8,14 +8,14 @@
 
 "use strict";
 
-let gravityForce = 0.0025;
-
 let paddles = [];
 let ball, imageBalls;
 
-let numBalls = 10;
-let state = `title`;
-let score = 0;
+let simulation;
+let score1, score2;
+let wins1, wins2;
+let lastRoundWinner;
+let roundEnded = false;
 
 function preload() {
     imageBalls = loadImage('assets/images/clown.png');
@@ -23,18 +23,13 @@ function preload() {
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
-    paddles.push(new Paddle(20, 200, 1), new Paddle(20, 200, 2));
     textSize(40);
-    textAlign(CENTER, CENTER);
+    wins1 = wins2 = score1 = score2 = 0;
+    simulation = new Simulation(`title`);
+    paddles.push(new Paddle(20, 200, 1), new Paddle(20, 200, 2));
     ball = new Ball(width / 2, height / 2);
 }
 
 function draw() {
-    if (state === `title`) {
-        States.title();
-    } else if (state === `simulation`) {
-        States.simulation();
-    } else if (state === `loss`) {
-        States.loss();
-    }
+    simulation.draw();
 }

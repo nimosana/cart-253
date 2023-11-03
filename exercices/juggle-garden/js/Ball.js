@@ -3,7 +3,7 @@ class Ball {
     constructor(x, y) {
         this.x = x;
         this.y = y;
-        this.vx = 3;
+        this.vx = Math.sign(random(-100, 100)) * 3;
         this.vy = 0;
         this.ax = 0;
         this.ay = 0;
@@ -25,10 +25,30 @@ class Ball {
 
         this.x = this.x + this.vx;
         this.y = this.y + this.vy;
+        this.constrainToWindow();
 
-        if (this.x < 0 || this.x > width) {
-            this.active = false;
+        if (this.x > width) {
+            score1++;
+            lastRoundWinner = 1;
+            roundEnded = true;
+            simulation.state = `waiting`;
+            if (score1 === 3) {
+                score1 = score2 = 0;
+                wins1++;
+                simulation.state = `endGame`;
+            }
+        } else if (this.x < 0) {
+            score2++;
+            lastRoundWinner = 2;
+            roundEnded = true;
+            simulation.state = `waiting`;
+            if (score2 === 3) {
+                score1 = score2 = 0;
+                wins2++;
+                simulation.state = `endGame`;
+            }
         }
+
     }
 
     constrainToWindow() {
@@ -56,7 +76,6 @@ class Ball {
                 this.vy = this.vy + map(dx, -paddle.height / 2, paddle.height / 2, -2, 2);
             }
         }
-        // Bounce
     }
 
     display() {

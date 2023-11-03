@@ -45,10 +45,13 @@ class Paddle {
 
     display() {
         push();
-        fill(255);
+        if (this.player === 1) {
+            fill(`CYAN`);
+        } else if (this.player === 2) {
+            fill(`RED`);
+        }
         noStroke();
         rect(this.x, this.y, this.width, this.height);
         pop();
     }
-
 }
