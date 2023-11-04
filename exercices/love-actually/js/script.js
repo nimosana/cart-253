@@ -1,5 +1,5 @@
 /**Exercise 3: Love, Actually
- * @author Nicolas Morales-Sanabriaspeed
+ * @author Nicolas Morales-Sanabria
  * 
  * In this simulation, the user controls a clown emoji that moves around trying to collect money,
  *  there are also "fish" (clowns with lipstick) following him around but keeping a set distance,
@@ -60,7 +60,7 @@ function setup() {
     user.y = windowHeight / 2;
     makeFishList();
     spawnMoney();
-    textSize(windowWidth*0.025);
+    textSize(windowWidth * 0.025);
     textAlign(CENTER, CENTER);
 }
 
@@ -157,7 +157,7 @@ function display() {
     textAlign(LEFT, CENTER);
     rectMode(CENTER);
     fill(0, 0, 0, 150);
-    rect(150, 40, windowWidth*0.273, 80);
+    rect(150, 40, windowWidth * 0.273, 80);
     fill('lime');
     text(`Money: ${user.money}`, 10, 40);
     pop();
@@ -190,7 +190,7 @@ function makeFishList() {
             speed: 3,
             vx: 0,
             vy: 0,
-            maxSpeed: windowWidth*2.734E-3,
+            maxSpeed: windowWidth * 2.734E-3,
             directionX: 1,
             directionY: 1,
             accelX: windowWidth * 9.7656E-5,
