@@ -1,10 +1,9 @@
 /** Ball class
  * @author Nicolas Morales-Sanabria
- * Allows the creation and control of balls (displayed as clowns) that move around
+ * Allows the creation, display and control of balls (displayed as clowns) that move around
  * and can bounce on paddles */
 class Ball {
     /** creates a new ball object, at the desired position
-     * 
      * @param x the position in x for the ball
      * @param y the position in y for the ball */
     constructor(x, y) {

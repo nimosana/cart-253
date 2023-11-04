@@ -1,13 +1,11 @@
-/**
- Exercise 5: Juggle garden (clong)
+/** Exercise 5: Juggle garden (clong)
  * @author Nicolas Morales-Sanabria
  * In this exercise, 2 players can play a variation of the "Pong" called "clong".
  * each player controls a paddle and has to make a clown bounce trying * to score on
  * their opponent, the games are best of 3 but players can play as many games 
  * as they want. */
-
 "use strict";
-//represents the clong game
+//represents the clong game instance
 let clong;
 // the image used for the ball in the clong game
 let imageBalls;
@@ -20,6 +18,7 @@ function preload() {
 /** create the canvas, setup critical variables and initialize ball & paddles */
 function setup() {
     createCanvas(windowWidth, windowHeight);
+    console.log(`w: ${width}, h: ${height}`)
     textSize(40);
     clong = new Clong(`title`);
 }

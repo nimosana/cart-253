@@ -53,6 +53,7 @@ class Clong {
             this.state = `gameplay`;
         }
     }
+
     /** displays the gameplay,score and handles the movement/display of the ball & paddles*/
     gameplay() {
         background(0);
@@ -67,6 +68,7 @@ class Clong {
         this.ball.display();
         this.displayScores();
     }
+
     /** displays the state of the game after a player scored 3 points */
     endGame() {
         background(0);
