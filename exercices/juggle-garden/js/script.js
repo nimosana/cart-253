@@ -18,7 +18,6 @@ function preload() {
 /** create the canvas, setup critical variables and initialize ball & paddles */
 function setup() {
     createCanvas(windowWidth, windowHeight);
-    console.log(`w: ${width}, h: ${height}`)
     textSize(width * 0.031299);
     clong = new Clong(`title`);
 }

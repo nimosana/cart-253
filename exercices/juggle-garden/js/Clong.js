@@ -3,7 +3,7 @@
  * Allows the creation of simulations/instances of the clong game,
  * contains every function necessary to run the game*/
 class Clong {
-    /** Allows the creation of a simulation/instance of  clong;
+    /** Allows the creation of a simulation/instance of clong games
      * @param state the initial state of the simulation */
     constructor(state) {
         this.state = state;
@@ -84,7 +84,7 @@ class Clong {
         // display the game's winner & option to rematch
         textAlign(CENTER, CENTER);
         if (this.lastRoundWinner === 1) {
-            fill('cyan')
+            fill('cyan');
             text(`Player 1 won the game\n${this.wins1} : ${this.wins2}\nClick to rematch`, width / 2, height / 4);
         } else if (this.lastRoundWinner === 2) {
             fill('red');
