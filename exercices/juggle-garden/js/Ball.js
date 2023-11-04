@@ -1,56 +1,55 @@
+/** Ball class
+ * @author Nicolas Morales-Sanabria
+ * Allows the creation and control of balls (displayed as clowns) that move around
+ * and can bounce on paddles */
 class Ball {
-
+    /** creates a new ball object, at the desired position
+     * 
+     * @param x the position in x for the ball
+     * @param y the position in y for the ball */
     constructor(x, y) {
         this.x = x;
         this.y = y;
         this.vx = Math.sign(random(-100, 100)) * 3;
         this.vy = 0;
-        this.ax = 0;
-        this.ay = 0;
-        this.maxSpeed = 10;
+        this.ax = 1;
+        this.maxspeed = 45;
         this.size = 40;
-        this.active = true;
     }
 
-    gravity(force) {
-        this.ay = this.ay + force;
-    }
-
+    /** move the ball, constrain it to the window and check if it scores */
     move() {
-        this.vx = this.vx + this.ax;
-        this.vy = this.vy + this.ay;
-
-        this.vx = constrain(this.vx, -this.maxSpeed, this.maxSpeed);
-        this.vy = constrain(this.vy, -this.maxSpeed, this.maxSpeed);
-
+        //move and constrain to window if out of bounds
         this.x = this.x + this.vx;
         this.y = this.y + this.vy;
         this.constrainToWindow();
-
+        // check if a player lost the round
         if (this.x > width) {
-            score1++;
-            lastRoundWinner = 1;
-            roundEnded = true;
-            simulation.state = `waiting`;
-            if (score1 === 3) {
-                score1 = score2 = 0;
-                wins1++;
-                simulation.state = `endGame`;
+            //increase score & setup for inbetween rounds
+            clong.score1++;
+            clong.lastRoundWinner = 1;
+            clong.roundEnded = true;
+            clong.state = `waiting`;
+            if (clong.score1 === 3) {
+                clong.score1 = clong.score2 = 0;
+                clong.wins1++;
+                clong.state = `endGame`;
             }
         } else if (this.x < 0) {
-            score2++;
-            lastRoundWinner = 2;
-            roundEnded = true;
-            simulation.state = `waiting`;
-            if (score2 === 3) {
-                score1 = score2 = 0;
-                wins2++;
-                simulation.state = `endGame`;
+            //increase score & setup for inbetween rounds
+            clong.score2++;
+            clong.lastRoundWinner = 2;
+            clong.roundEnded = true;
+            clong.state = `waiting`;
+            if (clong.score2 === 3) {
+                clong.score1 = clong.score2 = 0;
+                clong.wins2++;
+                clong.state = `endGame`;
             }
         }
-
     }
 
+    /** constrain to window and invert its speed to make it "bounce" if going out of the window */
     constrainToWindow() {
         if (this.y > height - this.size / 2) {
             this.y = height - this.size / 2;
@@ -61,29 +60,37 @@ class Ball {
         }
     }
 
+    /** make the ball bounce on the paddles */
     bounce(paddle) {
         let dx = this.y - paddle.y - paddle.height / 2;
-        if (paddle.player === 1) {
+        if (paddle.player === 1) { //left (cyan paddle)
             if (collideRectCircle(paddle.x, paddle.y, paddle.width, paddle.height, this.x, this.y, this.size)) {
+                //make it bounce and accelerate the ball
                 this.x = paddle.x + paddle.width + this.size / 2;
                 this.vx *= -1;
+                if (abs(this.vx) < this.maxspeed) {
+                    this.vx += this.ax;
+                }
+                // give it a vertical speed according to the angle of the ball & center of the paddle
                 this.vy = this.vy + map(dx, -paddle.height / 2, paddle.height / 2, -2, 2);
             }
-        } else if (paddle.player === 2) {
+        } else if (paddle.player === 2) { //right (red paddle)
             if (collideRectCircle(paddle.x, paddle.y, paddle.width, paddle.height, this.x, this.y, this.size)) {
+                //make it bounce and accelerate the ball
                 this.x = width - paddle.width - this.size / 2;
                 this.vx *= -1;
+                if (abs(this.vx) < this.maxspeed) {
+                    this.vx -= this.ax;
+                }
+                // give it a vertical speed according to the angle of the ball & center of the paddle
                 this.vy = this.vy + map(dx, -paddle.height / 2, paddle.height / 2, -2, 2);
             }
         }
     }
 
+    /** display the ball at its position */
     display() {
-        push();
-        fill(255, 50, 50);
-        stroke(0);
         image(imageBalls, this.x - this.size / 2, this.y - this.size / 2, this.size, this.size);
-        pop();
     }
 
 }

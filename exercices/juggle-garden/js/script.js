@@ -1,35 +1,30 @@
 /**
- * Title of Project
- * Author Name
- * 
- * This is a template. You must fill in the title, author, 
- * and this description to match your project!
- */
+ Exercise 5: Juggle garden (clong)
+ * @author Nicolas Morales-Sanabria
+ * In this exercise, 2 players can play a variation of the "Pong" called "clong".
+ * each player controls a paddle and has to make a clown bounce trying * to score on
+ * their opponent, the games are best of 3 but players can play as many games 
+ * as they want. */
 
 "use strict";
+//represents the clong game
+let clong;
+// the image used for the ball in the clong game
+let imageBalls;
 
-let paddles = [];
-let ball, imageBalls;
-
-let simulation;
-let score1, score2;
-let wins1, wins2;
-let lastRoundWinner;
-let roundEnded = false;
-
+/** load the assets used in the clong game */
 function preload() {
     imageBalls = loadImage('assets/images/clown.png');
 }
 
+/** create the canvas, setup critical variables and initialize ball & paddles */
 function setup() {
     createCanvas(windowWidth, windowHeight);
     textSize(40);
-    wins1 = wins2 = score1 = score2 = 0;
-    simulation = new Simulation(`title`);
-    paddles.push(new Paddle(20, 200, 1), new Paddle(20, 200, 2));
-    ball = new Ball(width / 2, height / 2);
+    clong = new Clong(`title`);
 }
 
+/** runs the instance of the clong game */
 function draw() {
-    simulation.draw();
+    clong.run();
 }
