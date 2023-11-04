@@ -7,12 +7,16 @@ class Clong {
      * @param state the initial state of the simulation */
     constructor(state) {
         this.state = state;
+        //players round scores 
         this.score1 = 0;
         this.score2 = 0;
+        //players game scores
         this.wins1 = 0;
         this.wins2 = 0;
+        //end of round variables
         this.lastRoundWinner;
         this.roundEnded = false;
+        //ball & paddles
         this.ball = new Ball(width / 2, height / 2);
         this.paddles = [new Paddle(width * 0.01565, height * 0.22779, 1), new Paddle(width * 0.01565, height * 0.22779, 2)];
     }
