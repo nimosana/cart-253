@@ -9,11 +9,11 @@ class Ball {
     constructor(x, y) {
         this.x = x;
         this.y = y;
-        this.vx = Math.sign(random(-100, 100)) * 3;
+        this.vx = Math.sign(random(-1, 1)) * (width * 2.3474E-3);
         this.vy = 0;
-        this.ax = 1;
-        this.maxspeed = 45;
-        this.size = 40;
+        this.ax = width * 7.82473E-4;
+        this.maxspeed = width * 0.0352;
+        this.size = width * 0.03123;
     }
 
     /** move the ball, constrain it to the window and check if it scores */

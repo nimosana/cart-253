@@ -19,7 +19,7 @@ function preload() {
 function setup() {
     createCanvas(windowWidth, windowHeight);
     console.log(`w: ${width}, h: ${height}`)
-    textSize(40);
+    textSize(width * 0.031299);
     clong = new Clong(`title`);
 }
 

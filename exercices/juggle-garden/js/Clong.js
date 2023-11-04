@@ -14,7 +14,7 @@ class Clong {
         this.lastRoundWinner;
         this.roundEnded = false;
         this.ball = new Ball(width / 2, height / 2);
-        this.paddles = [new Paddle(20, 200, 1), new Paddle(20, 200, 2)];
+        this.paddles = [new Paddle(width * 0.01565, height * 0.22779, 1), new Paddle(width * 0.01565, height * 0.22779, 2)];
     }
 
     /** runs the correct part of clong according to the state of the instance*/
@@ -147,9 +147,9 @@ class Clong {
     displayScores() {
         textAlign(LEFT, TOP);
         fill(`Cyan`);
-        text(this.score1, 0, 0);
+        text(this.score1, width * 0.02, 0);
         textAlign(RIGHT, TOP);
         fill(`Red`);
-        text(this.score2, width, 0);
+        text(this.score2, width * 0.98, 0);
     }
 } 

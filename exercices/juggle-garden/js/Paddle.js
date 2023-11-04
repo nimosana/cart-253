@@ -9,7 +9,7 @@ class Paddle {
     constructor(w, h, player) {
         this.width = w;
         this.height = h;
-        this.accel = 0.2;
+        this.accel = height * 2.278E-4;
         this.vy = 0;
         this.player = player;
         if (player === 1) {
