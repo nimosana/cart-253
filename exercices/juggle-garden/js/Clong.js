@@ -40,7 +40,7 @@ class Clong {
         //display text
         fill("white");
         textAlign(CENTER, CENTER);
-        text(`Clong\n2 Player game\nClick to start`, width / 2, height / 4);
+        text(`Clong\nClick to start`, width / 2, height / 4);
         fill("cyan");
         textAlign(LEFT, CENTER);
         text(`Player 1:\nW - Up\nS - Down`, width * 0.02, height / 2);
@@ -137,9 +137,9 @@ class Clong {
         this.ball.y = height / 2;
         this.ball.vy = 0;
         if (this.lastRoundWinner === 1) {
-            this.ball.vx = 3;
+            this.ball.vx = (width * 2.3474E-3);
         } else if (this.lastRoundWinner === 2) {
-            this.ball.vx = -3;
+            this.ball.vx = -(width * 2.3474E-3);
         }
         for (let paddle of this.paddles) {
             paddle.y = height / 2 - paddle.height / 2;
