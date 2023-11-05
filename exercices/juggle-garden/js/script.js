@@ -3,7 +3,8 @@
  * In this exercise, 2 players can play a variation of the "Pong" called "clong".
  * each player controls a paddle and has to make a clown bounce trying * to score on
  * their opponent, the games are best of 3 but players can play as many games 
- * as they want. */
+ * as they want. 
+ * This project uses Ben Moren's p5.collide2d.js library */
 "use strict";
 //represents the clong game instance
 let clong;
