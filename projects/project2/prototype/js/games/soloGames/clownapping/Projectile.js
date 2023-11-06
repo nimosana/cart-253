@@ -1,11 +1,10 @@
 /** Projectile class
  * @author Nicolas Morales-Sanabria
- Allows the creation, repositioning and drawing of a single or multiple Projectile objects 
- at different positions, with different speeds, sizes and directions*/
+ * 
+ * Allows the creation, repositioning and drawing of a single or multiple Projectile objects 
+  *at different positions, with different speeds, sizes and directions*/
 class Projectile {
 
-    //Array of exisitng projectiles
-    static projectiles = [];
     /** Creates a new projectile at the desired coordinates, size, speed and angle
      * @param  x desired horizontal position
      * @param  y desired vertical position

@@ -19,9 +19,10 @@ class Player {
         this.accel = accel;
         this.maxSpeed = maxSpeed;
         this.speed = 0;
-        this.texture = undefined;
+        this.texture = clownImage;
         this.angle;
         this.fireDelay = 0;
+        this.vaccinations = 0;
         this.health = 100;
     }
 
@@ -52,6 +53,9 @@ class Player {
         //+2 health if hurt, every ~1 second
         if (frameCount % 60 === 0 && this.health < 100) {
             this.health += 2;
+            if (this.health > 100) {
+                this.health = 100;
+            }
         }
     }
 }

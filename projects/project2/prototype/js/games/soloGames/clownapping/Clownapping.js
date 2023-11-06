@@ -14,7 +14,7 @@ class Clownapping {
         //used to always have a similar gameplay area no matter the screen ratio/dimensions
         this.heightRatio = 0.513671875;
         //represents the user
-        this.user, this.userTexture = clownImage;
+        this.user;
         //projectile arrays and fire rates
         this.userProjectiles = [], this.enemyProjectiles = [], this.userFireRate = 0, this.enemyFireRate = 60;
         //camera offsets used to follow the user
@@ -47,7 +47,7 @@ class Clownapping {
     /** sets up the critical variables, settings or executes the necessary actions in order to correctly launch the simulation */
     setup() {
         this.user = new Player(width / 2, height / 2, width * 0.039, width * 7.8125E-5, (width * 1.953125E-3) * 2);
-        this.user.texture = this.userTexture;
+        this.user.texture = clownImage;
         Alien.size = width / 3;
         this.createAliens();
         this.wallWidth = width / 20;
@@ -136,11 +136,11 @@ class Clownapping {
         CommonGameFunctions.keyMovementSolo(this.user);
         this.collisions();
         this.displayObjects();
-        this.projectileManagement();
-        this.user.userHealthManagement();
         for (let evilClown of this.evilClowns) {
             CommonGameFunctions.chaseFleeTarget(evilClown, this.user, 1);
         }
+        this.projectileManagement();
+        this.user.userHealthManagement();
     }
 
     /** displays the loss state/text of the simulation, opting to restart it */
@@ -205,7 +205,7 @@ class Clownapping {
         //draws the user
         this.user.displayRotatingPlayer(this.cameraOffsetX, this.cameraOffsetY);
         for (let evilClown of this.evilClowns) {
-            evilClown.displayRotatingClown(this.cameraOffsetX, this.cameraOffsetY, this.user);
+            CommonGameFunctions.displayObjRotatingToTarget(evilClown, this.user, evilClownImage, this.cameraOffsetX, this.cameraOffsetY);
         }
         //draws the walls
         for (let wall of this.walls) {
@@ -405,7 +405,7 @@ class Clownapping {
                 tempPos.x = random(-width + this.user.size / 2, width * 2 - this.user.size / 2);
                 tempPos.y = random(-width * this.heightRatio + this.user.size / 2, width * this.heightRatio * 2 - this.user.size / 2);
             }
-            this.evilClowns.push(new EvilClown(tempPos.x, tempPos.y, this.user.size, this.user.accel / 2, this.user.maxSpeed));
+            this.evilClowns.push(new Player(tempPos.x, tempPos.y, this.user.size, this.user.accel / 2, this.user.maxSpeed));
         }
     }
 

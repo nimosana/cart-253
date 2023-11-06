@@ -98,4 +98,18 @@ class CommonGameFunctions {
         obj.x += obj.vx;
         obj.y += obj.vy;
     }
+
+    /** calculates the angle between the user and draws him rotated, taking into account any offset of the user (ie. from the middle of the screen)
+     * @param cameraOffsetX any horizontal offset to take into account to draw the user
+     * @param cameraOffsetY any vertical offset to take into account to draw the user */
+    static displayObjRotatingToTarget(obj, target, texture, cameraOffsetX, cameraOffsetY) {
+        push();
+        angleMode(DEGREES);
+        obj.angle = atan2(target.y - obj.y, target.x - obj.x);
+        translate(obj.x + cameraOffsetX, obj.y + cameraOffsetY);
+        rotate(obj.angle - 90);
+        image(texture, -obj.size / 2, -obj.size / 2, obj.size, obj.size);
+        pop();
+        // console.log(`User angle: ${angle}`)
+    }
 }

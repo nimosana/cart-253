@@ -7,31 +7,10 @@ class DodgeEm {
 
     constructor() {
         this.clickDelay = 0;
-        //represents the virus
-        this.virus = {
-            x: 0,
-            y: 250,
-            size: 100,
-            vx: 0,
-            vy: 0,
-            speed: 1,
-            maxSpeed: 10,
-            accel: 0.25,
-            texture: virusImage
-        };
         //represents the user/player
-        this.user = {
-            x: 250,
-            y: 250,
-            vx: 0,
-            vy: 0,
-            size: 100,
-            speed: 1,
-            maxSpeed: 10,
-            accel: 0.4,
-            vaccinations: 0,
-            texture: clownImage
-        };
+        this.user = new Player(width / 2, height, 100, 0.4, 10);
+        //represents the virus
+        this.virus = new Player(width / 2, 0, 100, 0.3, 10);
         //mouse position as an object
         this.mousePos = {
             x: 250,
@@ -54,14 +33,9 @@ class DodgeEm {
 
     /** Description of setup*/
     setup() {
-        console.log(width)
         textAlign(CENTER, CENTER);
         textSize(width * 0.0234);
-        this.virus.x = width / 2;
-        this.virus.y = 0;
-        this.virus.vx = 0;
-        this.user.x = width / 2;
-        this.user.y = height;
+        this.virus.texture = virusImage;
         this.syringe.x = random(this.syringe.size, width - this.syringe.size);
         this.syringe.y = random(this.syringe.size, height - this.syringe.size);
         this.syringe.yDraw = this.syringe.y - this.syringe.size / 2;
@@ -124,6 +98,7 @@ class DodgeEm {
             this.finalSyringesDisplayed = this.finalClownsDisplayed = 0;
             this.syringe.x = random(this.syringe.size, width - this.syringe.size);
             this.syringe.y = random(this.syringe.size, height - this.syringe.size);
+            this.syringe.yDraw = this.syringe.y - this.syringe.size / 2;
             while (CommonGameFunctions.ellipseSuperpositionDetection(this.user, this.syringe)) {
                 this.syringe.x = random(this.syringe.size, width - this.syringe.size);
                 this.syringe.yDraw = random(this.syringe.size, height - this.syringe.size);
@@ -166,7 +141,7 @@ class DodgeEm {
         CommonGameFunctions.chaseFleeTarget(this.virus, this.user, 1);
         //display virus & user
         CommonGameFunctions.displayImage(this.virus, 0);
-        CommonGameFunctions.displayImage(this.user, 0);
+        CommonGameFunctions.displayObjRotatingToTarget(this.user, this.mousePos, clownImage, 0, 0);
         fill("red");
         //if the user touches the syringe, teleport it
         if (CommonGameFunctions.ellipseSuperpositionDetection(this.user, this.syringe)) {
