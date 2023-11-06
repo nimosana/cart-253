@@ -10,6 +10,7 @@
 class Clownapping {
 
     constructor(x, y) {
+        this.clickDelay = 0;
         //used to always have a similar gameplay area no matter the screen ratio/dimensions
         this.heightRatio = 0.513671875;
         //represents the user
@@ -110,7 +111,9 @@ class Clownapping {
         //plays the animation
         background(0);
         this.beginningAnimation();
-        if (mouseIsPressed) {
+        if (this.clickDelay < 20) {
+            this.clickDelay++;
+        } else if (mouseIsPressed) {
             this.state = `gameplay`;
         }
     }
