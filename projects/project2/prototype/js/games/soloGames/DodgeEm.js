@@ -6,11 +6,10 @@
 class DodgeEm {
 
     constructor() {
-        this.clickDelay = 0;
         //represents the user/player
-        this.user = new Player(width / 2, height, 100, 0.4, 10);
+        this.user = new Player(width / 2, height, height * 0.076, 0.4, 10);
         //represents the virus
-        this.virus = new Player(width / 2, 0, 100, 0.3, 10);
+        this.virus = new Player(width / 2, 0, height * 0.076, 0.3, 10);
         //mouse position as an object
         this.mousePos = {
             x: 250,
@@ -21,8 +20,7 @@ class DodgeEm {
         this.syringe = {
             x: 250,
             y: 250,
-            size: 60,
-            yDraw: 0
+            size: 0.0456 * height,
         };
 
         this.staticAmount = 100;
@@ -33,12 +31,13 @@ class DodgeEm {
 
     /** Description of setup*/
     setup() {
+        console.log(windowHeight)
         textAlign(CENTER, CENTER);
         textSize(width * 0.0234);
+        this.user.vaccinations = 0;
         this.virus.texture = virusImage;
         this.syringe.x = random(this.syringe.size, width - this.syringe.size);
         this.syringe.y = random(this.syringe.size, height - this.syringe.size);
-        this.syringe.yDraw = this.syringe.y - this.syringe.size / 2;
     }
 
     /** Description of draw() */
@@ -54,13 +53,13 @@ class DodgeEm {
 
     title() {
         background(0);
+        this.drawSyringe(width / 2, height / 4, this.syringe.size);
         fill("red");
         push();
         text("Get as many vaccinations as possible\n don't catch (or get caught by) covid!\n\nYou're the clown, guide him with the mouse\nClick to start", width / 2, height / 2)
         pop();
-        if (this.clickDelay < 20) {
-            this.clickDelay++;
-        } else if (mouseIsPressed) {
+
+        if (mouseIsPressed && !sameMouseClick) {
             this.state = `simulation`;
         }
     }
@@ -73,7 +72,7 @@ class DodgeEm {
         }
         //display a syringe for every syringe the player had when he died, every 30 frames
         if ((frameCount % 30 === 0) && (this.finalSyringesDisplayed < this.user.vaccinations)) {
-            this.drawSyringe(random(this.syringe.size, width - this.syringe.size), this.syringe.yDraw = random(this.syringe.size, height - this.syringe.size), this.syringe.size);
+            this.drawSyringe(random(this.syringe.size, width - this.syringe.size), this.syringe.y = random(this.syringe.size, height - this.syringe.size), this.syringe.size);
             this.finalSyringesDisplayed++;
         }
         //when all the final syringes are displayed,taunt the user with the shots he had when he died
@@ -98,11 +97,9 @@ class DodgeEm {
             this.finalSyringesDisplayed = this.finalClownsDisplayed = 0;
             this.syringe.x = random(this.syringe.size, width - this.syringe.size);
             this.syringe.y = random(this.syringe.size, height - this.syringe.size);
-            this.syringe.yDraw = this.syringe.y - this.syringe.size / 2;
-            while (CommonGameFunctions.ellipseSuperpositionDetection(this.user, this.syringe)) {
+            while (checkCirclesOverlap(this.user, this.syringe)) {
                 this.syringe.x = random(this.syringe.size, width - this.syringe.size);
-                this.syringe.yDraw = random(this.syringe.size, height - this.syringe.size);
-                this.syringe.y = this.syringe.yDraw + this.syringe.size / 2;
+                this.syringe.y = random(this.syringe.size, height - this.syringe.size);
             }
             this.firstEndFrame = true;
             this.user.x = width / 2;
@@ -133,7 +130,7 @@ class DodgeEm {
             point(x, y);
         }
         //draw the syringe with a random strokeweight from the static to have a trippy effect
-        this.drawSyringe(this.syringe.x, this.syringe.yDraw, this.syringe.size);
+        this.drawSyringe(this.syringe.x, this.syringe.y, this.syringe.size);
         //update mousePos X & Y
         this.updateMousePositions(this.mousePos);
         //make the user chase the mousePos and virus chase the user
@@ -144,17 +141,16 @@ class DodgeEm {
         displayObjRotatingToTarget(this.user, this.mousePos, clownImage, 0, 0);
         fill("red");
         //if the user touches the syringe, teleport it
-        if (CommonGameFunctions.ellipseSuperpositionDetection(this.user, this.syringe)) {
+        if (checkCirclesOverlap(this.user, this.syringe)) {
             //make sure the new syringe is not overlapping the user
-            while (CommonGameFunctions.ellipseSuperpositionDetection(this.user, this.syringe)) {
+            while (checkCirclesOverlap(this.user, this.syringe)) {
                 this.syringe.x = random(this.syringe.size, width - this.syringe.size);
-                this.syringe.yDraw = random(this.syringe.size, height - this.syringe.size);
-                this.syringe.y = this.syringe.yDraw + this.syringe.size / 2;
+                this.syringe.y = random(this.syringe.size, height - this.syringe.size);
             }
             this.user.vaccinations++;
         }
         //Check user & virus superposition (game end)
-        if (CommonGameFunctions.ellipseSuperpositionDetection(this.virus, this.user)) {
+        if (checkCirclesOverlap(this.virus, this.user)) {
             this.state = "loss";
         }
     }
@@ -166,14 +162,14 @@ class DodgeEm {
     }
 
     /** draws a syringe */
-    drawSyringe(x, yDraw, size) {
+    drawSyringe(x, y, size) {
         fill(0, 255, 255);
-        rect(x - size / 6, yDraw + size / 12, size / 3, size / 12);
-        rect(x - size / 12, yDraw + size / 12, size / 6, size / 4);
-        rect(x - size / 4, yDraw + size / 3, size / 2, size / 12);
-        rect(x - size / 8, yDraw + size / 2.4, size / 4, size / 2);
+        rect(x - size / 6, y - size / 2 + size / 12, size / 3, size / 12);
+        rect(x - size / 12, y - size / 2 + size / 12, size / 6, size / 4);
+        rect(x - size / 4, y - size / 2 + size / 3, size / 2, size / 12);
+        rect(x - size / 8, y - size / 2 + size / 2.4, size / 4, size / 2);
         strokeWeight(1);
-        triangle(x - size / 24, yDraw + (size / 1.09), x + size / 24, yDraw + (size / 1.09), x, yDraw + (size * 1.2));
-        // ellipse(x, yDraw + size / 2, size); //check hitbox
+        triangle(x - size / 24, y - size / 2 + (size / 1.09), x + size / 24, y - size / 2 + (size / 1.09), x, y - size / 2 + (size * 1.2));
+        // ellipse(x, y, size); //check hitbox
     }
 }

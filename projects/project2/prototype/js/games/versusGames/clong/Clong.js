@@ -7,7 +7,6 @@ class Clong {
     /** Allows the creation of a simulation/instance of clong games */
     constructor() {
         this.state = `title`;
-        this.clickDelay = 0;
         //players round scores 
         this.score1 = 0;
         this.score2 = 0;
@@ -53,14 +52,12 @@ class Clong {
         textAlign(RIGHT, CENTER);
         text(`Player 2:\nUp arrow\nDown arrow`, width * 0.98, height / 2);
         //display ball/paddles and move paddles
-        this.ball.display();
+        displayObjAsImage(this.ball, 2, clownImage)
         for (let paddle of this.paddles) {
             paddle.move();
             paddle.display();
         }
-        if (this.clickDelay < 20) {
-            this.clickDelay++;
-        } else if (mouseIsPressed) {
+        if (mouseIsPressed && !sameMouseClick) {
             this.state = `gameplay`;
         }
     }
@@ -76,7 +73,7 @@ class Clong {
         for (let paddle of this.paddles) {
             this.ball.bounce(paddle);
         }
-        this.ball.display();
+        displayObjAsImage(this.ball, 2, clownImage);
         this.displayScores();
     }
 
@@ -102,7 +99,7 @@ class Clong {
             paddle.move();
             paddle.display();
         }
-        this.ball.display();
+        displayObjAsImage(this.ball, 2, clownImage);
         if (mouseIsPressed) {
             this.state = `gameplay`;
         }
@@ -121,7 +118,7 @@ class Clong {
             paddle.display();
             paddle.move();
         }
-        this.ball.display();
+        displayObjAsImage(this.ball, 2, clownImage);
         // display scores and text according to last round's winner 
         this.displayScores();
         textAlign(CENTER, CENTER);

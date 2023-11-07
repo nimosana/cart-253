@@ -21,7 +21,7 @@ class Ball {
         //move and constrain to window if out of bounds
         this.x = this.x + this.vx;
         this.y = this.y + this.vy;
-        this.constrainToWindow();
+        lockCircleInWindow(this, 2, 1);
         // check if a player lost the round
         if (this.x > width) {
             //increase score & setup for inbetween rounds
@@ -45,17 +45,6 @@ class Ball {
                 game.wins2++;
                 game.state = `endGame`;
             }
-        }
-    }
-
-    /** constrain to window and invert its speed to make it "bounce" if going out of the window */
-    constrainToWindow() {
-        if (this.y > height - this.size / 2) {
-            this.y = height - this.size / 2;
-            this.vy *= -1;
-        } else if (this.y < this.size / 2) {
-            this.y = 0 + this.size / 2;
-            this.vy *= -1;
         }
     }
 
@@ -86,10 +75,4 @@ class Ball {
             }
         }
     }
-
-    /** display the ball at its position */
-    display() {
-        image(clownImage, this.x - this.size / 2, this.y - this.size / 2, this.size, this.size);
-    }
-
 }

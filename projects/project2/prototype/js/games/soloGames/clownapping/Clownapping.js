@@ -10,7 +10,6 @@
 class Clownapping {
 
     constructor(x, y) {
-        this.clickDelay = 0;
         //used to always have a similar gameplay area no matter the screen ratio/dimensions
         this.heightRatio = 0.513671875;
         //represents the user
@@ -111,9 +110,7 @@ class Clownapping {
         //plays the animation
         background(0);
         this.beginningAnimation();
-        if (this.clickDelay < 20) {
-            this.clickDelay++;
-        } else if (mouseIsPressed) {
+        if (mouseIsPressed && !sameMouseClick) {
             this.state = `gameplay`;
         }
     }
@@ -133,7 +130,7 @@ class Clownapping {
         }
         //runs the necessary functions for the gameplay
         background(0);
-        keyMovementSolo(this.user);
+        keyMovementSolo(this.user, 0);
         this.collisions();
         this.displayObjects();
         for (let evilClown of this.evilClowns) {
@@ -533,7 +530,7 @@ class Clownapping {
             }
         }
         //displays Clown & Clownette
-        CommonGameFunctions.displayImage(this.titleClown, 0);
-        CommonGameFunctions.displayImage(this.titleClownette, 0);
+        displayObjAsImage(this.titleClown, 0);
+        displayObjAsImage(this.titleClownette, 0);
     }
 }

@@ -8,44 +8,23 @@
 class LoveActually {
     //represents the user
     constructor() {
-        this.user = {
-            x: undefined,
-            y: undefined,
-            size: undefined,
-            vx: 0,
-            vy: 0,
-            speed: 3,
-            maxSpeed: undefined,
-            accel: width * 3.9025E-5,
-            texture: clownImage,
-            money: 5
-        };
+        this.user = new Player(width / 2, height / 2, width * 0.04, width * 3.9025E-5, width * 0.001718);
         //array for all my fish
         this.fishInTheSea = [];
         //number of fish to create
         this.fishNumber = 1000;
-        //speed of the fiRshies
-        this.fishSpeed = 3;
-        //texture used for the fish
-        this.fishTexture = clownetteImage;
         //represents the money wads
         this.money = {
-            x: 250,
-            y: 250,
-            size: undefined,
             texture: moneyImage
         }
         this.state = `title`;
-        this.clickDelay = 0;
     }
 
     /** Sets the user's initial position, creates the fish array, places the money and sets the text style*/
     setup() {
-        this.user.size = width * 0.04;
-        this.user.maxSpeed = width * 0.001718;
+        this.user.texture = clownImage;
+        this.user.money = 5;
         this.money.size = this.user.size;
-        this.user.x = width / 2;
-        this.user.y = height / 2;
         this.makeFishList();
         this.spawnMoney();
         textSize(width * 0.025);
@@ -73,17 +52,16 @@ class LoveActually {
     title() {
         fill(200, 100, 100);
         text("💘Modern love simulator💘\n\nGet that money💸\nWASD/Arrow Keys to move\nClick to start", width / 2, height / 2);
-        if (this.clickDelay < 20) {
-            this.clickDelay++;
-        } else if (mouseIsPressed) {
+
+        if (mouseIsPressed && !sameMouseClick) {
             this.state = `simulation`;
         }
     }
 
     /** executes the functions necessary for the animation. Control the user, money and display the moving fish */
     simulation() {
-        keyMovementSolo(this.user);
-        this.lockInWindow(this.user);
+        keyMovementSolo(this.user, 0);
+        lockCircleInWindow(this.user, 0, 1);
         this.fishCuriosity();
         this.checkOverlap();
         this.display();
@@ -129,8 +107,8 @@ class LoveActually {
     /** detect if the user has had contact with the money or the fishies */
     checkOverlap() {
         // check if the user has grabbed money and if he does, move it & make him richer
-        if (CommonGameFunctions.ellipseSuperpositionDetection(this.user, this.money)) {
-            this.repositionEllipseOutsideOther(this.money, this.user);
+        if (checkCirclesOverlap(this.user, this.money)) {
+            repositionCircleOutsideOther(this.money, this.user);
             this.user.money *= 2;
             for (let fish of this.fishInTheSea) { // draw every "fish" closer ;)
                 fish.curiosity -= this.user.size * 0.2;
@@ -138,7 +116,7 @@ class LoveActually {
         }
         // change the game state if the user and a fish touch
         for (let fish of this.fishInTheSea) {
-            if (CommonGameFunctions.ellipseSuperpositionDetection(this.user, fish)) {
+            if (checkCirclesOverlap(this.user, fish)) {
                 this.state = `love`;
             }
         }
@@ -177,19 +155,8 @@ class LoveActually {
                 tempPos.x = random(0, width);
                 tempPos.y = random(0, height);
             }
-            let fish = {
-                x: tempPos.x,
-                y: tempPos.y,
-                size: this.user.size,
-                speed: 3,
-                vx: 0,
-                vy: 0,
-                maxSpeed: width * 2.734E-3,
-                directionX: 1,
-                directionY: 1,
-                accel: width * 9.7656E-5,
-                curiosity: random(4 * this.user.size, 25 * this.user.size)
-            };
+            let fish = new Player(tempPos.x, tempPos.y, this.user.size, width * 9.7656E-5, width * 2.734E-3);
+            fish.curiosity = random(4 * this.user.size, 25 * this.user.size);
             this.fishInTheSea.push(fish);
         }
     }
@@ -205,60 +172,8 @@ class LoveActually {
             else {
                 chaseFleeTarget(fish, this.user, -1);
             }
-            this.randomSpasm(fish, 0.01, 0.5);
+            randomSpasm(fish, 0.01, 0.5);
         }
-    }
-
-    /** Prevents an object from leaving the viewable window area, sets it back inside and inverts its speed.
-     * @param obj object to be locked inside the window  */
-    lockInWindow(obj) {
-        //horizontally
-        if ((obj.x < obj.size / 2)) {
-            obj.x = obj.size / 2;
-            obj.vx *= -1;
-        }
-        else if ((obj.x > width - obj.size / 2)) {
-            obj.x = width - obj.size / 2;
-            obj.vx *= -1;
-        }
-        //vertically
-        if ((obj.y < obj.size / 2)) {
-            obj.y = obj.size / 2;
-            obj.vy *= -1;
-        }
-        else if ((obj.y > height - obj.size / 2)) {
-            obj.y = height - obj.size / 2;
-            obj.vy *= -1;
-        }
-    }
-
-    /** allows for moving objects to have random spasms with set percentages and intensity
-     * @param spasmer  object to introduce random speed changes to
-     * @param odds % probability of a spasm to occur (between 0-1)
-     * @param intensity an intensity multiplier relative to the max speed of the object */
-    randomSpasm(spasmer, odds, intensity) {
-        if (random(0, 1) <= odds) {
-            spasmer.vx = random(-spasmer.maxSpeed * intensity, spasmer.maxSpeed * intensity);
-            spasmer.vy = random(-spasmer.maxSpeed * intensity, spasmer.maxSpeed * intensity);
-        }
-    }
-
-    /** Repositions an object while making sure it is outside another
-     * a buffer distance multiplier can be added
-     * @param obj the object to be randomly repositioned 
-     * @param other the object to stay outside of
-     * @param distMultiplier a distance multiplier buffer for extra space between the objects (>=1) */
-    repositionEllipseOutsideOther(obj, other, distMultiplier) {
-        let tempPos = {
-            x: random(0, width),
-            y: random(0, height)
-        }
-        while (dist(obj.x, obj.y, other.x, other.y) < (obj.size + other.size) * distMultiplier) {
-            tempPos.x = random(0 + obj.size, width - obj.size);
-            tempPos.y = random(0 + obj.size, height - obj.size);
-        }
-        obj.x = tempPos.x;
-        obj.y = tempPos.y;
     }
 
     /** spawn the money ensuring it is outside the ellipse of the user*/

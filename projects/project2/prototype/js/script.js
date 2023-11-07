@@ -10,8 +10,11 @@
 //represents the clong game instance
 let menus;
 let game;
+let sameMouseClick = false;
 let clownImage, clownetteImage, evilClownImage;
 let clowniseumImage;
+let fishermanImage;
+let fishTexture, evilTexture;
 let moneyImage;
 let virusImage;
 
@@ -23,6 +26,9 @@ function preload() {
     moneyImage = loadImage('assets/images/money.png');
     evilClownImage = loadImage('assets/images/evilClown.png');
     clowniseumImage = loadImage('assets/images/clowniseum.png');
+    fishermanImage = loadImage('assets/images/fisherman.png');
+    fishTexture = loadImage('assets/images/GuppyR.png');
+    evilTexture = loadImage('assets/images/CarnivoreR.png');
 }
 
 /** Description of setup */
@@ -35,4 +41,7 @@ function setup() {
 /** Description of draw() */
 function draw() {
     menus.run()
+    if (!mouseIsPressed) {
+        sameMouseClick = false;
+    }
 }

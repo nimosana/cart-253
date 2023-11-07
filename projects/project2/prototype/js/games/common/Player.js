@@ -22,7 +22,6 @@ class Player {
         this.texture = clownImage;
         this.angle;
         this.fireDelay = 0;
-        this.vaccinations = 0;
         this.health = 100;
     }
 

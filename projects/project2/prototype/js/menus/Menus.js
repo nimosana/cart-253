@@ -5,7 +5,8 @@ class Menus {
         this.gameToRun;
         this.clickDelay = 0;
         this.buttons = [new Buttons(`soloMenu`), new Buttons(`versusMenu`),
-        new Buttons(`clong`), new Buttons(`covid`), new Buttons(`love`), new Buttons(`clownapping`)];
+        new Buttons(`clong`), new Buttons(`covid`), new Buttons(`love`), new Buttons(`clownapping`),
+        new Buttons(`fishing`)];
     }
 
     run() {
