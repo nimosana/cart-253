@@ -133,11 +133,11 @@ class Clownapping {
         }
         //runs the necessary functions for the gameplay
         background(0);
-        CommonGameFunctions.keyMovementSolo(this.user);
+        keyMovementSolo(this.user);
         this.collisions();
         this.displayObjects();
         for (let evilClown of this.evilClowns) {
-            CommonGameFunctions.chaseFleeTarget(evilClown, this.user, 1);
+            chaseFleeTarget(evilClown, this.user, 1);
         }
         this.projectileManagement();
         this.user.userHealthManagement();
@@ -165,8 +165,8 @@ class Clownapping {
         this.titleClown.x = width / 3;
         this.titleClownette.x = (width / 3) * 2;
         this.titleClown.y = this.titleClownette.y = height - this.titleClown.size / 2;
-        CommonGameFunctions.displayImage(this.titleClown, 0);
-        CommonGameFunctions.displayImage(this.titleClownette, 0);
+        displayObjAsImage(this.titleClown, 0);
+        displayObjAsImage(this.titleClownette, 0);
     }
 
     /** creates projectiles at the request of the user (Space/LeftClick) or evil clowns in accordance to their angles, 
@@ -205,12 +205,12 @@ class Clownapping {
         //draws the user
         this.user.displayRotatingPlayer(this.cameraOffsetX, this.cameraOffsetY);
         for (let evilClown of this.evilClowns) {
-            CommonGameFunctions.displayObjRotatingToTarget(evilClown, this.user, evilClownImage, this.cameraOffsetX, this.cameraOffsetY);
+            displayObjRotatingToTarget(evilClown, this.user, evilClownImage, this.cameraOffsetX, this.cameraOffsetY);
         }
         //draws the walls
         for (let wall of this.walls) {
             fill('lime');
-            CommonGameFunctions.displayImage(wall, 3, undefined, this.cameraOffsetX, this.cameraOffsetY);
+            displayObjAsImage(wall, 3, undefined, this.cameraOffsetX, this.cameraOffsetY);
         }
         //displays the current wave
         push();

@@ -24,7 +24,7 @@ class LoveActually {
         this.fishInTheSea = [];
         //number of fish to create
         this.fishNumber = 1000;
-        //speed of the fishies
+        //speed of the fiRshies
         this.fishSpeed = 3;
         //texture used for the fish
         this.fishTexture = clownetteImage;
@@ -82,7 +82,7 @@ class LoveActually {
 
     /** executes the functions necessary for the animation. Control the user, money and display the moving fish */
     simulation() {
-        CommonGameFunctions.keyMovementSolo(this.user);
+        keyMovementSolo(this.user);
         this.lockInWindow(this.user);
         this.fishCuriosity();
         this.checkOverlap();
@@ -147,14 +147,14 @@ class LoveActually {
     /** displays the user, the fishies, the money wad & the money the user has */
     display() {
         // Display the user
-        CommonGameFunctions.displayImage(this.user, 0);
+        displayObjAsImage(this.user, 0);
         // Display the fishes
         fill("blue");
         for (let fish of this.fishInTheSea) {
-            CommonGameFunctions.displayImage(fish, 2, clownetteImage);
+            displayObjAsImage(fish, 2, clownetteImage);
         }
         //display the money
-        CommonGameFunctions.displayImage(this.money, 0);
+        displayObjAsImage(this.money, 0);
         push();
         textAlign(LEFT, TOP);
         fill(0, 0, 0, 150);
@@ -200,10 +200,10 @@ class LoveActually {
     fishCuriosity() {
         for (let fish of this.fishInTheSea) {
             if (dist(this.user.x, this.user.y, fish.x, fish.y) > (this.user.size + fish.curiosity)) {
-                CommonGameFunctions.chaseFleeTarget(fish, this.user, 1);
+                chaseFleeTarget(fish, this.user, 1);
             }
             else {
-                CommonGameFunctions.chaseFleeTarget(fish, this.user, -1);
+                chaseFleeTarget(fish, this.user, -1);
             }
             this.randomSpasm(fish, 0.01, 0.5);
         }

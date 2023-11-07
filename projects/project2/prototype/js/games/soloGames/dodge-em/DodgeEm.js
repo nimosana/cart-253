@@ -137,11 +137,11 @@ class DodgeEm {
         //update mousePos X & Y
         this.updateMousePositions(this.mousePos);
         //make the user chase the mousePos and virus chase the user
-        CommonGameFunctions.chaseFleeTarget(this.user, this.mousePos, 1);
-        CommonGameFunctions.chaseFleeTarget(this.virus, this.user, 1);
+        chaseFleeTarget(this.user, this.mousePos, 1);
+        chaseFleeTarget(this.virus, this.user, 1);
         //display virus & user
-        CommonGameFunctions.displayImage(this.virus, 0);
-        CommonGameFunctions.displayObjRotatingToTarget(this.user, this.mousePos, clownImage, 0, 0);
+        displayObjAsImage(this.virus, 0);
+        displayObjRotatingToTarget(this.user, this.mousePos, clownImage, 0, 0);
         fill("red");
         //if the user touches the syringe, teleport it
         if (CommonGameFunctions.ellipseSuperpositionDetection(this.user, this.syringe)) {

@@ -35,32 +35,6 @@ class CommonGameFunctions {
         }
     }
 
-    /**compares X & Y of two objects & affects the mover's accel/speed to go towards or flee the target
-     * @param  mover the object being moved
-     * @param  target the object being chased
-     * @param  usage 1 to  chase, -1 to flee */
-    static chaseFleeTarget(mover, target, usage) {
-        //horizontal movement - detect direction change & affect speed
-        let directionX = usage * Math.sign(target.x - mover.x);
-        let accelX = directionX * mover.accel;
-        mover.vx += accelX;
-        //limit speed to max speed then move object
-        if (abs(mover.vx) > abs(mover.maxSpeed)) {
-            mover.vx = mover.maxSpeed * directionX;
-        }
-        mover.x += mover.vx;
-        //vertical movement - detect direction change & affect speed
-        let directionY = usage * Math.sign(target.y - mover.y);
-        let accelY = directionY * mover.accel;
-        mover.vy += accelY;
-        //limit speed to max speed then move object
-        if (abs(mover.vy) > abs(mover.maxSpeed)) {
-            mover.vy = mover.maxSpeed * directionY;
-        }
-        mover.y += mover.vy;
-        // console.log("mover speed X: " + mover.vx + "mover speed Y: " + mover.vy); //test acceleration
-    }
-
     /** Allows the user to control an object's speed with accelerations, using the arrow keys or WASD
      * @param obj object to be controlled with keys */
     static keyMovementSolo(obj) {
