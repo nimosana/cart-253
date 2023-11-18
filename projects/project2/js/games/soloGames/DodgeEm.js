@@ -10,10 +10,9 @@ class DodgeEm {
         this.user = new Player(width / 2, height, height * 0.076, 0.4, 10);
         //represents the virus
         this.virus = new Player(width / 2, 0, height * 0.076, 0.3, 10);
-        //mouse position as an object
         this.mousePos = {
-            x: 250,
-            y: 250
+            x: 0,
+            y: 0,
         };
 
         //represents the syringe
@@ -69,6 +68,7 @@ class DodgeEm {
             background(0); //clean the background if the player just died
             this.firstEndFrame = false;
             noStroke();
+            lastScore = this.user.vaccinations;
         }
         //display a syringe for every syringe the player had when he died, every 30 frames
         if ((frameCount % 30 === 0) && (this.finalSyringesDisplayed < this.user.vaccinations)) {

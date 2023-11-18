@@ -6,11 +6,14 @@ class Menus {
         this.clickDelay = 0;
         this.buttons = [new Buttons(`soloMenu`), new Buttons(`versusMenu`),
         new Buttons(`clong`), new Buttons(`covid`), new Buttons(`love`), new Buttons(`clownapping`),
-        new Buttons(`fishing`)];
+        new Buttons(`fishing`), new Buttons(`mainGame`)];
+
     }
 
     run() {
-        if (this.state === `mainMenu`) {
+        if (this.state === `test`) {
+            this.test();
+        } else if (this.state === `mainMenu`) {
             this.mainMenu();
         } else if (this.state === `versusMenu`) {
             this.versusMenu();
@@ -18,7 +21,12 @@ class Menus {
             this.soloMenu();
         } else if (this.state === `gameRunning`) {
             this.gameRunning();
+        } else if (this.state === `mainGameRunning`) {
+            this.mainGameRunning();
         }
+    }
+    test() {
+        game.run();
     }
 
     mainMenu() {
@@ -82,6 +90,25 @@ class Menus {
         } else {
             for (let button of this.buttons) {
                 button.checkPress(this.state);
+            }
+        }
+    }
+
+    mainGameRunning() {
+        game.run();
+        if (keyIsDown(27)) {
+            this.clickDelay = 0;
+            if (inMainGame && !sameEsc) {
+                this.state = `mainMenu`;
+            } else if (inMiniGame) {
+                if (mainGameLevel === 1 && lastScore > 2) {
+                    governmentHappy = true;
+                }
+                inMiniGame = false;
+                inMainGame = true;
+                sameEsc = true;
+                console.log(lastScore)
+                game = pausedGame;
             }
         }
     }

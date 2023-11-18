@@ -2,7 +2,16 @@ class Buttons {
 
     constructor(type) {
         this.type = type;
-        if (type === `soloMenu`) {
+        if (type === `mainGame`) {
+            this.w = width / 3;
+            this.h = height / 4;
+            this.x = width / 4;
+            this.y = (height / 2) - (height / 8);
+            this.rectFill = `green`;
+            this.textFill = `black`;
+            this.text = `main Game`;
+            this.menu = `mainMenu`;
+        } else if (type === `soloMenu`) {
             this.w = width / 4;
             this.h = height / 4;
             this.x = width / 8;
@@ -83,7 +92,15 @@ class Buttons {
     checkPress(menuToCheck) {
         if (this.menu === menuToCheck) {
             if (mouseIsPressed && !sameMouseClick && collidePointRect(mouseX, mouseY, this.x, this.y, this.w, this.h)) {
-                if (this.type === `soloMenu`) {
+                if (this.type === `mainGame`) {
+                    menus.clickDelay = 0;
+                    game = new MainGame();
+                    inMainGame = true;
+                    game.setup();
+                    menus.state = `mainGameRunning`;
+                    sameMouseClick = true;
+                    return true;
+                } else if (this.type === `soloMenu`) {
                     menus.state = `soloMenu`;
                     menus.clickDelay = 0;
                     sameMouseClick = true;

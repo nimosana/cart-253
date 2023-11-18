@@ -9,14 +9,17 @@
 "use strict";
 //represents the clong game instance
 let menus;
-let game;
-let sameMouseClick = false;
+let game, pausedGame;
+let governmentHappy = false;
+let inMainGame, inMiniGame, lastScore, mainGameLevel;
+let sameMouseClick = false, sameEsc = false;
 let clownImage, clownetteImage, evilClownImage;
-let clowniseumImage;
+let clowniseumImage, wallTexture;
 let fishermanImage;
 let fishTexture, evilTexture;
 let moneyImage;
 let virusImage;
+let runningMainGame = true;
 
 /** Description of preload*/
 function preload() {
@@ -29,13 +32,18 @@ function preload() {
     fishermanImage = loadImage('assets/images/fisherman.png');
     fishTexture = loadImage('assets/images/GuppyR.png');
     evilTexture = loadImage('assets/images/CarnivoreR.png');
+    wallTexture = loadImage('assets/images/brickWall.png');
 }
 
 /** Description of setup */
 function setup() {
     createCanvas(windowWidth, windowHeight);
     textSize(width * 0.03);
+    inMainGame = inMiniGame = false;
     menus = new Menus();
+    game = new MainGame();
+    game.setup();
+
 }
 
 /** Description of draw() */
@@ -44,4 +52,12 @@ function draw() {
     if (!mouseIsPressed) {
         sameMouseClick = false;
     }
+    if (!keyIsDown(27)) {
+        sameEsc = false;
+    }
+}
+
+function startGame1() {
+    game = new DodgeEm();
+    game.setup();
 }
