@@ -17,7 +17,11 @@ class MainGame {
         this.restart = false;
         this.clowniseumTexture = clowniseumImage;
         this.evilClowns = [], this.wave = 1;
-        this.walls = [], this.wallWidth;
+        this.walls = []
+        this.wallThicc = width / 20;
+        this.wallHeight = width * 2 * this.heightRatio + 2 * this.wallThicc;
+        this.wallTopY = -width * 0.5 * this.heightRatio - this.wallThicc;
+        this.wallTopX = -width / 4 - this.wallThicc;
         this.titleAliens = [], this.topAliens = [], this.bottomAliens = [], this.leftAliens = [], this.rightAliens = [];
         //variables used to correctly execute different states of the simulation
         this.state = `title`;
@@ -43,10 +47,9 @@ class MainGame {
     setup() {
         this.user = new Player(width / 2, height / 2, width * 0.039, width * 7.8125E-5, (width * 1.953125E-3) * 2);
         this.user.texture = clownImage;
-        this.user.grounded = false;
+        level1Passed = false;
         Alien.size = width / 3;
         // this.createAliens();
-        this.wallWidth = width / 20;
         this.createWalls();
         noStroke();
         angleMode(DEGREES);
@@ -126,7 +129,7 @@ class MainGame {
         this.updateMousePositions(this.mousePos);
         keyMovementSolo(this.user, 0);
         this.collisions();
-        this.level1();
+        this.levels();
     }
 
     collisions() {
@@ -168,62 +171,68 @@ class MainGame {
         this.cameraOffsetX = width / 2 - this.user.x + this.user.vx * 4;
         this.cameraOffsetY = height / 2 - this.user.y + this.user.vy * 4;
         background(0);
-        image(clowniseumImage, width / 4 + this.cameraOffsetX, width * 0.2 * this.heightRatio + this.cameraOffsetY, width * 3, width * 0.6 * this.heightRatio);
+        image(level1pic1, -width / 4 + this.cameraOffsetX, -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25 / 2, width * 2 * this.heightRatio / 2);
+        image(level1pic2, -width / 4 + width * 1.25 / 2 + this.cameraOffsetX, -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25 / 2, width * 2 * this.heightRatio / 2);
         this.user.displayRotatingPlayer(this.cameraOffsetX, this.cameraOffsetY);
         for (let wall of this.walls) {
             // fill('lime');
             displayObjAsImage(wall, 3, undefined, this.cameraOffsetX, this.cameraOffsetY);
         }
-        fill(255, 80);
-        rect(width / 4 + this.cameraOffsetX, width * 0.2 * this.heightRatio + this.cameraOffsetY, width * 0.8 - this.wallWidth, width * 0.6 * this.heightRatio);
+        fill(255, 140);
+        rect(width + this.wallThicc + this.cameraOffsetX, -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25, width * 2 * this.heightRatio);
+        rect(-width / 4 + this.cameraOffsetX, -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25, width * 2 * this.heightRatio);
     }
 
     /** creates the outside walls/game area relative to the window width and places them into their array */
     createWalls() {
         //creates the walls
         let topWall = {
-            x: width / 4 - this.wallWidth,
-            y: width * 0.2 * this.heightRatio - this.wallWidth,
+            x: this.wallTopX,
+            y: this.wallTopY,
             w: width * 3,
-            h: this.wallWidth,
+            h: this.wallThicc,
             texture: wallTexture
         }, bottomWall = {
-            x: width / 4 - this.wallWidth,
-            y: width * 0.8 * this.heightRatio,
+            x: this.wallTopX,
+            y: width * 1.5 * this.heightRatio,
             w: width * 3,
-            h: this.wallWidth,
+            h: this.wallThicc,
             texture: wallTexture
         }, leftWall = {
-            x: width / 4 - this.wallWidth,
-            y: width * 0.2 * this.heightRatio - this.wallWidth,
-            w: this.wallWidth,
-            h: width * 0.6 * this.heightRatio + 2 * this.wallWidth,
+            x: this.wallTopX,
+            y: this.wallTopY,
+            w: this.wallThicc,
+            h: this.wallHeight,
             texture: wallTexture
         }, level1Wall = {
             x: width,
-            y: -width * this.heightRatio - this.wallWidth,
-            w: this.wallWidth,
-            h: width * this.heightRatio * 3 + (this.wallWidth * 2),
+            y: this.wallTopY,
+            w: this.wallThicc,
+            h: this.wallHeight,
             texture: wallTexture
         }, level2Wall = {
-            x: width * 2,
-            y: -width * this.heightRatio - this.wallWidth,
-            w: this.wallWidth,
-            h: width * this.heightRatio * 3 + (this.wallWidth * 2),
+            x: width * 2.25 + this.wallThicc,
+            y: this.wallTopY,
+            w: this.wallThicc,
+            h: this.wallHeight,
             texture: wallTexture
         }
         //adds the walls to their array
         this.walls.push(topWall, bottomWall, leftWall, level1Wall, level2Wall);
     }
 
-    level1() {
-        if (collideRectCircle(width / 4, width * 0.2 * this.heightRatio, width * 0.8 - this.wallWidth, width * 0.6 * this.heightRatio, this.user.x, this.user.y, this.user.size)) {
+    levels() {
+        if (collideRectCircle(-width / 4, -width * 0.5 * this.heightRatio, width * 1.25, width * 2 * this.heightRatio, this.user.x, this.user.y, this.user.size)) {
             mainGameLevel = 1;
-            console.log(`in level 1`);
+            // This is a free world.
             if (keyIsDown(192)) {
+                // You are free to do anything you want.
                 if (keyIsDown(49)) {
+                    // But you better follow my rules.
                     if (keyIsDown(50)) {
+                        // You can have different opinions.
                         if (keyIsDown(51)) {
+                            // But you better adhere mine.
                             if (keyIsDown(52)) {
                                 pausedGame = this;
                                 inMainGame = false;
@@ -235,10 +244,10 @@ class MainGame {
                 }
             }
         }
-        if (governmentHappy) {
+        if (obedient && !level1Passed) {
             this.walls.splice(3, 1);
-            console.log(`spliced`)
-            governmentHappy = false;
+            obedient = false;
+            level1Passed = true;
         }
     }
 

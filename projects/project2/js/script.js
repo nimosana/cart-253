@@ -10,8 +10,9 @@
 //represents the clong game instance
 let menus;
 let game, pausedGame;
-let governmentHappy = false;
-let inMainGame, inMiniGame, lastScore, mainGameLevel;
+let obedient = false;
+let level1Passed = false;
+let inMainGame, inMiniGame, vaccinations, mainGameLevel;
 let sameMouseClick = false, sameEsc = false;
 let clownImage, clownetteImage, evilClownImage;
 let clowniseumImage, wallTexture;
@@ -20,6 +21,7 @@ let fishTexture, evilTexture;
 let moneyImage;
 let virusImage;
 let runningMainGame = true;
+let level1pic1, level1pic2;
 
 /** Description of preload*/
 function preload() {
@@ -33,6 +35,8 @@ function preload() {
     fishTexture = loadImage('assets/images/GuppyR.png');
     evilTexture = loadImage('assets/images/CarnivoreR.png');
     wallTexture = loadImage('assets/images/brickWall.png');
+    level1pic1 = loadImage('assets/images/level1-1.png');
+    level1pic2 = loadImage('assets/images/level1-2.png');
 }
 
 /** Description of setup */

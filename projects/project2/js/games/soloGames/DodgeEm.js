@@ -41,6 +41,7 @@ class DodgeEm {
 
     /** Description of draw() */
     run() {
+        vaccinations = this.user.vaccinations;
         if (this.state === "title") {
             this.title();
         } else if (this.state === "simulation") {
@@ -63,19 +64,20 @@ class DodgeEm {
         }
     }
 
+    /** Display the loss state of the game, the user dies no matter the amount of vaccinations.
+     * syringes, clowns & text is displayed according to the number of doses they got */
     loss() {
         if (this.firstEndFrame) {
             background(0); //clean the background if the player just died
             this.firstEndFrame = false;
             noStroke();
-            lastScore = this.user.vaccinations;
         }
-        //display a syringe for every syringe the player had when he died, every 30 frames
+        // Progressively display a syringe for every syringe the player had when he died
         if ((frameCount % 30 === 0) && (this.finalSyringesDisplayed < this.user.vaccinations)) {
             this.drawSyringe(random(this.syringe.size, width - this.syringe.size), this.syringe.y = random(this.syringe.size, height - this.syringe.size), this.syringe.size);
             this.finalSyringesDisplayed++;
         }
-        //when all the final syringes are displayed,taunt the user with the shots he had when he died
+        // When all the final syringes are displayed,taunt the user with the shots he had when he died
         if ((this.finalSyringesDisplayed === this.user.vaccinations) || this.user.vaccinations === 0) {
             if (this.finalClownsDisplayed < this.user.vaccinations) {
                 for (let i = 0; i < this.user.vaccinations; i++) { //clown the user for every vaccination he had
@@ -84,12 +86,12 @@ class DodgeEm {
                 }
             }
             fill("red");
-            if (this.user.vaccinations < 1) { //write the correct message depending on the amount of syringes caught
-                text("YOU DIED OF COVID\n UNVACCINATED\n\nClick to restart", width / 2, height / 2);
+            if (this.user.vaccinations < 1) { // Write the correct message depending on the amount of syringes caught
+                text("YOU DIED OF COVID\n UNVACCINATED\n\nPress Esc to return\nClick to restart", width / 2, height / 2);
             } else if (this.user.vaccinations === 1) {
-                text("YOU HAD YOUR SHOT\n AND STILL DIED\n\nClick to restart", width / 2, height / 2);
+                text("YOU HAD YOUR SHOT\n AND STILL DIED\n\nPress Esc to return\nClick to restart", width / 2, height / 2);
             } else if (this.user.vaccinations >= 1) {
-                text("YOU HAD " + this.user.vaccinations + " SHOTS\n AND STILL DIED\n\nClick to restart", width / 2, height / 2);
+                text("YOU HAD " + this.user.vaccinations + " SHOTS\n AND STILL DIED\n\nPress Esc to return\nClick to restart", width / 2, height / 2);
             }
         }
         //reset and start a new game

@@ -94,21 +94,25 @@ class Menus {
         }
     }
 
+    /**  */
     mainGameRunning() {
         game.run();
         if (keyIsDown(27)) {
-            this.clickDelay = 0;
+            //check if the user pressed ESC
             if (inMainGame && !sameEsc) {
                 this.state = `mainMenu`;
             } else if (inMiniGame) {
-                if (mainGameLevel === 1 && lastScore > 2) {
-                    governmentHappy = true;
+                if (mainGameLevel === 1) {
+                    // I won't force you to do anything.
+                    if (vaccinations >= 2) {
+                        obedient = true;
+                        // But you should listen to me.
+                    }
+                    inMiniGame = false;
+                    inMainGame = true;
+                    sameEsc = true;
+                    game = pausedGame;
                 }
-                inMiniGame = false;
-                inMainGame = true;
-                sameEsc = true;
-                console.log(lastScore)
-                game = pausedGame;
             }
         }
     }
