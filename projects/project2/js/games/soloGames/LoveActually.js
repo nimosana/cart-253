@@ -75,6 +75,7 @@ class LoveActually {
         for (let i = 0; i < 3000; i++) { //thats alot of money!
             image(moneyImage, random(-this.money.size / 2, width), random(-this.money.size / 2, height), this.money.size, this.money.size);
         }
+        inlove = true;
         push();
         rectMode(CENTER);
         fill(0, 0, 0, 120)
@@ -92,6 +93,7 @@ class LoveActually {
         for (let i = 0; i < 3000; i++) { //thats alot of money!
             image(moneyImage, random(-this.money.size / 2, width), random(-this.money.size / 2, height), this.money.size, this.money.size);
         }
+        rich = true;
         push();
         rectMode(CENTER);
         fill(0, 0, 0, 120)

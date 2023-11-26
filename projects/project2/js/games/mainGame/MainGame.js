@@ -47,7 +47,8 @@ class MainGame {
     setup() {
         this.user = new Player(width / 2, height / 2, width * 0.039, width * 7.8125E-5, (width * 1.953125E-3) * 2);
         this.user.texture = clownImage;
-        level1Passed = false;
+        levelsPassed = 0;
+        inlove = rich = false;
         Alien.size = width / 3;
         // this.createAliens();
         this.createWalls();
@@ -63,10 +64,6 @@ class MainGame {
             this.user.health = 100;
             this.user.x = width / 2;
             this.user.y = height / 2;
-            // this.wave = 1;
-            // this.evilClowns = [];
-            // this.userProjectiles = [];
-            // this.enemyProjectiles = [];
             this.restart = false;
         }
         //Start the first wave and variables
@@ -117,12 +114,6 @@ class MainGame {
         //runs the necessary calculations for the gameplay animation
         this.recalculate();
         this.draw();
-        // this.collisions();
-        // for (let evilClown of this.evilClowns) {
-        //     chaseFleeTarget(evilClown, this.user, 1);
-        // }
-        // this.projectileManagement();
-        // this.user.userHealthManagement();
     }
 
     recalculate() {
@@ -179,6 +170,7 @@ class MainGame {
             displayObjAsImage(wall, 3, undefined, this.cameraOffsetX, this.cameraOffsetY);
         }
         fill(255, 140);
+        rect(width * 2.25 + (this.wallThicc * 2) + this.cameraOffsetX, -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25, width * 2 * this.heightRatio);
         rect(width + this.wallThicc + this.cameraOffsetX, -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25, width * 2 * this.heightRatio);
         rect(-width / 4 + this.cameraOffsetX, -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25, width * 2 * this.heightRatio);
     }
@@ -189,13 +181,13 @@ class MainGame {
         let topWall = {
             x: this.wallTopX,
             y: this.wallTopY,
-            w: width * 3,
+            w: width * 5,
             h: this.wallThicc,
             texture: wallTexture
         }, bottomWall = {
             x: this.wallTopX,
             y: width * 1.5 * this.heightRatio,
-            w: width * 3,
+            w: width * 5,
             h: this.wallThicc,
             texture: wallTexture
         }, leftWall = {
@@ -216,9 +208,15 @@ class MainGame {
             w: this.wallThicc,
             h: this.wallHeight,
             texture: wallTexture
+        }, level3Wall = {
+            x: width * 3.5 + (this.wallThicc * 2),
+            y: this.wallTopY,
+            w: this.wallThicc,
+            h: this.wallHeight,
+            texture: wallTexture
         }
         //adds the walls to their array
-        this.walls.push(topWall, bottomWall, leftWall, level1Wall, level2Wall);
+        this.walls.push(topWall, bottomWall, leftWall, level1Wall, level2Wall, level3Wall);
     }
 
     levels() {
@@ -232,22 +230,38 @@ class MainGame {
                     if (keyIsDown(50)) {
                         // You can have different opinions.
                         if (keyIsDown(51)) {
-                            // But you better adhere mine.
+                            // But you better adhere to mine.
                             if (keyIsDown(52)) {
-                                pausedGame = this;
-                                inMainGame = false;
-                                inMiniGame = true;
-                                startGame1();
+                                this.launchMinigameProcess()
+                                startGames(1);
                             }
                         }
                     }
                 }
+            } if (obedient && levelsPassed === 0) {
+                this.walls.splice(3, 1);
+                obedient = false;
+                levelsPassed = 1;
             }
-        }
-        if (obedient && !level1Passed) {
-            this.walls.splice(3, 1);
-            obedient = false;
-            level1Passed = true;
+        } else if (collideRectCircle(width + this.wallThicc, -width * 0.5 * this.heightRatio, width * 1.25, width * 2 * this.heightRatio, this.user.x, this.user.y, this.user.size)) {
+            mainGameLevel = 2;
+            // Tryin' to make ends meet
+            if (keyIsDown(192) &&
+                // You're a slave to the money then you die.
+                !(keyIsDown(49) || !keyIsDown(50))) {
+                // I have everything you ever wanted.
+                if (!(keyIsDown(51) || !keyIsDown(52))) {
+                    this.launchMinigameProcess();
+                    startGames(2);
+                }
+            } if (obedient && levelsPassed === 1) {
+                this.walls.splice(3, 1);
+                obedient = false;
+                levelsPassed = 2;
+            }
+        } else if (collideRectCircle(width * 2.25 + (this.wallThicc * 2), -width * 0.5 * this.heightRatio, width * 1.25, width * 2 * this.heightRatio, this.user.x, this.user.y, this.user.size)) {
+            mainGameLevel = 3;
+
         }
     }
 
@@ -255,5 +269,11 @@ class MainGame {
     updateMousePositions(mouseObject) {
         mouseObject.x = mouseX;
         mouseObject.y = mouseY;
+    }
+
+    launchMinigameProcess() {
+        pausedGame = this;
+        inMainGame = false;
+        inMiniGame = true;
     }
 }

@@ -11,7 +11,8 @@
 let menus;
 let game, pausedGame;
 let obedient = false;
-let level1Passed = false;
+let levelsPassed = false;
+let inlove, rich;
 let inMainGame, inMiniGame, vaccinations, mainGameLevel;
 let sameMouseClick = false, sameEsc = false;
 let clownImage, clownetteImage, evilClownImage;
@@ -44,6 +45,7 @@ function setup() {
     createCanvas(windowWidth, windowHeight);
     textSize(width * 0.03);
     inMainGame = inMiniGame = false;
+    inlove = rich = false;
     menus = new Menus();
     game = new MainGame();
     game.setup();
@@ -61,7 +63,24 @@ function draw() {
     }
 }
 
-function startGame1() {
-    game = new DodgeEm();
+function startGames(number) {
+    switch (number) {
+        case 1:
+            game = new DodgeEm();
+            game.setup();
+            break;
+        case 2:
+            game = new LoveActually();
+            game.setup();
+            break;
+        default:
+            console.log("invalid game number");
+            break;
+    }
+}
+
+
+function startGame2() {
+    game = new LoveActually();
     game.setup();
 }
