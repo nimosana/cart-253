@@ -3,18 +3,18 @@ class Buttons {
     constructor(type) {
         this.type = type;
         if (type === `mainGame`) {
-            this.w = width / 3;
+            this.w = width / 4;
             this.h = height / 4;
-            this.x = width / 4;
+            this.x = width / 2 - this.w / 2;
             this.y = (height / 2) - (height / 8);
             this.rectFill = `green`;
             this.textFill = `black`;
-            this.text = `main Game`;
+            this.text = `Main Game`;
             this.menu = `mainMenu`;
         } else if (type === `soloMenu`) {
             this.w = width / 4;
             this.h = height / 4;
-            this.x = width / 8;
+            this.x = width / 16;
             this.y = (height / 2) - (height / 8);
             this.rectFill = `cyan`;
             this.textFill = `black`;
@@ -23,7 +23,7 @@ class Buttons {
         } else if (type === `versusMenu`) {
             this.w = width / 4;
             this.h = height / 4;
-            this.x = width * 5 / 8;
+            this.x = width * (15 / 16) - this.w;
             this.y = (height / 2) - (height / 8);
             this.rectFill = `red`;
             this.textFill = `black`;
@@ -53,7 +53,7 @@ class Buttons {
             this.x = width / 8;
             this.y = (height / 2) + (height / 16);
             this.rectFill = `pink`;
-            this.textFill = `lime`;
+            this.textFill = `green`;
             this.text = `Modern love\nsimulator`;
             this.menu = `soloMenu`;
         } else if (type === `clownapping`) {

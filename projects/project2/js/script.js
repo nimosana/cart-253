@@ -23,6 +23,7 @@ let moneyImage;
 let virusImage;
 let runningMainGame = true;
 let level1pic1, level1pic2, level2pic1, level2pic2, level3pic1, level3pic2;
+let songCovid, songFishing, songLove, songClownap;
 
 /** Description of preload*/
 function preload() {
@@ -42,6 +43,9 @@ function preload() {
     level2pic2 = loadImage('assets/images/level2-2.png');
     level3pic1 = loadImage('assets/images/level3-1.png');
     level3pic2 = loadImage('assets/images/level3-2.png');
+    songLove = new Audio('assets/sounds/TheVerve_BitterSweetSymphony.mp3');
+    songCovid = new Audio('assets/sounds/NineInchNails_TheHandThatFeeds.mp3');
+    songFishing = new Audio('assets/sounds/Muse_Uprising.mp3')
 }
 
 /** Description of setup */

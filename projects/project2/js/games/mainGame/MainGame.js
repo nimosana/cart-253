@@ -4,8 +4,6 @@ class MainGame {
         this.heightRatio = 0.513671875;
         //represents the user
         this.user;
-        //projectile arrays and fire rates
-        this.userProjectiles = [], this.enemyProjectiles = [], this.userFireRate = 0, this.enemyFireRate = 60;
         //camera offsets used to follow the user
         this.cameraOffsetX = undefined, this.cameraOffsetY = undefined;
         //mouse position as an object
@@ -16,13 +14,11 @@ class MainGame {
         //represent various simlulation elements
         this.restart = false;
         this.clowniseumTexture = clowniseumImage;
-        this.evilClowns = [], this.wave = 1;
         this.walls = []
         this.wallThicc = width / 20;
         this.wallHeight = width * 2 * this.heightRatio + 2 * this.wallThicc;
         this.wallTopY = -width * 0.5 * this.heightRatio - this.wallThicc;
         this.wallTopX = -width / 4 - this.wallThicc;
-        this.titleAliens = [], this.topAliens = [], this.bottomAliens = [], this.leftAliens = [], this.rightAliens = [];
         //variables used to correctly execute different states of the simulation
         this.state = `title`;
         this.titleFirstFrame = true, this.simulationFirstFrame = true;
@@ -65,10 +61,6 @@ class MainGame {
             this.user.y = height / 2;
             this.restart = false;
         }
-        //Start the first wave and variables
-        // this.generateEvilClowns(1);
-        this.gameplayDialogue = 0;
-        // Alien.size = 0.09765625 * width;
         this.simulationFirstFrame = false;
         this.titleFirstFrame = true;
     }
@@ -91,7 +83,6 @@ class MainGame {
         }
     }
 
-
     title() {
         if (this.titleFirstFrame) {
             this.titleSetup(); //adjusts variables to correctly run
@@ -104,7 +95,6 @@ class MainGame {
             this.state = `gameplay`;
         }
     }
-
 
     gameplay() {
         if (this.simulationFirstFrame) {
@@ -123,8 +113,8 @@ class MainGame {
     }
 
     collisions() {
+        //collisions between walls and the user
         for (let wall of this.walls) {
-            //collisions between walls and the user
             this.wallBounce(wall, this.user);
         }
     }
@@ -235,7 +225,8 @@ class MainGame {
                 keyIsDown(51) &&
                 // But you better adhere to mine
                 keyIsDown(52)) {
-                this.launchProcess()
+                this.launchProcess();
+                songCovid.play();
                 startGames(1);
             }
             if (obedient && levelsPassed === 0) {
@@ -250,6 +241,7 @@ class MainGame {
                 // Others would gladly replace you
                 !(keyIsDown(51) || !keyIsDown(52))) {
                 this.launchProcess();
+                songFishing.play();
                 startGames(2);
             }
             // Maybe someday I'll give you a chance
@@ -269,6 +261,7 @@ class MainGame {
                     keyIsDown(50) || keyIsDown(54) ||
                     // I can give you anything you ever wanted.
                     keyIsDown(56) || !keyIsDown(51))) {
+                songLove.play();
                 this.launchProcess();
                 startGames(3);
             }
@@ -290,6 +283,7 @@ class MainGame {
         inMiniGame = true;
     }
 
+    /** makes the user progress to the next level by removing a wall and  */
     positiveReinforcement() {
         this.walls.splice(3, 1);
         levelsPassed++;

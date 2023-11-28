@@ -109,6 +109,8 @@ class Menus {
                         obedient = true;
                         // But you should listen to me
                     }
+                    songCovid.pause();
+                    songCovid.currentTime = 0;
                     this.returnFromGame()
                 } else if (mainGameLevel === 2) {
                     if (!dedicated) {
@@ -118,6 +120,8 @@ class Menus {
                         // Accumulate my tokens and
                         // I will define your worth
                     }
+                    songFishing.pause();
+                    songFishing.currentTime = 0;
                     this.returnFromGame()
                 } else if (mainGameLevel === 3) {
                     if (!inlove) {
@@ -128,6 +132,8 @@ class Menus {
                         // Keep trying, stay focused
                         // I can give you power
                     }
+                    songLove.pause();
+                    songLove.currentTime = 0;
                     this.returnFromGame()
                 }
             }
