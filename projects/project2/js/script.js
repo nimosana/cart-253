@@ -12,7 +12,7 @@ let menus;
 let game, pausedGame;
 let obedient = false;
 let levelsPassed = false;
-let inlove, rich;
+let inlove, rich, dedicated;
 let inMainGame, inMiniGame, vaccinations, mainGameLevel;
 let sameMouseClick = false, sameEsc = false;
 let clownImage, clownetteImage, evilClownImage;
@@ -22,7 +22,7 @@ let fishTexture, evilTexture;
 let moneyImage;
 let virusImage;
 let runningMainGame = true;
-let level1pic1, level1pic2;
+let level1pic1, level1pic2, level2pic1, level2pic2, level3pic1, level3pic2;
 
 /** Description of preload*/
 function preload() {
@@ -38,6 +38,10 @@ function preload() {
     wallTexture = loadImage('assets/images/brickWall.png');
     level1pic1 = loadImage('assets/images/level1-1.png');
     level1pic2 = loadImage('assets/images/level1-2.png');
+    level2pic1 = loadImage('assets/images/level2-1.png');
+    level2pic2 = loadImage('assets/images/level2-2.png');
+    level3pic1 = loadImage('assets/images/level3-1.png');
+    level3pic2 = loadImage('assets/images/level3-2.png');
 }
 
 /** Description of setup */
@@ -45,7 +49,7 @@ function setup() {
     createCanvas(windowWidth, windowHeight);
     textSize(width * 0.03);
     inMainGame = inMiniGame = false;
-    inlove = rich = false;
+    dedicated = inlove = rich = false;
     menus = new Menus();
     game = new MainGame();
     game.setup();
@@ -70,6 +74,10 @@ function startGames(number) {
             game.setup();
             break;
         case 2:
+            game = new AgeOfAquariums();
+            game.setup();
+            break;
+        case 3:
             game = new LoveActually();
             game.setup();
             break;

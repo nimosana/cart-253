@@ -104,24 +104,31 @@ class Menus {
             } else if (inMiniGame) {
                 noStroke();
                 if (mainGameLevel === 1) {
-                    // I won't force you to do anything.
+                    // I won't force you to do anything
                     if (vaccinations >= 2) {
                         obedient = true;
-                        // But you should listen to me.
+                        // But you should listen to me
                     }
-                    inMiniGame = false;
-                    inMainGame = true;
-                    sameEsc = true;
-                    game = pausedGame;
+                    this.returnFromGame()
                 } else if (mainGameLevel === 2) {
-                    // I just want you to be happy.
-                    if (vaccinations >= 4 && inLove) {
-                        obedient = true;
+                    if (!dedicated) {
+                        // I won't feed you for free
+                        // Nobody is irreplaceable
+                    } else {
+                        // Accumulate my tokens and
+                        // I will define your worth
                     }
-                    inMiniGame = false;
-                    inMainGame = true;
-                    sameEsc = true;
-                    game = pausedGame;
+                    this.returnFromGame()
+                } else if (mainGameLevel === 3) {
+                    if (!inlove) {
+                        // I just want you to be happy
+                        // You should find a teammate
+                    }
+                    if (!rich) {
+                        // Keep trying, stay focused
+                        // I can give you power
+                    }
+                    this.returnFromGame()
                 }
             }
         }
@@ -134,6 +141,13 @@ class Menus {
             this.state = `mainMenu`;
         }
     }
+    returnFromGame() {
+        inMiniGame = false;
+        inMainGame = true;
+        sameEsc = true;
+        game = pausedGame;
+    }
+
 }
 
 

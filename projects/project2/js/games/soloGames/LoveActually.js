@@ -81,7 +81,7 @@ class LoveActually {
         fill(0, 0, 0, 120)
         rect(width / 2, height / 2, width * 0.2, height * 0.2);
         fill(255, 50, 50);
-        text(`You found "love"\n\nClick to restart`, width / 2, height / 2);
+        text(`You found "love"\nEsc to leave\nClick to restart`, width / 2, height / 2);
         pop();
         if (mouseIsPressed) {
             this.resetGame();
@@ -99,7 +99,7 @@ class LoveActually {
         fill(0, 0, 0, 120)
         rect(width / 2, height / 2, width * 0.5, height * 0.3);
         fill(255, 50, 50);
-        text(`You're way too rich for these clowns\n go get a Bugatti or something\n\nClick to restart`, width / 2, height / 2);
+        text(`You're way too rich for these clowns\n go get a Bugatti or something\nEsc to leave\nClick to restart`, width / 2, height / 2);
         pop();
         if (mouseIsPressed) {
             this.resetGame();

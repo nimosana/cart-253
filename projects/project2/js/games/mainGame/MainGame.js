@@ -29,7 +29,6 @@ class MainGame {
         //variables used for the beginning animation
         this.titleClownMovement = 0, this.titleFinalMovement = 0, this.titleAliensMovement = 0, this.titleAliensTimer = 0, this.titleBeginningSpeed, this.titleFinalSpeed, this.titleAlienSpeed, this.gameplayDialogue;
         //represents the animation Clown & Clownette
-
         this.titleClown = {
             x: 0,
             y: 0,
@@ -47,7 +46,7 @@ class MainGame {
     setup() {
         this.user = new Player(width / 2, height / 2, width * 0.039, width * 7.8125E-5, (width * 1.953125E-3) * 2);
         this.user.texture = clownImage;
-        levelsPassed = 0;
+        vaccinations = levelsPassed = 0;
         inlove = rich = false;
         Alien.size = width / 3;
         // this.createAliens();
@@ -162,6 +161,10 @@ class MainGame {
         this.cameraOffsetX = width / 2 - this.user.x + this.user.vx * 4;
         this.cameraOffsetY = height / 2 - this.user.y + this.user.vy * 4;
         background(0);
+        image(level3pic2, width * 2.25 + width * 1.25 / 2 + this.cameraOffsetX + (this.wallThicc * 2), -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25 / 2, width * 2 * this.heightRatio / 2);
+        image(level3pic1, width * 2.25 + this.cameraOffsetX + (this.wallThicc * 2), -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25 / 2, width * 2 * this.heightRatio / 2);
+        image(level2pic2, width + width * 1.25 / 2 + this.cameraOffsetX + this.wallThicc, -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25 / 2, width * 2 * this.heightRatio / 2);
+        image(level2pic1, width + this.cameraOffsetX + this.wallThicc, -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25 / 2, width * 2 * this.heightRatio / 2);
         image(level1pic1, -width / 4 + this.cameraOffsetX, -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25 / 2, width * 2 * this.heightRatio / 2);
         image(level1pic2, -width / 4 + width * 1.25 / 2 + this.cameraOffsetX, -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25 / 2, width * 2 * this.heightRatio / 2);
         this.user.displayRotatingPlayer(this.cameraOffsetX, this.cameraOffsetY);
@@ -170,9 +173,9 @@ class MainGame {
             displayObjAsImage(wall, 3, undefined, this.cameraOffsetX, this.cameraOffsetY);
         }
         fill(255, 140);
-        rect(width * 2.25 + (this.wallThicc * 2) + this.cameraOffsetX, -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25, width * 2 * this.heightRatio);
-        rect(width + this.wallThicc + this.cameraOffsetX, -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25, width * 2 * this.heightRatio);
-        rect(-width / 4 + this.cameraOffsetX, -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25, width * 2 * this.heightRatio);
+        // rect(width * 2.25 + (this.wallThicc * 2) + this.cameraOffsetX, -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25, width * 2 * this.heightRatio);
+        // rect(width + this.wallThicc + this.cameraOffsetX, -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25, width * 2 * this.heightRatio);
+        // rect(-width / 4 + this.cameraOffsetX, -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25, width * 2 * this.heightRatio);
     }
 
     /** creates the outside walls/game area relative to the window width and places them into their array */
@@ -181,13 +184,13 @@ class MainGame {
         let topWall = {
             x: this.wallTopX,
             y: this.wallTopY,
-            w: width * 5,
+            w: width * 6,
             h: this.wallThicc,
             texture: wallTexture
         }, bottomWall = {
             x: this.wallTopX,
             y: width * 1.5 * this.heightRatio,
-            w: width * 5,
+            w: width * 6,
             h: this.wallThicc,
             texture: wallTexture
         }, leftWall = {
@@ -222,46 +225,56 @@ class MainGame {
     levels() {
         if (collideRectCircle(-width / 4, -width * 0.5 * this.heightRatio, width * 1.25, width * 2 * this.heightRatio, this.user.x, this.user.y, this.user.size)) {
             mainGameLevel = 1;
-            // This is a free world.
-            if (keyIsDown(192)) {
-                // You are free to do anything you want.
-                if (keyIsDown(49)) {
-                    // But you better follow my rules.
-                    if (keyIsDown(50)) {
-                        // You can have different opinions.
-                        if (keyIsDown(51)) {
-                            // But you better adhere to mine.
-                            if (keyIsDown(52)) {
-                                this.launchMinigameProcess()
-                                startGames(1);
-                            }
-                        }
-                    }
-                }
-            } if (obedient && levelsPassed === 0) {
-                this.walls.splice(3, 1);
-                obedient = false;
-                levelsPassed = 1;
+            // This is a free world
+            if (keyIsDown(192) &&
+                // You are free to do anything you want
+                keyIsDown(49) &&
+                // But you better follow my rules
+                keyIsDown(50) &&
+                // You can have different opinions
+                keyIsDown(51) &&
+                // But you better adhere to mine
+                keyIsDown(52)) {
+                this.launchProcess()
+                startGames(1);
+            }
+            if (obedient && levelsPassed === 0) {
+                this.positiveReinforcement();
             }
         } else if (collideRectCircle(width + this.wallThicc, -width * 0.5 * this.heightRatio, width * 1.25, width * 2 * this.heightRatio, this.user.x, this.user.y, this.user.size)) {
             mainGameLevel = 2;
-            // Tryin' to make ends meet
-            if (keyIsDown(192) &&
-                // You're a slave to the money then you die.
-                !(keyIsDown(49) || !keyIsDown(50))) {
-                // I have everything you ever wanted.
-                if (!(keyIsDown(51) || !keyIsDown(52))) {
-                    this.launchMinigameProcess();
-                    startGames(2);
-                }
-            } if (obedient && levelsPassed === 1) {
-                this.walls.splice(3, 1);
-                obedient = false;
-                levelsPassed = 2;
+            // You need to prove your worth
+            if (obedient && keyIsDown(192) &&
+                // You better be ready to do anything
+                !(!keyIsDown(50) || keyIsDown(49)) &&
+                // Others would gladly replace you
+                !(keyIsDown(51) || !keyIsDown(52))) {
+                this.launchProcess();
+                startGames(2);
+            }
+            // Maybe someday I'll give you a chance
+            if (dedicated && levelsPassed === 1) {
+                this.positiveReinforcement();
             }
         } else if (collideRectCircle(width * 2.25 + (this.wallThicc * 2), -width * 0.5 * this.heightRatio, width * 1.25, width * 2 * this.heightRatio, this.user.x, this.user.y, this.user.size)) {
             mainGameLevel = 3;
-
+            if (obedient && dedicated &&
+                // If you're good at playing my game
+                vaccinations >= 6 && !(!keyIsDown(49) ||
+                    // I don't care if you play by the book
+                    keyIsDown(192) || !keyIsDown(53) ||
+                    // Just don't bother those who play it better
+                    !keyIsDown(55) || keyIsDown(52) ||
+                    // Everyone's driven by self-interest
+                    keyIsDown(50) || keyIsDown(54) ||
+                    // I can give you anything you ever wanted.
+                    keyIsDown(56) || !keyIsDown(51))) {
+                this.launchProcess();
+                startGames(3);
+            }
+            if (inlove && rich && levelsPassed === 2) {
+                this.positiveReinforcement();
+            }
         }
     }
 
@@ -271,9 +284,14 @@ class MainGame {
         mouseObject.y = mouseY;
     }
 
-    launchMinigameProcess() {
+    launchProcess() {
         pausedGame = this;
         inMainGame = false;
         inMiniGame = true;
+    }
+
+    positiveReinforcement() {
+        this.walls.splice(3, 1);
+        levelsPassed++;
     }
 }

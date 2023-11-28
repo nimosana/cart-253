@@ -80,7 +80,7 @@ class AgeOfAquariums {
         textAlign(CENTER, CENTER);
         fill('lightblue');
         textSize(0.04 * width);
-        text(`Age of Aquariums\n\nAD/Arrow Keys to move\nPress space to lower hook & reel fish in\nClick to start`, width / 2, height / 2);
+        text(`Fisherman life simulator\n\nAD/Arrow Keys to move\nPress space to lower hook & reel fish in\nClick to start`, width / 2, height / 2);
         pop();
         if (mouseIsPressed && !sameMouseClick) {
             this.state = `simulation`;
@@ -89,6 +89,7 @@ class AgeOfAquariums {
 
     /** continues the animation after the player has won */
     win() {
+        dedicated = true;
         //animate and draw fish
         for (let fish of this.school) {
             this.moveFish(fish);
@@ -97,7 +98,7 @@ class AgeOfAquariums {
         push();
         textAlign(CENTER, TOP);
         textSize(0.02 * width);
-        text(`You caught enough fish, now sit back and relax.\nClick to add more fishies`, width / 2, 0.01 * height);
+        text(`You caught enough fish, now sit back and relax.\nClick to add more fishies\nPress Enter to restart`, width / 2, 0.01 * height);
         pop();
         this.clickSpawnFish();
     }
@@ -112,9 +113,20 @@ class AgeOfAquariums {
         push();
         textAlign(CENTER, TOP);
         textSize(0.02 * width);
-        text(`You caught a carnivore what are you doing??\nenough fishing for today..\nClick to add fishies`, width / 2, 0.01 * height);
+        text(`You caught a carnivore, what are you doing??? Enough fishing for today..\nClick to add fishies\nPress Enter to restart`, width / 2, 0.01 * height);
         pop();
         this.clickSpawnFish();
+        if (keyIsDown(13)) { // reset the game if the user pressed Enter
+            this.user.score = 0;
+            this.school = [];
+            for (let i = 0; i < this.schoolSize - 2; i++) {
+                this.school.push(this.createFish(random(0, width), random(this.waterSurface, height), 0));
+            }
+            for (let i = 0; i < this.evilSchoolSize; i++) {
+                this.school.push(this.createFish(random(0, width), random(this.waterSurface, height), 1));
+            }
+            this.state = `simulation`;
+        }
     }
 
     /** controls the simulation, the state when the user is fishing*/

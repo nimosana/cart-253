@@ -41,7 +41,9 @@ class DodgeEm {
 
     /** Description of draw() */
     run() {
-        vaccinations = this.user.vaccinations;
+        if (this.user.vaccinations >= vaccinations) {
+            vaccinations = this.user.vaccinations;
+        }
         if (this.state === "title") {
             this.title();
         } else if (this.state === "simulation") {
