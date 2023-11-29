@@ -79,8 +79,10 @@ class MainGame {
         }
         //plays the animation
         background(0);
-        text(`Who am I?\nWho are you?\n\nClick to start`, width / 2, height / 2);
-        // this.beginningAnimation();
+        push();
+        fill(`green`);
+        text(`Who am I?\nWho are you?\n192 = ~\n49 = 1\n\nClick to start`, width / 2, height / 2);
+        pop();
         if (mouseIsPressed && !sameMouseClick) {
             this.state = `gameplay`;
         }
@@ -150,6 +152,11 @@ class MainGame {
         image(level2pic1, width + this.cameraOffsetX + this.wallThicc, -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25 / 2, width * 2 * this.heightRatio / 2);
         image(level1pic1, -width / 4 + this.cameraOffsetX, -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25 / 2, width * 2 * this.heightRatio / 2);
         image(level1pic2, -width / 4 + width * 1.25 / 2 + this.cameraOffsetX, -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25 / 2, width * 2 * this.heightRatio / 2);
+        push();
+        textAlign(CENTER, CENTER);
+        fill(`green`);
+        text("Thanks for playing\n-Nicolas", width * 4.125 + (this.wallThicc * 2) + this.cameraOffsetX, -width * 0.5 * this.heightRatio + this.cameraOffsetY + (this.wallHeight / 2));
+        pop();
         // display the user
         this.user.displayRotatingPlayer(this.cameraOffsetX, this.cameraOffsetY);
         // draws the walls
@@ -205,7 +212,7 @@ class MainGame {
             texture: wallTexture
         }
         //adds the walls to their array
-        this.walls.push(topWall, leftWall, level1Wall, level2Wall, level3Wall, finalWall);
+        this.walls.push(topWall, bottomWall, leftWall, level1Wall, level2Wall, level3Wall, finalWall);
     }
 
     /** Launches the correct games under the specific conditions of each zone/level of the main game */

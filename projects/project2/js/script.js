@@ -66,6 +66,7 @@ function setup() {
     createCanvas(windowWidth, windowHeight);
     textSize(width * 0.03);
     inMainGame = inMiniGame = false;
+    levelsPassed = 0;
     obedient = dedicated = inlove = rich = false;
     menus = new Menus();
     game = new MainGame();
