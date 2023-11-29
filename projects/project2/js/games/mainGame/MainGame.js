@@ -1,3 +1,9 @@
+/** Main Game
+ * @author Nicolas Morale-Sanabria
+ * 
+ * This is the main game of the minigame library, it incorporates riddles that the player must solve
+ * to launch minigames, the player must complete the requirements to pass each level. The code displayed
+ * contains comments linking each game to the main story and creates a narrative open to interpretation. */
 class MainGame {
     constructor() {
         //used to always have a similar gameplay area no matter the screen ratio/dimensions
@@ -11,31 +17,15 @@ class MainGame {
             x: width / 2,
             y: height / 2
         };
-        //represent various simlulation elements
-        this.restart = false;
-        this.clowniseumTexture = clowniseumImage;
+        // wall-related variables
         this.walls = []
         this.wallThicc = width / 20;
         this.wallHeight = width * 2 * this.heightRatio + 2 * this.wallThicc;
         this.wallTopY = -width * 0.5 * this.heightRatio - this.wallThicc;
         this.wallTopX = -width / 4 - this.wallThicc;
-        //variables used to correctly execute different states of the simulation
+        //variables used to correctly execute specific states of the simulation
         this.state = `title`;
         this.titleFirstFrame = true, this.simulationFirstFrame = true;
-        //variables used for the beginning animation
-        this.titleClownMovement = 0, this.titleFinalMovement = 0, this.titleAliensMovement = 0, this.titleAliensTimer = 0, this.titleBeginningSpeed, this.titleFinalSpeed, this.titleAlienSpeed, this.gameplayDialogue;
-        //represents the animation Clown & Clownette
-        this.titleClown = {
-            x: 0,
-            y: 0,
-            size: 250,
-            texture: clownImage
-        }, this.titleClownette = {
-            x: 0,
-            y: 0,
-            size: 250,
-            texture: clownetteImage
-        };
     }
 
     /** sets up the critical variables, settings or executes the necessary actions in order to correctly launch the simulation */
@@ -44,8 +34,6 @@ class MainGame {
         this.user.texture = clownImage;
         vaccinations = levelsPassed = 0;
         inlove = rich = false;
-        Alien.size = width / 3;
-        // this.createAliens();
         this.createWalls();
         noStroke();
         angleMode(DEGREES);
@@ -71,6 +59,7 @@ class MainGame {
         this.simulationFirstFrame = true;
     }
 
+    /** runs the desired state of the game */
     run() {
         if (this.state === `title`) {
             this.title();
@@ -83,28 +72,30 @@ class MainGame {
         }
     }
 
+    /** displays the title of the game at the beginning */
     title() {
         if (this.titleFirstFrame) {
             this.titleSetup(); //adjusts variables to correctly run
         }
         //plays the animation
         background(0);
-        text(`Maingame title`, width / 2, height / 2);
+        text(`Who am I?\nWho are you?\n\nClick to start`, width / 2, height / 2);
         // this.beginningAnimation();
         if (mouseIsPressed && !sameMouseClick) {
             this.state = `gameplay`;
         }
     }
 
+    /** calculates and draws every frame of the gameplay state of the game */
     gameplay() {
         if (this.simulationFirstFrame) {
-            this.gameplaySetup(); //adjusts variables to correctly run
+            this.gameplaySetup(); // adjusts key variables to run correctly 
         }
-        //runs the necessary calculations for the gameplay animation
         this.recalculate();
         this.draw();
     }
 
+    /** groups most functions that require recalculating positions or collisions to do everything at once*/
     recalculate() {
         this.updateMousePositions(this.mousePos);
         keyMovementSolo(this.user, 0);
@@ -112,6 +103,7 @@ class MainGame {
         this.levels();
     }
 
+    /** checks if the user is colliding with any walls */
     collisions() {
         //collisions between walls and the user
         for (let wall of this.walls) {
@@ -147,25 +139,23 @@ class MainGame {
     }
 
     draw() {
-        //calculates the 'camera' offset to center the player and draw everything relative to it
+        //calculates the 'camera' offset to center the player to draw everything relative to it
         this.cameraOffsetX = width / 2 - this.user.x + this.user.vx * 4;
         this.cameraOffsetY = height / 2 - this.user.y + this.user.vy * 4;
         background(0);
+        //display the screenshots/hints in the game
         image(level3pic2, width * 2.25 + width * 1.25 / 2 + this.cameraOffsetX + (this.wallThicc * 2), -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25 / 2, width * 2 * this.heightRatio / 2);
         image(level3pic1, width * 2.25 + this.cameraOffsetX + (this.wallThicc * 2), -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25 / 2, width * 2 * this.heightRatio / 2);
         image(level2pic2, width + width * 1.25 / 2 + this.cameraOffsetX + this.wallThicc, -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25 / 2, width * 2 * this.heightRatio / 2);
         image(level2pic1, width + this.cameraOffsetX + this.wallThicc, -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25 / 2, width * 2 * this.heightRatio / 2);
         image(level1pic1, -width / 4 + this.cameraOffsetX, -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25 / 2, width * 2 * this.heightRatio / 2);
         image(level1pic2, -width / 4 + width * 1.25 / 2 + this.cameraOffsetX, -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25 / 2, width * 2 * this.heightRatio / 2);
+        // display the user
         this.user.displayRotatingPlayer(this.cameraOffsetX, this.cameraOffsetY);
+        // draws the walls
         for (let wall of this.walls) {
-            // fill('lime');
             displayObjAsImage(wall, 3, undefined, this.cameraOffsetX, this.cameraOffsetY);
         }
-        fill(255, 140);
-        // rect(width * 2.25 + (this.wallThicc * 2) + this.cameraOffsetX, -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25, width * 2 * this.heightRatio);
-        // rect(width + this.wallThicc + this.cameraOffsetX, -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25, width * 2 * this.heightRatio);
-        // rect(-width / 4 + this.cameraOffsetX, -width * 0.5 * this.heightRatio + this.cameraOffsetY, width * 1.25, width * 2 * this.heightRatio);
     }
 
     /** creates the outside walls/game area relative to the window width and places them into their array */
@@ -174,13 +164,13 @@ class MainGame {
         let topWall = {
             x: this.wallTopX,
             y: this.wallTopY,
-            w: width * 6,
+            w: width * 5 + 4 * this.wallThicc,
             h: this.wallThicc,
             texture: wallTexture
         }, bottomWall = {
             x: this.wallTopX,
             y: width * 1.5 * this.heightRatio,
-            w: width * 6,
+            w: width * 5 + 4 * this.wallThicc,
             h: this.wallThicc,
             texture: wallTexture
         }, leftWall = {
@@ -207,13 +197,21 @@ class MainGame {
             w: this.wallThicc,
             h: this.wallHeight,
             texture: wallTexture
+        }, finalWall = {
+            x: width * 4.75 + (this.wallThicc * 3),
+            y: this.wallTopY,
+            w: this.wallThicc,
+            h: this.wallHeight,
+            texture: wallTexture
         }
         //adds the walls to their array
-        this.walls.push(topWall, bottomWall, leftWall, level1Wall, level2Wall, level3Wall);
+        this.walls.push(topWall, leftWall, level1Wall, level2Wall, level3Wall, finalWall);
     }
 
+    /** Launches the correct games under the specific conditions of each zone/level of the main game */
     levels() {
         if (collideRectCircle(-width / 4, -width * 0.5 * this.heightRatio, width * 1.25, width * 2 * this.heightRatio, this.user.x, this.user.y, this.user.size)) {
+            //detects if the player is in the zone 1
             mainGameLevel = 1;
             // This is a free world
             if (keyIsDown(192) &&
@@ -227,12 +225,13 @@ class MainGame {
                 keyIsDown(52)) {
                 this.launchProcess();
                 songCovid.play();
-                startGames(1);
+                startGames(1); //launches the covid game
             }
             if (obedient && levelsPassed === 0) {
                 this.positiveReinforcement();
             }
         } else if (collideRectCircle(width + this.wallThicc, -width * 0.5 * this.heightRatio, width * 1.25, width * 2 * this.heightRatio, this.user.x, this.user.y, this.user.size)) {
+            //detects if the player is in the zone 2
             mainGameLevel = 2;
             // You need to prove your worth
             if (obedient && keyIsDown(192) &&
@@ -242,13 +241,14 @@ class MainGame {
                 !(keyIsDown(51) || !keyIsDown(52))) {
                 this.launchProcess();
                 songFishing.play();
-                startGames(2);
+                startGames(2); // launches the fishing simulator
             }
             // Maybe someday I'll give you a chance
             if (dedicated && levelsPassed === 1) {
                 this.positiveReinforcement();
             }
         } else if (collideRectCircle(width * 2.25 + (this.wallThicc * 2), -width * 0.5 * this.heightRatio, width * 1.25, width * 2 * this.heightRatio, this.user.x, this.user.y, this.user.size)) {
+            //detects if the player is in the zone 3
             mainGameLevel = 3;
             if (obedient && dedicated &&
                 // If you're good at playing my game
@@ -263,7 +263,7 @@ class MainGame {
                     keyIsDown(56) || !keyIsDown(51))) {
                 songLove.play();
                 this.launchProcess();
-                startGames(3);
+                startGames(3); // launches the love simulator
             }
             if (inlove && rich && levelsPassed === 2) {
                 this.positiveReinforcement();
@@ -277,13 +277,14 @@ class MainGame {
         mouseObject.y = mouseY;
     }
 
+    /** temporarily saves the state of the game and updates booleans to start a minigame */
     launchProcess() {
         pausedGame = this;
         inMainGame = false;
         inMiniGame = true;
     }
 
-    /** makes the user progress to the next level by removing a wall and  */
+    /** removes the wall to the next level and updates the player's progression */
     positiveReinforcement() {
         this.walls.splice(3, 1);
         levelsPassed++;

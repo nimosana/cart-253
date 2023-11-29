@@ -1,5 +1,10 @@
+/** Menus
+ * @author Nicolas Morales-Sanabria
+ * 
+ * The minigame library, makes multiple minigames runnable and accessible through a main menu.
+ * This instance also runs the games and allows interaction between games (for the main game) */
 class Menus {
-
+    /** Creates an instance of the minigame library */
     constructor() {
         this.state = `mainMenu`;
         this.gameToRun;
@@ -10,6 +15,7 @@ class Menus {
 
     }
 
+    /** runs the correct state of the game depending of  */
     run() {
         if (this.state === `test`) {
             this.test();
@@ -25,10 +31,8 @@ class Menus {
             this.mainGameRunning();
         }
     }
-    test() {
-        game.run();
-    }
 
+    /** displays the main menu, draws and makes clickable its buttons */
     mainMenu() {
         background(0);
         for (let button of this.buttons) {
@@ -38,19 +42,17 @@ class Menus {
         fill(255);
         text(`Welcome to the minigame library\nClick to start`, width / 2, height / 8);
         text(`Press ESC to return to this menu\nor exit any game at any time`, width / 2, height * 7 / 8);
-        if (this.clickDelay < 20) {
-            this.clickDelay++;
-        } else {
-            for (let button of this.buttons) {
-                if (button.checkPress(this.state)) {
-                    break;
-                }
+        for (let button of this.buttons) {
+            if (button.checkPress(this.state)) {
+                break;
             }
         }
+
     }
 
+    /** displays the versus menu, draws and makes clickable its buttons */
     versusMenu() {
-        if (keyIsDown(27)) {
+        if (keyIsDown(27)) { //send the player back to main menus if they press ESC 
             this.clickDelay = 0;
             this.state = `mainMenu`;
         }
@@ -62,19 +64,17 @@ class Menus {
         for (let button of this.buttons) {
             button.draw(this.state);
         }
-        if (this.clickDelay < 20) {
-            this.clickDelay++;
-        } else {
-            for (let button of this.buttons) {
-                if (button.checkPress(this.state)) {
-                    break;
-                }
+        for (let button of this.buttons) {
+            if (button.checkPress(this.state)) {
+                break;
             }
         }
+
     }
 
+    /** displays the solo menu, draws and makes clickable its buttons */
     soloMenu() {
-        if (keyIsDown(27)) {
+        if (keyIsDown(27)) { //send the player back to main menus if they press ESC
             this.clickDelay = 0;
             this.state = `mainMenu`;
         }
@@ -85,16 +85,15 @@ class Menus {
         for (let button of this.buttons) {
             button.draw(this.state);
         }
-        if (this.clickDelay < 20) {
-            this.clickDelay++;
-        } else {
-            for (let button of this.buttons) {
-                button.checkPress(this.state);
-            }
+        for (let button of this.buttons) {
+            button.checkPress(this.state);
         }
+
     }
 
-    /**  */
+    /** Runs the main game and gives the possibility to return from
+     * minigames with ESC, updates variables depending on the progress
+     * of the player and/or starts songs for the minigames **/
     mainGameRunning() {
         game.run();
         if (keyIsDown(27)) {
@@ -140,26 +139,20 @@ class Menus {
         }
     }
 
+    /** runs the games with the possibility of returning to menus with ESC */
     gameRunning() {
         game.run();
         if (keyIsDown(27)) {
-            this.clickDelay = 0;
             this.state = `mainMenu`;
         }
     }
+
+    /** Restores the main game's state and updates the booleans
+     * when the user exits the mini games */
     returnFromGame() {
         inMiniGame = false;
         inMainGame = true;
         sameEsc = true;
         game = pausedGame;
     }
-
 }
-
-
-//
-//
-//
-//
-//
-//

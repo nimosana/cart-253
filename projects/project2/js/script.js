@@ -1,31 +1,44 @@
 /**
- * Title of Project
- * Author Name
+ * Project 2: Minigame library
+ * @author Nicolas Morales-Sanabria
  * 
- * This is a template. You must fill in the title, author, 
- * and this description to match your project!
- */
+ * This project is a minigame library, the library allows the player to access different 
+ * games through menus and also runs a main game that makes multiple games interact with 
+ * each other. The games included consist of all the exercices made throughout the semester,
+ * in addition, there is a new game (the main game) that incorporates multiple games to create
+ * a new story using screenshots of code.
+ * 
+ * This project uses 3 songs:
+ * "The hand that feeds" by Nine Inch Nails
+ * "Uprising" by Muse
+ * "Bitter Sweet Symphony" by The Verve
+ * 
+ * Please note that the inclusion of these songs is for educational & non-commercial 
+ * purposes, All credits and rights belong to their respective copyright holders.
+ * */
 
 "use strict";
-//represents the clong game instance
+// variables used by the menu/ main application
 let menus;
 let game, pausedGame;
-let obedient = false;
-let levelsPassed = false;
-let inlove, rich, dedicated;
-let inMainGame, inMiniGame, vaccinations, mainGameLevel;
 let sameMouseClick = false, sameEsc = false;
+//variables used in the main game
+let obedient, inlove, rich, dedicated;
+let levelsPassed, inMainGame, inMiniGame, vaccinations, mainGameLevel;
+let runningMainGame = true;
+//represents the images used in the games
 let clownImage, clownetteImage, evilClownImage;
 let clowniseumImage, wallTexture;
 let fishermanImage;
 let fishTexture, evilTexture;
 let moneyImage;
 let virusImage;
-let runningMainGame = true;
+//represents the screenshots in the main game
 let level1pic1, level1pic2, level2pic1, level2pic2, level3pic1, level3pic2;
-let songCovid, songFishing, songLove, songClownap;
+//represents the songs used in the games
+let songCovid, songFishing, songLove;
 
-/** Description of preload*/
+/** Loads all the assets used in the games*/
 function preload() {
     clownImage = loadImage('assets/images/clown.png');
     clownetteImage = loadImage('assets/images/clownette.png');
@@ -48,19 +61,19 @@ function preload() {
     songFishing = new Audio('assets/sounds/Muse_Uprising.mp3')
 }
 
-/** Description of setup */
+/** Sets up the critical variables for the launch of the application */
 function setup() {
     createCanvas(windowWidth, windowHeight);
     textSize(width * 0.03);
     inMainGame = inMiniGame = false;
-    dedicated = inlove = rich = false;
+    obedient = dedicated = inlove = rich = false;
     menus = new Menus();
     game = new MainGame();
     game.setup();
-
 }
 
-/** Description of draw() */
+/** runs the menus (main application) and prevents accidental
+ * mousclicks / ESC presses */
 function draw() {
     menus.run()
     if (!mouseIsPressed) {
@@ -71,6 +84,7 @@ function draw() {
     }
 }
 
+/** Sets up the desired minigame for launch*/
 function startGames(number) {
     switch (number) {
         case 1:
@@ -89,10 +103,4 @@ function startGames(number) {
             console.log("invalid game number");
             break;
     }
-}
-
-
-function startGame2() {
-    game = new LoveActually();
-    game.setup();
 }

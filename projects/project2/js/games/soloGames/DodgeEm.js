@@ -4,7 +4,7 @@
  * You are a clown! Get as many vaccinations as possible before catching covid, 
  * the game will end if you are touched by the virus and a special animation will appear.*/
 class DodgeEm {
-
+    /** creates a runnable instance of the Dodge-em game */
     constructor() {
         //represents the user/player
         this.user = new Player(width / 2, height, height * 0.076, 0.4, 10);
@@ -53,6 +53,7 @@ class DodgeEm {
         }
     }
 
+    /** displays the title of the simulation */
     title() {
         background(0);
         this.drawSyringe(width / 2, height / 4, this.syringe.size);
@@ -115,6 +116,7 @@ class DodgeEm {
         }
     }
 
+    /** runs the gameplay state of the simulation */
     simulation() {
         noStroke(); //display vaccinations/syringes caught
         //normal animation

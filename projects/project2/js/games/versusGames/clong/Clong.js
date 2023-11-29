@@ -4,7 +4,7 @@
  * Allows the creation of simulations/instances of the clong game,
  * contains every function necessary to run the game*/
 class Clong {
-    /** Allows the creation of a simulation/instance of clong games */
+    /** Creates a runnable instance of the clong game */
     constructor() {
         this.state = `title`;
         //players round scores 

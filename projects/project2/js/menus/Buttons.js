@@ -1,5 +1,12 @@
+/** Buttons
+* @author Nicolas Morales-Sanabria
+*
+*  Allows the creation &  of the buttons of the main menus of the minigame library.
+*  Groups every button in an attempt to make each button easier to modify */
 class Buttons {
-
+    /** Creates a premade, clickable button specific  
+     * to the type of button desired
+     * @param type type of button to create */
     constructor(type) {
         this.type = type;
         if (type === `mainGame`) {
@@ -76,7 +83,8 @@ class Buttons {
             this.menu = `soloMenu`;
         }
     }
-
+    /** displays the buttons available according to the menu open 
+     * @param menuToDraw menu to display */
     draw(menuToDraw) {
         if (this.menu === menuToDraw) {
             fill(this.rectFill);
@@ -88,12 +96,14 @@ class Buttons {
             pop();
         }
     }
-
+    /** Checks if any button has been clicked and does the actions specific to any button pressed
+     * @param menuToCheck the menu currently open in the main game
+       */
     checkPress(menuToCheck) {
+        // the two first ifs prevent any misclicks from happening
         if (this.menu === menuToCheck) {
             if (mouseIsPressed && !sameMouseClick && collidePointRect(mouseX, mouseY, this.x, this.y, this.w, this.h)) {
                 if (this.type === `mainGame`) {
-                    menus.clickDelay = 0;
                     game = new MainGame();
                     inMainGame = true;
                     game.setup();
@@ -102,12 +112,10 @@ class Buttons {
                     return true;
                 } else if (this.type === `soloMenu`) {
                     menus.state = `soloMenu`;
-                    menus.clickDelay = 0;
                     sameMouseClick = true;
                     return true;
                 } else if (this.type === `versusMenu`) {
                     menus.state = `versusMenu`;
-                    menus.clickDelay = 0;
                     sameMouseClick = true;
                     return true;
                 } else if (this.type === `clong`) {

@@ -6,8 +6,9 @@
  *  as the user collects more money the fish get closer to the user. The game ends if the user makes
  *  contact with a fish or if the user collects a set amount of money. */
 class LoveActually {
-    //represents the user
+    /** creates a runnable instance of the love simulator */
     constructor() {
+        //represents the user
         this.user = new Player(width / 2, height / 2, width * 0.04, width * 3.9025E-5, width * 0.001718);
         //array for all my fish
         this.fishInTheSea = [];
@@ -191,7 +192,7 @@ class LoveActually {
         this.money.x = tempPos.x;
         this.money.y = tempPos.y;
     }
-
+    /** resets the gameplay */
     resetGame() {
         this.user.money = 5;
         this.user.x = width / 2;

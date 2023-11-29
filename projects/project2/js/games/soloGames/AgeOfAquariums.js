@@ -6,6 +6,7 @@
  * the player can click around to add fish to the simulation */
 class AgeOfAquariums {
 
+    /** creates a runnable instance of the Fishing game */
     constructor() {
         this.state = `title`;
         this.school = [], this.evilSchool = [];

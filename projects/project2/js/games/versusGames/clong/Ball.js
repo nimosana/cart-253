@@ -60,7 +60,7 @@ class Ball {
                     this.vx += this.ax;
                 }
                 // give it a vertical speed according to the angle of the ball & center of the paddle
-                this.vy = this.vy + map(dx, -paddle.height / 2, paddle.height / 2, -2, 2);
+                this.vy = (paddle.vy / 2) + this.vy + map(dx, -paddle.height / 2, paddle.height / 2, -2, 2);
             }
         } else if (paddle.player === 2) { //right (red paddle)
             if (collideRectCircle(paddle.x, paddle.y, paddle.width, paddle.height, this.x, this.y, this.size)) {
@@ -71,7 +71,7 @@ class Ball {
                     this.vx -= this.ax;
                 }
                 // give it a vertical speed according to the angle of the ball & center of the paddle
-                this.vy = this.vy + map(dx, -paddle.height / 2, paddle.height / 2, -2, 2);
+                this.vy = (paddle.vy / 2) + this.vy + map(dx, -paddle.height / 2, paddle.height / 2, -2, 2);
             }
         }
     }
