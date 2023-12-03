@@ -5,6 +5,7 @@
  * to launch minigames, the player must complete the requirements to pass each level. The code displayed
  * contains comments linking each game to the main story and creates a narrative open to interpretation. */
 class MainGame {
+    /** Allows the instatiation of the main game as an object*/
     constructor() {
         //used to always have a similar gameplay area no matter the screen ratio/dimensions
         this.heightRatio = 0.513671875;
@@ -33,7 +34,7 @@ class MainGame {
         this.user = new Player(width / 2, height / 2, width * 0.039, width * 7.8125E-5, (width * 1.953125E-3) * 2);
         this.user.texture = clownImage;
         vaccinations = levelsPassed = 0;
-        inlove = rich = false;
+        obedient = dedicated = inlove = rich = false;
         this.createWalls();
         noStroke();
         angleMode(DEGREES);
@@ -140,6 +141,7 @@ class MainGame {
         }
     }
 
+    /** Displays the objects, player and images of the game */
     draw() {
         //calculates the 'camera' offset to center the player to draw everything relative to it
         this.cameraOffsetX = width / 2 - this.user.x + this.user.vx * 4;
@@ -221,7 +223,7 @@ class MainGame {
             //detects if the player is in the zone 1
             mainGameLevel = 1;
             // This is a free world
-            if (keyIsDown(192) &&
+            if ((keyIsDown(192) || keyIsDown(191)) &&
                 // You are free to do anything you want
                 keyIsDown(49) &&
                 // But you better follow my rules
@@ -241,7 +243,7 @@ class MainGame {
             //detects if the player is in the zone 2
             mainGameLevel = 2;
             // You need to prove your worth
-            if (obedient && keyIsDown(192) &&
+            if (obedient && (keyIsDown(192) || keyIsDown(191)) &&
                 // You better be ready to do anything
                 !(!keyIsDown(50) || keyIsDown(49)) &&
                 // Others would gladly replace you
@@ -261,7 +263,7 @@ class MainGame {
                 // If you're good at playing my game
                 vaccinations >= 6 && !(!keyIsDown(49) ||
                     // I don't care if you play by the book
-                    keyIsDown(192) || !keyIsDown(53) ||
+                    (keyIsDown(192) || keyIsDown(191)) || !keyIsDown(53) ||
                     // Just don't bother those who play it better
                     !keyIsDown(55) || keyIsDown(52) ||
                     // Everyone's driven by self-interest
@@ -274,6 +276,7 @@ class MainGame {
             }
             if (inlove && rich && levelsPassed === 2) {
                 this.positiveReinforcement();
+                songEnd.play();
             }
         }
     }

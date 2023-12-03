@@ -1,4 +1,4 @@
-/** Clong class
+/** Paddle class
  * @author Nicolas Morales-Sanabria
  * Allows the creation, display and control of paddles to make the ball bounce in the clong game */
 class Paddle {

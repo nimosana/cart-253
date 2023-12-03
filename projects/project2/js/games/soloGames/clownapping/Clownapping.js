@@ -6,6 +6,7 @@
  * jumps into a playable survival game where the user must shoot and protect himself from evil clowns. The player
  * controls the clown with keys and mouse. If the clown dies the user is prompted to restart, otherwise they
  * are congratulated for saving clownette. 
+ * Note: the original version was made for the project 1
  * this project uses Ben Moren's p5.collide2D library. */
 class Clownapping {
 
@@ -147,7 +148,7 @@ class Clownapping {
         background(0);
         textSize(0.025 * width);
         fill('red');
-        text(`You died at wave ${this.wave}\n You couldn't save Clownette\npress "Enter" to restart`, width / 2, height / 2);
+        text(`You died at wave ${this.wave}\n You couldn't save Clownette\npress "Enter" to restart, ESC to leave`, width / 2, height / 2);
         if (keyIsDown(13)) {
             this.state = `gameplay`;
         }
@@ -158,7 +159,7 @@ class Clownapping {
         //displays Clown & Clownette thanking you for playing
         background(0);
         fill('orange');
-        text(`You survived the clownapping &\n saved Clownette!\n Thanks for playing`, width / 2, height / 2);
+        text(`You survived the clownapping &\n saved Clownette!\n Thanks for playing, ESC to leave`, width / 2, height / 2);
         this.titleClown.x = width / 3;
         this.titleClownette.x = (width / 3) * 2;
         this.titleClown.y = this.titleClownette.y = height - this.titleClown.size / 2;

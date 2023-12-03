@@ -3,7 +3,8 @@
  * @author Nicolas Morales-Sanabria
  * 
  * This is a fishing simulation, the user can move around and catch fish, he can win by catching enough or losing by catching a carnivore.
- * the player can click around to add fish to the simulation */
+ * the player can click around to add fish to the simulation 
+ * Note: the original version was made for exercise 4 */
 class AgeOfAquariums {
 
     /** creates a runnable instance of the Fishing game */
@@ -99,7 +100,7 @@ class AgeOfAquariums {
         push();
         textAlign(CENTER, TOP);
         textSize(0.02 * width);
-        text(`You caught enough fish, now sit back and relax.\nClick to add more fishies\nPress Enter to restart`, width / 2, 0.01 * height);
+        text(`You caught enough fish, now sit back and relax.\nClick to add more fishies\nPress Enter to restart, ESC to leave`, width / 2, 0.01 * height);
         pop();
         this.clickSpawnFish();
     }
@@ -114,7 +115,7 @@ class AgeOfAquariums {
         push();
         textAlign(CENTER, TOP);
         textSize(0.02 * width);
-        text(`You caught a carnivore, what are you doing??? Enough fishing for today..\nClick to add fishies\nPress Enter to restart`, width / 2, 0.01 * height);
+        text(`You caught a carnivore, what are you doing??? Enough fishing for today..\nClick to add fishies\nPress Enter to restart, ESC to leave`, width / 2, 0.01 * height);
         pop();
         this.clickSpawnFish();
         if (keyIsDown(13)) { // reset the game if the user pressed Enter

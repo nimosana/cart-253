@@ -4,7 +4,8 @@
  * In this game, the user controls a clown emoji that moves around trying to collect money,
  *  there are also "fish" (clowns with lipstick) following him around but keeping a set distance,
  *  as the user collects more money the fish get closer to the user. The game ends if the user makes
- *  contact with a fish or if the user collects a set amount of money. */
+ *  contact with a fish or if the user collects a set amount of money.
+ *  Note: the original version was made for exercise 3 */
 class LoveActually {
     /** creates a runnable instance of the love simulator */
     constructor() {

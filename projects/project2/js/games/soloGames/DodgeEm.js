@@ -2,7 +2,8 @@
  * @author Nicolas Morales-Sanabria
  * 
  * You are a clown! Get as many vaccinations as possible before catching covid, 
- * the game will end if you are touched by the virus and a special animation will appear.*/
+ * the game will end if you are touched by the virus and a special animation will appear.
+ * Note: the original version was made for exercise 2 */
 class DodgeEm {
     /** creates a runnable instance of the Dodge-em game */
     constructor() {

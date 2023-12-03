@@ -1,4 +1,7 @@
 console.log(` /\\_/\\                          /\\_/\\ \n( o.o ) p5.commonGameFunctions ( o.o )\n > ^ <                          > ^ <\n`)
+/** Author: Nicolas Morales-Sanabria
+ * This library contains useful functions that can be used across different 2d games */
+
 
 /** easily display images instead of shapes
  *  this function is reused from my "Love Actually" exercise

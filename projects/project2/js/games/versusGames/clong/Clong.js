@@ -2,7 +2,8 @@
  * @author Nicolas Morales-Sanabria
  * 
  * Allows the creation of simulations/instances of the clong game,
- * contains every function necessary to run the game*/
+ * contains every function necessary to run the game
+ * Note: the original version was made for exercise 5*/
 class Clong {
     /** Creates a runnable instance of the clong game */
     constructor() {
@@ -89,10 +90,10 @@ class Clong {
         textAlign(CENTER, CENTER);
         if (this.lastRoundWinner === 1) {
             fill('cyan');
-            text(`Player 1 won the game\n${this.wins1} : ${this.wins2}\nClick to rematch`, width / 2, height / 4);
+            text(`Player 1 won the game\n${this.wins1} : ${this.wins2}\nClick to rematch, ESC to leave`, width / 2, height / 4);
         } else if (this.lastRoundWinner === 2) {
             fill('red');
-            text(`Player 2 won the game\n${this.wins1} : ${this.wins2}\nClick to rematch`, width / 2, height / 4);
+            text(`Player 2 won the game\n${this.wins1} : ${this.wins2}\nClick to rematch, ESC to leave`, width / 2, height / 4);
         }
         // display paddles & ball, allow paddle movement for fun
         for (let paddle of this.paddles) {
