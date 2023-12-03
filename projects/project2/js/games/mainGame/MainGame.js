@@ -223,7 +223,7 @@ class MainGame {
             //detects if the player is in the zone 1
             mainGameLevel = 1;
             // This is a free world
-            if ((keyIsDown(192) || keyIsDown(191)) &&
+            if (keyIsDown(192) &&
                 // You are free to do anything you want
                 keyIsDown(49) &&
                 // But you better follow my rules
@@ -243,7 +243,7 @@ class MainGame {
             //detects if the player is in the zone 2
             mainGameLevel = 2;
             // You need to prove your worth
-            if (obedient && (keyIsDown(192) || keyIsDown(191)) &&
+            if (obedient && keyIsDown(192) &&
                 // You better be ready to do anything
                 !(!keyIsDown(50) || keyIsDown(49)) &&
                 // Others would gladly replace you
@@ -263,7 +263,7 @@ class MainGame {
                 // If you're good at playing my game
                 vaccinations >= 6 && !(!keyIsDown(49) ||
                     // I don't care if you play by the book
-                    (keyIsDown(192) || keyIsDown(191)) || !keyIsDown(53) ||
+                    keyIsDown(192) || !keyIsDown(53) ||
                     // Just don't bother those who play it better
                     !keyIsDown(55) || keyIsDown(52) ||
                     // Everyone's driven by self-interest
