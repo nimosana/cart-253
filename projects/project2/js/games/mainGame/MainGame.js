@@ -82,7 +82,7 @@ class MainGame {
         background(0);
         push();
         fill(`green`);
-        text(`Who am I?\nWho are you?\n192 = ~\n49 = 1\n\nClick to start`, width / 2, height / 2);
+        text(`Who am I?\nWho are you?\n192 = ~\n49 = 1\n\nWASD/Arrow keys to move\nClick to start`, width / 2, height / 2);
         pop();
         if (mouseIsPressed && !sameMouseClick) {
             this.state = `gameplay`;
@@ -175,25 +175,25 @@ class MainGame {
             y: this.wallTopY,
             w: width * 5 + 4 * this.wallThicc,
             h: this.wallThicc,
-            texture: wallTexture
+            texture: clowniseumImage
         }, bottomWall = {
             x: this.wallTopX,
             y: width * 1.5 * this.heightRatio,
             w: width * 5 + 4 * this.wallThicc,
             h: this.wallThicc,
-            texture: wallTexture
+            texture: clowniseumImage
         }, leftWall = {
             x: this.wallTopX,
             y: this.wallTopY,
             w: this.wallThicc,
             h: this.wallHeight,
-            texture: wallTexture
+            texture: clowniseumImage
         }, level1Wall = {
             x: width,
             y: this.wallTopY,
             w: this.wallThicc,
             h: this.wallHeight,
-            texture: wallTexture
+            texture: clowniseumImage
         }, level2Wall = {
             x: width * 2.25 + this.wallThicc,
             y: this.wallTopY,
@@ -205,13 +205,13 @@ class MainGame {
             y: this.wallTopY,
             w: this.wallThicc,
             h: this.wallHeight,
-            texture: wallTexture
+            texture: clowniseumImage
         }, finalWall = {
             x: width * 4.75 + (this.wallThicc * 3),
             y: this.wallTopY,
             w: this.wallThicc,
             h: this.wallHeight,
-            texture: wallTexture
+            texture: clowniseumImage
         }
         //adds the walls to their array
         this.walls.push(topWall, bottomWall, leftWall, level1Wall, level2Wall, level3Wall, finalWall);
