@@ -199,7 +199,7 @@ class MainGame {
             y: this.wallTopY,
             w: this.wallThicc,
             h: this.wallHeight,
-            texture: wallTexture
+            texture: clowniseumImage
         }, level3Wall = {
             x: width * 3.5 + (this.wallThicc * 2),
             y: this.wallTopY,
